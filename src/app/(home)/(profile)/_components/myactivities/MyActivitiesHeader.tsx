@@ -5,7 +5,7 @@ type MyActivitiesHeaderProps = {
   activeTab: string;
 };
 
-const MyActivitiesHeader: React.FC<MyActivitiesHeaderProps> = ({ setActiveTab, activeTab }) => {
+const MyActivitiesHeader = ({ setActiveTab, activeTab }: MyActivitiesHeaderProps) => {
   return (
     <header>
       <nav className="w-full bg-[#E3E3E3] p-5 overflow-y-hidden">

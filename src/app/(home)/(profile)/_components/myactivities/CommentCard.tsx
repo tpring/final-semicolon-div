@@ -1,21 +1,23 @@
 import React from 'react';
 
-interface CommentCardProps {
-  content: string;
-  profilePicture: string;
-  image: string;
+type CommentCardProps = {
+  title: string;
+  comment: string;
+  userNickname: string;
+  userImage: string;
   time: Date;
-}
+};
 
-const CommentCard: React.FC<CommentCardProps> = ({ content, profilePicture, image, time }) => {
+const CommentCard = ({ title, comment, userNickname, userImage, time }: CommentCardProps) => {
   return (
     <div>
-      <p>{content}</p>
+      <p>{title}</p>
+      <p>{comment}</p>
       <p>
-        <img src={profilePicture} alt="Profile" />
-      </p>
+        <img src={userImage} alt="user Image" />
+      </p>{' '}
       <p>
-        <img src={image} alt="Comment Image" />
+        <img src={userNickname} alt="user Nickname" />
       </p>
       <p>{time.toLocaleString()}</p>
     </div>

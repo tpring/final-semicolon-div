@@ -9,7 +9,7 @@ type EditableFieldProps = {
   onLabelClick: (field: string) => void;
 };
 
-const EditableField: React.FC<EditableFieldProps> = ({ label, name, value, showInput, onChange, onLabelClick }) => {
+const EditableField = ({ label, name, value, showInput, onChange, onLabelClick }: EditableFieldProps) => {
   return (
     <div className="flex items-center mb-4">
       <div className="w-1/3 min-w-[120px]">

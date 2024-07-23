@@ -7,6 +7,7 @@ import LikesList from './myactivities/LikesList';
 import BookmarksList from './myactivities/BookmarksList';
 import MyActivitiesHeader from './myactivities/MyActivitiesHeader';
 
+//임시
 type PostType = 'all' | 'QnA' | 'archiving' | 'forum';
 
 const MyActivities = () => {

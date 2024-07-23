@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React from 'react';
 
-const ProfileSidebar: React.FC = () => {
+const ProfileSidebar = () => {
   const pathname = usePathname();
 
   return (

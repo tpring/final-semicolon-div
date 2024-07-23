@@ -1,17 +1,21 @@
 import React from 'react';
 
-interface PostCardProps {
+type PostCardProps = {
   title: string;
   content: string;
+  image: string;
   tags: string[];
   time: Date;
-}
+};
 
-const PostCard: React.FC<PostCardProps> = ({ title, content, tags, time }) => {
+const PostCard = ({ title, content, image, tags, time }: PostCardProps) => {
   return (
     <div>
       <p>{title}</p>
-      <p>{content}</p>
+      <p>
+        {content}
+        <img src={image} alt="post Image" />
+      </p>
       <p>{tags.join(', ')}</p>
       <p>{time.toLocaleString()}</p>
     </div>

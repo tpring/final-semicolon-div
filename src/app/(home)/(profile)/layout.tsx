@@ -5,7 +5,7 @@ type ProfileLayoutProps = {
   children: React.ReactNode;
 };
 
-const ProfileLayout: React.FC<ProfileLayoutProps> = ({ children }) => {
+const ProfileLayout = ({ children }: ProfileLayoutProps) => {
   return (
     <div className="flex justify-center w-[1200px] h-screen">
       <ProfileSidebar />

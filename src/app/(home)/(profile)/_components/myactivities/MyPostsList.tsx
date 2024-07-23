@@ -8,6 +8,7 @@ type PostType = {
   type: 'post';
   title: string;
   content: string;
+  image: string;
   tags: string[];
   time: Date;
 };
@@ -15,10 +16,11 @@ type PostType = {
 type CommentType = {
   id: string;
   type: 'comment';
+  title: string;
   postId: string;
-  content: string;
-  profilePicture: string;
-  image: string;
+  comment: string;
+  userNickname: string;
+  userImage: string;
   time: Date;
 };
 
@@ -34,14 +36,24 @@ const MyPostsList = (filter: any) => {
     <div>
       {sortedPostsAndComments.map((item) => {
         if (item.type === 'post') {
-          return <PostCard key={item.id} title={item.title} content={item.content} tags={item.tags} time={item.time} />;
+          return (
+            <PostCard
+              key={item.id}
+              title={item.title}
+              content={item.content}
+              image={item.image}
+              tags={item.tags}
+              time={item.time}
+            />
+          );
         } else if (item.type === 'comment') {
           return (
             <CommentCard
               key={item.id}
-              content={item.content}
-              profilePicture={item.profilePicture}
-              image={item.image}
+              title={item.title}
+              comment={item.comment}
+              userNickname={item.userNickname}
+              userImage={item.userImage}
               time={item.time}
             />
           );
