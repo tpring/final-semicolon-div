@@ -2,7 +2,7 @@
 
 import useActiveTabStore from '@/store/useActiveTabStore';
 import Image from 'next/image';
-import Link from 'next/link'; // next/link 임포트
+import Link from 'next/link';
 import { useState } from 'react';
 
 // 임시 User 타입
@@ -54,18 +54,18 @@ const ProfileContent = () => {
           <p className="text-lg font-semibold">{user.nickname}</p>
         </div>
       </div>
-      <div className="flex justify-between">
+      <div className="flex justify-between p-10">
         <div>
-          <p className="">깃허브 링크</p>
+          <p className="my-6">깃허브 링크</p>
           <p className="">자기소개</p>
         </div>
-        <div>
+        <div className="mr-[180px]">
           {user.github_url ? (
-            <a href={user.github_url} className="text-blue-500">
+            <a href={user.github_url} className="text-blue-500 my-6">
               연결됨
             </a>
           ) : (
-            <p className="text-gray-500">비연동</p>
+            <p className="text-gray-500 my-6">비연동</p>
           )}
           <p className="text-gray-600">{user.info}</p>
         </div>
