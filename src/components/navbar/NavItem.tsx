@@ -1,6 +1,13 @@
 import Link from 'next/link';
+import { ReactNode } from 'react';
 
-const NavItem = ({ icon, label, nav }) => {
+type NavItemProps = {
+  icon: ReactNode;
+  label: string;
+  nav: string;
+};
+
+const NavItem = ({ icon, label, nav }: NavItemProps) => {
   return (
     <Link href={`${nav}`}>
       <div className="flex flex-col items-center">
