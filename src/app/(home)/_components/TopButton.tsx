@@ -24,11 +24,11 @@ const TopButton = () => {
   };
   return (
     <div className=" fixed right-16 bottom-5">
-      {topScroll ? (
+      {topScroll && (
         <button type="button" onClick={MoveTop} className=" border py-2 px-4 rounded-xl  ">
           TOP
         </button>
-      ) : null}
+      )}
     </div>
   );
 };
