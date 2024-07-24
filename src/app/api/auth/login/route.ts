@@ -1,10 +1,15 @@
 import { createClient } from '@/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
 
+type RequestData = {
+  email: string;
+  password: string;
+};
+
 export async function POST(request: NextRequest) {
-  const data = await request.json();
-  const email = data.email as string;
-  const password = data.password as string;
+  const data: RequestData = await request.json();
+  const email = data.email;
+  const password = data.password;
   const supabase = createClient();
 
   const {
