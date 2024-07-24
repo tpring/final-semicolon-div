@@ -1,11 +1,15 @@
 import { createClient } from '@/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
 
+type SignUpRequestData = {
+  email: string;
+  password: string;
+  nickname: string;
+};
+
 export async function POST(request: NextRequest) {
-  const data = await request.json();
-  const email = data.email as string;
-  const password = data.password as string;
-  const nickname = data.nickname as string;
+  const data: SignUpRequestData = await request.json();
+  const { email, password, nickname } = data;
   const supabase = createClient();
   const {
     data: { user },
