@@ -3,6 +3,8 @@ import PostCard from './PostCard';
 import CommentCard from './CommentCard';
 import { useBookmarksComments, useBookmarksPosts } from '@/hooks/useBookmarks';
 
+// 수정  글 몇단 까지 보여줄지
+
 //임시 이동 예정
 type Tag = {
   id: string;
