@@ -9,7 +9,7 @@ import TopButton from './_components/TopButton';
 const HomePage = () => {
   return (
     <div className="flex flex-col justify-center items-center relative">
-      <div className="xl:w-[1200px] md:w-[800px] sm:w-[300px] flex flex-col gap-10">
+      <div className="xl:w-[1200px] md:w-[800px] sm:w-[300px]  flex flex-col gap-10">
         <PostsLink />
         <LandingPage />
         <BestForum />
