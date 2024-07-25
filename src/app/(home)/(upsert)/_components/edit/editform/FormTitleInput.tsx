@@ -6,15 +6,15 @@ type FormTitleInputProps = {
 const FormTitleInput = ({ title }: FormTitleInputProps) => {
   return (
     <div>
-      <label className="block" htmlFor="post-title">
-        제목
+      <label className="block text-[#525252] mb-2" htmlFor="title">
+        제목*
       </label>
       <input
         key={title}
-        className="border-2 w-full border-black rounded"
+        className="px-1 w-full text-[#525252] border h-[26px] border-gray-400 focus:border-blue-500 outline-none"
         type="text"
-        name="post-title"
-        id="post-title"
+        name="title"
+        id="title"
         defaultValue={title}
       />
     </div>
