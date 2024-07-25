@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 const PostCard = ({ post }: PostCardProps) => {
   return (
-    <Link href={`/conference/${post.id}`}>
+    <Link href={`/forum/${post.id}`}>
       <div className="post-card">
         <div className="post-header">
           <div className="user-info">

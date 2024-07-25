@@ -1,6 +1,6 @@
 'use client';
 
-import useFetchForumPosts from '@/hooks/conference/useFetchForumPosts';
+import useFetchForumPosts from '@/hooks/forum/useFetchForumPosts';
 
 const ForumPosts = () => {
   const { data: posts = [], error, isPending } = useFetchForumPosts();
