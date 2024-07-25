@@ -79,7 +79,6 @@ const Header = () => {
             </>
           ) : (
             <>
-              {' '}
               <Link href={'/login'}>
                 <h1 className={`md:hidden bg-purple-500 border-0 rounded-md p-1 ml-2 text-white `}>로그인</h1>
               </Link>
