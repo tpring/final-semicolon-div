@@ -1,8 +1,9 @@
 'use client';
 
+import Logo from '@/assets/images/Logo';
+import SearchButton from '@/assets/images/SearchButton';
 import Link from 'next/link';
-import SearchButton from '../common/SearchButton';
-import Logo from '../common/Logo';
+
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 
