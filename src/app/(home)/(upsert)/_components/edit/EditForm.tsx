@@ -1,5 +1,5 @@
 'use client';
-import React, { FormEvent, FormEventHandler, useEffect, useState } from 'react';
+import { FormEvent, FormEventHandler, useEffect, useState } from 'react';
 import { TarchivePost, TBOARD_ITEM, TforumPost, TpostFormData, TqnaPost } from '@/types/upsert';
 import Link from 'next/link';
 import {
@@ -26,7 +26,7 @@ type UpsertFormProps = {
 };
 
 const EditForm = ({ data, path }: UpsertFormProps) => {
-  const user = useAuth().me;
+  const { me: user } = useAuth();
   const router = useRouter();
 
   const [content, setContent] = useState<string>('');
@@ -89,7 +89,7 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
     toast.success(message, { hideProgressBar: true });
     setTimeout(() => {
       router.push('/');
-    }, 1000);
+    }, 1500);
 
     return;
   };
@@ -98,15 +98,15 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
     if (!data) {
       return;
     } else if (!user) {
-      toast.error(LOGIN_ALERT, { autoClose: 1000, hideProgressBar: true });
+      toast.error(LOGIN_ALERT, { autoClose: 1500, hideProgressBar: true });
       setTimeout(() => {
         router.push('/login');
-      }, 1000);
+      }, 1500);
     } else if (data.user_id !== user?.id) {
-      toast.error('권한이 없습니다!', { autoClose: 1000, hideProgressBar: true });
+      toast.error('권한이 없습니다!', { autoClose: 1500, hideProgressBar: true });
       setTimeout(() => {
         router.push('/');
-      }, 1000);
+      }, 1500);
       return;
     }
 

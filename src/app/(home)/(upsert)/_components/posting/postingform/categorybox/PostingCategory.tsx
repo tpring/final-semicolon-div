@@ -1,4 +1,4 @@
-import React, { ChangeEvent, ChangeEventHandler, Dispatch, SetStateAction } from 'react';
+import { ChangeEvent, ChangeEventHandler, Dispatch, SetStateAction } from 'react';
 
 import { BOARD_LIST } from '@/constants/upsert';
 import { TBOARD_ITEM } from '@/types/upsert';

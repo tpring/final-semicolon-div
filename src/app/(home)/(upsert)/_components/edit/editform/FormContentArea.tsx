@@ -1,5 +1,5 @@
 import MDEditor, { commands } from '@uiw/react-md-editor';
-import React, { Dispatch } from 'react';
+import { Dispatch } from 'react';
 
 type FormContentAreaProps = {
   content: string;

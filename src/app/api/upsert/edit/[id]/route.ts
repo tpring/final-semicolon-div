@@ -26,7 +26,7 @@ export const GET = async (request: NextRequest, { params }: Tparams) => {
     const { data, error } = await supabase.from('archive_posts').select('*').eq('id', post_id).single();
     return error ? Response.json(POST_LOAD_ERROR_MASSAGE) : Response.json({ data });
   }
-  return Response.json(searchParams);
+  return Response.json(POST_LOAD_ERROR_MASSAGE);
 };
 
 export const PATCH = async (request: NextRequest, { params }: Tparams) => {

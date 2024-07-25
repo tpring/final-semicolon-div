@@ -1,5 +1,5 @@
 'use client';
-import React, { FormEvent, FormEventHandler, useState } from 'react';
+import { FormEvent, FormEventHandler, useState } from 'react';
 import Link from 'next/link';
 import { TBOARD_ITEM, TpostFormData } from '@/types/upsert';
 import FormCategoryBox from './postingform/FormCategoryBox';
@@ -19,7 +19,7 @@ import { useAuth } from '@/context/auth.context';
 import { useRouter } from 'next/navigation';
 
 const PostingForm = () => {
-  const user = useAuth().me;
+  const { me: user } = useAuth();
   const router = useRouter();
 
   const [content, setContent] = useState<string>('');
@@ -39,9 +39,8 @@ const PostingForm = () => {
   const handleSubmit: FormEventHandler = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-
     const postFormData: TpostFormData = { user_id: user?.id as string, content: content };
-    console.log(formData.get('category'));
+
     formData.forEach((value, key) => {
       if (key === 'category') {
         postFormData[key] = CATEGORY_LIST_EN[CATEGORY_LIST_KR.indexOf(value as string)];
@@ -71,6 +70,7 @@ const PostingForm = () => {
     });
 
     const { message } = await response.json();
+
     toast.success(message, { autoClose: 1500 });
     setTimeout(() => {
       router.push('/');
