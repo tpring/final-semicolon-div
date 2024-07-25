@@ -63,7 +63,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       email,
       password
     };
-    const response = await fetch('http://localhost:3000/api/auth/login', {
+    const response = await fetch('/api/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -94,7 +94,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       password,
       nickname
     };
-    const response = await fetch('http://localhost:3000/api/auth/signup', {
+    const response = await fetch('/api/auth/signup', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -115,7 +115,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   // 로그아웃 함수
   const logOut: AuthContextValue['logOut'] = async () => {
     if (!me) return { status: 401, message: '로그인하고 눌러주세요.' };
-    await fetch('http://localhost:3000/api/auth/logout', {
+    await fetch('/api/auth/logout', {
       method: 'DELETE'
     });
     setMe(null);
@@ -125,7 +125,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
   useEffect(() => {
     try {
-      fetch('http://localhost:3000/api/auth/me')
+      fetch('/api/auth/me')
         .then(async (response) => {
           if (response.status === 200) {
             const user = await response.json();
