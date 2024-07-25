@@ -2,13 +2,15 @@
 
 import Logo from '@/assets/images/Logo';
 import SearchButton from '@/assets/images/SearchButton';
+import { useAuth } from '@/context/auth.context';
 import Link from 'next/link';
-
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
 
 const Header = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const { isLoggedIn, logOut, me } = useAuth();
   const pathname = usePathname();
 
   const getLinkClasses = (path: string) => {
@@ -17,6 +19,13 @@ const Header = () => {
 
   const toggleSearch = () => {
     setIsSearchOpen(!isSearchOpen);
+  };
+
+  const handleLogout = async () => {
+    const result = await logOut();
+    if (result.status === 200) {
+      toast.success('로그아웃되었습니다.');
+    }
   };
 
   return (
@@ -30,8 +39,8 @@ const Header = () => {
             <Link href={'/'}>
               <h1 className={`hidden lg:inline border-0 rounded-md p-1 ${getLinkClasses('/')}`}>홈</h1>
             </Link>
-            <Link href={'/conference'}>
-              <h1 className={`hidden lg:inline border-0 rounded-md p-1 ${getLinkClasses('/conference')}`}>컨퍼런스</h1>
+            <Link href={'/forum'}>
+              <h1 className={`hidden lg:inline border-0 rounded-md p-1 ${getLinkClasses('/conference')}`}>포럼</h1>
             </Link>
             <Link href={'/qna'}>
               <h1 className={`hidden lg:inline border-0 rounded-md p-1 ${getLinkClasses('/qna')}`}>Q&A</h1>
@@ -55,23 +64,32 @@ const Header = () => {
           <button onClick={toggleSearch} className="focus:outline-none">
             <SearchButton />
           </button>
-          <Link href={'/signin'}>
-            <h1
-              className={`md:hidden bg-purple-500 border-0 rounded-md p-1 ml-2 text-white ${getLinkClasses('/signin')}`}
-            >
-              로그인
-            </h1>
-          </Link>
-          <Link href={'/signin'}>
-            <h1 className={`hidden md:inline border-0 rounded-md p-1 ${getLinkClasses('/signin')}`}>로그인</h1>
-          </Link>
-          <Link href={'/signup'}>
-            <h1
-              className={`hidden md:inline bg-purple-500 border-0 rounded-md p-1 text-white ${getLinkClasses('/signup')}`}
-            >
-              회원가입
-            </h1>
-          </Link>
+          {isLoggedIn ? (
+            <>
+              <Link href={'/profile'}>
+                <h1 className="hidden md:inline border-0 rounded-md p-1">마이페이지</h1>
+              </Link>
+              <button onClick={handleLogout}>
+                <h1 className="md:hidden bg-purple-500 border-0 rounded-md p-1 ml-2 text-white">로그아웃</h1>
+              </button>
+              <button onClick={handleLogout}>
+                <h1 className="hidden md:inline bg-purple-500 border-0 rounded-md p-1 text-white">로그아웃</h1>
+              </button>
+            </>
+          ) : (
+            <>
+              {' '}
+              <Link href={'/login'}>
+                <h1 className={`md:hidden bg-purple-500 border-0 rounded-md p-1 ml-2 text-white `}>로그인</h1>
+              </Link>
+              <Link href={'/login'}>
+                <h1 className={`hidden md:inline border-0 rounded-md p-1 `}>로그인</h1>
+              </Link>
+              <Link href={'/signup'}>
+                <h1 className={`hidden md:inline bg-purple-500 border-0 rounded-md p-1 text-white `}>회원가입</h1>
+              </Link>
+            </>
+          )}
         </div>
       </div>
       {isSearchOpen && (
@@ -83,6 +101,7 @@ const Header = () => {
           />
         </div>
       )}
+      <ToastContainer />
     </header>
   );
 };
