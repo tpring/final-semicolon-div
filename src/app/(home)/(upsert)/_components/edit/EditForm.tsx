@@ -2,7 +2,7 @@
 import React, { FormEvent, FormEventHandler, useEffect, useState } from 'react';
 import { TarchivePost, TBOARD_ITEM, TforumPost, TpostFormData, TqnaPost } from '@/types/upsert';
 import Link from 'next/link';
-import { BOARD_LIST, CATEGORY_LIST_EN, CATEGORY_LIST_KR, VALIDATION_SEQUENCE } from '@/constants/upsert';
+import { BOARD_LIST, CATEGORY_LIST_EN, CATEGORY_LIST_KR, LOGIN_ALERT, VALIDATION_SEQUENCE } from '@/constants/upsert';
 import FormCategoryBox from './editform/FormCategoryBox';
 import FormTitleInput from './editform/FormTitleInput';
 import FormTagInput from './editform/FormTagInput';
@@ -12,6 +12,7 @@ import { revalidate } from '@/actions/revalidate';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import FormSubmitButton from '../FormSubmitButton';
+import { useAuth } from '@/context/auth.context';
 
 type UpsertFormProps = {
   data: TforumPost | TqnaPost | TarchivePost;
@@ -19,8 +20,8 @@ type UpsertFormProps = {
 };
 
 const EditForm = ({ data, path }: UpsertFormProps) => {
+  const user = useAuth().me;
   const router = useRouter();
-  const testUser = { user_id: '5ff01201-e219-40ab-b621-ee2c79ed6d0e', email: 'ycdm03@gmail.com', nickname: 'ycmd03' };
 
   const [content, setContent] = useState<string>('');
   const [selectedItemByCategory, setSelectedItemByCategory] = useState<TBOARD_ITEM>({
@@ -39,7 +40,7 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
     const formData = new FormData(event.currentTarget);
     const postFormData: TpostFormData = {
       category,
-      user_id: testUser.user_id,
+      user_id: user?.id as string,
       content
     };
 
@@ -88,9 +89,16 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
   useEffect(() => {
     if (!data) {
       return;
-    } else if (data.user_id !== testUser.user_id) {
-      toast('권한이 없습니다!');
-      router.push('/');
+    } else if (!user) {
+      toast.error(LOGIN_ALERT, { autoClose: 1000, hideProgressBar: true });
+      setTimeout(() => {
+        router.push('/login');
+      }, 1000);
+    } else if (data.user_id !== user?.id) {
+      toast.error('권한이 없습니다!', { autoClose: 1000, hideProgressBar: true });
+      setTimeout(() => {
+        router.push('/');
+      }, 1000);
       return;
     }
 
@@ -109,7 +117,7 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
         setContent(data.content);
         break;
     }
-  }, [data]);
+  }, [data, user]);
 
   return (
     <div className="max-w-3xl mx-auto flex flex-col gap-y-5 max-h-screen">

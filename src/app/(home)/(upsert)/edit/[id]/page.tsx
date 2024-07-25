@@ -1,5 +1,6 @@
 import NotFound from '@/app/not-found';
 import EditForm from '../../_components/edit/EditForm';
+import { useAuth } from '@/context/auth.context';
 
 type EditPageProps = {
   params: { id: string };

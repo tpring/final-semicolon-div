@@ -7,13 +7,16 @@ import FormTitleInput from './postingform/FormTitleInput';
 import FormTagInput from './postingform/FormTagInput';
 import FormContentArea from './postingform/FormContentArea';
 
-import { CATEGORY_LIST_EN, CATEGORY_LIST_KR, VALIDATION_SEQUENCE } from '@/constants/upsert';
+import { CATEGORY_LIST_EN, CATEGORY_LIST_KR, LOGIN_ALERT, VALIDATION_SEQUENCE } from '@/constants/upsert';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import FormSubmitButton from '../FormSubmitButton';
+import { useAuth } from '@/context/auth.context';
+import { useRouter } from 'next/navigation';
 
 const PostingForm = () => {
-  const testUser = { user_id: '5ff01201-e219-40ab-b621-ee2c79ed6d0e', email: 'ycdm03@gmail.com', nickname: 'ycmd03' };
+  const user = useAuth().me;
+  const router = useRouter();
 
   const [content, setContent] = useState<string>('');
   const [selectedItemByCategory, setSelectedItemByCategory] = useState<TBOARD_ITEM>({
@@ -21,11 +24,19 @@ const PostingForm = () => {
     content: ''
   });
 
+  if (!user?.id) {
+    toast.error(LOGIN_ALERT, { hideProgressBar: false, autoClose: 1500 });
+    setTimeout(() => {
+      router.push('/login');
+    }, 1500);
+    return;
+  }
+
   const handleSubmit: FormEventHandler = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
 
-    const postFormData: TpostFormData = { user_id: testUser.user_id, content: content };
+    const postFormData: TpostFormData = { user_id: user?.id as string, content: content };
 
     formData.forEach((value, key) => {
       if (key === 'category') {
@@ -54,7 +65,11 @@ const PostingForm = () => {
     });
 
     const { message } = await response.json();
-    return toast.success(message, { hideProgressBar: true });
+    toast.success(message, { autoClose: 1500 });
+    setTimeout(() => {
+      router.push('/');
+    }, 1500);
+    return;
   };
 
   return (
