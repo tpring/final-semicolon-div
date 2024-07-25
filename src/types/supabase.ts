@@ -9,6 +9,114 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      archive_bookmarks: {
+        Row: {
+          created_at: string | null
+          id: string
+          post_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          post_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          post_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "archive_bookmarks_post_id_fkey2"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "archive_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "archive_bookmarks_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      archive_comment_bookmarks: {
+        Row: {
+          comment_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          comment_id: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Update: {
+          comment_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "archive_comment_bookmarks_comment_id_fkey"
+            columns: ["comment_id"]
+            isOneToOne: false
+            referencedRelation: "archive_comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "archive_comment_bookmarks_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      archive_comment_likes: {
+        Row: {
+          comment_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          comment_id: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Update: {
+          comment_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comment_likes_comment_id_fkey"
+            columns: ["comment_id"]
+            isOneToOne: false
+            referencedRelation: "archive_comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "qna_like_table_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       archive_comments: {
         Row: {
           comment: string
@@ -22,7 +130,7 @@ export type Database = {
           comment: string
           created_at?: string
           id?: string
-          post_id?: string
+          post_id: string
           updated_at?: string | null
           user_id?: string
         }
@@ -44,6 +152,78 @@ export type Database = {
           },
           {
             foreignKeyName: "archive_comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      archive_images: {
+        Row: {
+          id: string
+          image_url: string | null
+          post_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          id?: string
+          image_url?: string | null
+          post_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          id?: string
+          image_url?: string | null
+          post_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "archive_images_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "archive_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "archive_images_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      archive_likes: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id: string
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "archive_likes_post_id_fkey2"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "archive_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "archive_likes_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
@@ -99,7 +279,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
-          comment_id?: string
+          comment_id: string
           created_at?: string
           id?: string
           reply: string
@@ -131,49 +311,71 @@ export type Database = {
           },
         ]
       }
-      bookmarks: {
+      archive_tags: {
         Row: {
-          created_at: string
           id: string
           post_id: string
-          user_id: string
+          tag: string | null
+          user_id: string | null
         }
         Insert: {
-          created_at?: string
           id?: string
-          post_id?: string
-          user_id?: string
+          post_id: string
+          tag?: string | null
+          user_id?: string | null
         }
         Update: {
-          created_at?: string
           id?: string
           post_id?: string
-          user_id?: string
+          tag?: string | null
+          user_id?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "bookmarks_post_id_fkey"
+            foreignKeyName: "tags_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
             referencedRelation: "archive_posts"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "bookmarks_post_id_fkey1"
+            foreignKeyName: "tags_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      forum_bookmarks: {
+        Row: {
+          created_at: string | null
+          id: string
+          post_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          post_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          post_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forum_bookmarks_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
             referencedRelation: "forum_posts"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "bookmarks_post_id_fkey2"
-            columns: ["post_id"]
-            isOneToOne: false
-            referencedRelation: "qna_posts"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "bookmarks_user_id_fkey"
+            foreignKeyName: "forum_bookmarks_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
@@ -181,7 +383,7 @@ export type Database = {
           },
         ]
       }
-      comment_bookmarks: {
+      forum_comment_bookmarks: {
         Row: {
           comment_id: string
           created_at: string
@@ -189,7 +391,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
-          comment_id?: string
+          comment_id: string
           created_at?: string
           id?: string
           user_id?: string
@@ -202,36 +404,22 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "comment_bookmarks_comment_id_fkey"
-            columns: ["comment_id"]
-            isOneToOne: false
-            referencedRelation: "archive_comments"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "comment_bookmarks_comment_id_fkey1"
-            columns: ["comment_id"]
-            isOneToOne: false
-            referencedRelation: "forum_comments"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "comment_bookmarks_comment_id_fkey2"
-            columns: ["comment_id"]
-            isOneToOne: false
-            referencedRelation: "qna_comments"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "comment_bookmarks_user_id_fkey"
+            foreignKeyName: "forum_comment_bookmarks__user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "forum_comment_bookmarks_comment_id_fkey"
+            columns: ["comment_id"]
+            isOneToOne: false
+            referencedRelation: "forum_comments"
+            referencedColumns: ["id"]
+          },
         ]
       }
-      comment_likes: {
+      forum_comment_likes: {
         Row: {
           comment_id: string
           created_at: string
@@ -239,7 +427,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
-          comment_id?: string
+          comment_id: string
           created_at?: string
           id?: string
           user_id?: string
@@ -252,28 +440,14 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "comment_likes_comment_id_fkey"
-            columns: ["comment_id"]
-            isOneToOne: false
-            referencedRelation: "archive_comments"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "comment_likes_comment_id_fkey1"
+            foreignKeyName: "comment_likes_duplicate_comment_id_fkey1"
             columns: ["comment_id"]
             isOneToOne: false
             referencedRelation: "forum_comments"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "qna_like_table_comment_id_fkey"
-            columns: ["comment_id"]
-            isOneToOne: false
-            referencedRelation: "qna_comments"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "qna_like_table_user_id_fkey"
+            foreignKeyName: "comment_likes_duplicate_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
@@ -316,6 +490,78 @@ export type Database = {
           },
           {
             foreignKeyName: "forum_comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      forum_images: {
+        Row: {
+          id: string
+          image_url: string | null
+          post_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          id?: string
+          image_url?: string | null
+          post_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          id?: string
+          image_url?: string | null
+          post_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "image_post_id_fkey1"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "forum_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "images_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      forum_likes: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id: string
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forum_likes_post_id_fkey1"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "forum_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "forum_likes_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
@@ -374,7 +620,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
-          comment_id?: string
+          comment_id: string
           created_at?: string
           id?: string
           reply: string
@@ -406,99 +652,35 @@ export type Database = {
           },
         ]
       }
-      images: {
+      forum_tags: {
         Row: {
           id: string
-          image_url: string | null
           post_id: string
+          tag: string | null
           user_id: string | null
         }
         Insert: {
           id?: string
-          image_url?: string | null
-          post_id?: string
-          user_id?: string | null
-        }
-        Update: {
-          id?: string
-          image_url?: string | null
-          post_id?: string
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "image_post_id_fkey"
-            columns: ["post_id"]
-            isOneToOne: false
-            referencedRelation: "archive_posts"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "image_post_id_fkey1"
-            columns: ["post_id"]
-            isOneToOne: false
-            referencedRelation: "forum_posts"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "image_post_id_fkey2"
-            columns: ["post_id"]
-            isOneToOne: false
-            referencedRelation: "qna_posts"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "images_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      likes: {
-        Row: {
-          created_at: string
-          id: string
           post_id: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          post_id?: string
-          user_id?: string
+          tag?: string | null
+          user_id?: string | null
         }
         Update: {
-          created_at?: string
           id?: string
           post_id?: string
-          user_id?: string
+          tag?: string | null
+          user_id?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "likes_post_id_fkey"
-            columns: ["post_id"]
-            isOneToOne: false
-            referencedRelation: "qna_posts"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "likes_post_id_fkey1"
+            foreignKeyName: "forum_tags_post_id_fkey1"
             columns: ["post_id"]
             isOneToOne: false
             referencedRelation: "forum_posts"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "likes_post_id_fkey2"
-            columns: ["post_id"]
-            isOneToOne: false
-            referencedRelation: "archive_posts"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "likes_user_id_fkey"
+            foreignKeyName: "forum_tags_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
@@ -523,6 +705,114 @@ export type Database = {
           id?: string
         }
         Relationships: []
+      }
+      qna_bookmarks: {
+        Row: {
+          created_at: string | null
+          id: string
+          post_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          post_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          post_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "qna_bookmarks_post_id_fkey1"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "qna_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "qna_bookmarks_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      qna_comment_bookmarks: {
+        Row: {
+          comment_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          comment_id: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Update: {
+          comment_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "qna_comment_bookmarks_comment_id_fkey2"
+            columns: ["comment_id"]
+            isOneToOne: false
+            referencedRelation: "qna_comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "qna_comment_bookmarks_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      qna_comment_likes: {
+        Row: {
+          comment_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          comment_id: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Update: {
+          comment_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "qna_comment_likes_comment_id_fkey2"
+            columns: ["comment_id"]
+            isOneToOne: false
+            referencedRelation: "qna_comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "qna_comment_likes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       qna_comments: {
         Row: {
@@ -559,6 +849,78 @@ export type Database = {
           },
           {
             foreignKeyName: "qna_comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      qna_images: {
+        Row: {
+          id: string
+          image_url: string | null
+          post_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          id?: string
+          image_url?: string | null
+          post_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          id?: string
+          image_url?: string | null
+          post_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "qna_images_post_id_fkey1"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "qna_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "qna_images_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      qna_likes: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id: string
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "likes_qna_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "qna_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "likes_qna_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
@@ -624,7 +986,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
-          comment_id?: string
+          comment_id: string
           created_at?: string
           id?: string
           reply: string
@@ -656,7 +1018,7 @@ export type Database = {
           },
         ]
       }
-      tags: {
+      qna_tags: {
         Row: {
           id: string
           post_id: string
@@ -665,7 +1027,7 @@ export type Database = {
         }
         Insert: {
           id?: string
-          post_id?: string
+          post_id: string
           tag?: string | null
           user_id?: string | null
         }
@@ -677,28 +1039,14 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "tags_post_id_fkey"
-            columns: ["post_id"]
-            isOneToOne: false
-            referencedRelation: "archive_posts"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "tags_post_id_fkey1"
-            columns: ["post_id"]
-            isOneToOne: false
-            referencedRelation: "forum_posts"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "tags_post_id_fkey2"
+            foreignKeyName: "qna_tags_post_id_fkey2"
             columns: ["post_id"]
             isOneToOne: false
             referencedRelation: "qna_posts"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "tags_user_id_fkey"
+            foreignKeyName: "qna_tags_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
@@ -712,7 +1060,7 @@ export type Database = {
           github_url: string | null
           id: string
           info: string | null
-          nickname: string
+          nickname: string | null
           profile_image: string | null
         }
         Insert: {
@@ -720,7 +1068,7 @@ export type Database = {
           github_url?: string | null
           id?: string
           info?: string | null
-          nickname: string
+          nickname?: string | null
           profile_image?: string | null
         }
         Update: {
@@ -728,7 +1076,7 @@ export type Database = {
           github_url?: string | null
           id?: string
           info?: string | null
-          nickname?: string
+          nickname?: string | null
           profile_image?: string | null
         }
         Relationships: [

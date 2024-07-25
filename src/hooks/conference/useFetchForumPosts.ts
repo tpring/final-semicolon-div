@@ -1,6 +1,6 @@
 'use client';
 
-import { Post } from '@/types/posts/forumPosts';
+import { Post } from '@/types/posts/forum';
 import { useQuery } from '@tanstack/react-query';
 
 const fetchForumPosts = async (): Promise<Post[]> => {

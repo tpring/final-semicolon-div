@@ -1,9 +1,10 @@
-import ForumPosts from '../_components/conference/ForumPosts';
+import ForumPostsWithCategoryAndSort from '../_components/conference/ForumPostsWithCategoryAndSort';
 
 const ConferencePage = () => {
   return (
     <div>
-      <ForumPosts />
+      {/* <ForumPosts /> */}
+      <ForumPostsWithCategoryAndSort />
     </div>
   );
 };

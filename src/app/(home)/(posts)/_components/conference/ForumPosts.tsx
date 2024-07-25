@@ -3,9 +3,9 @@
 import useFetchForumPosts from '@/hooks/conference/useFetchForumPosts';
 
 const ForumPosts = () => {
-  const { data: posts = [], error, isPending, isStale } = useFetchForumPosts();
+  const { data: posts = [], error, isPending } = useFetchForumPosts();
 
-  if (isStale && isPending) return <div>Loading...</div>;
+  if (isPending) return <div>Loading...</div>;
 
   if (error) return <div>Error Fetching Posts</div>;
 
