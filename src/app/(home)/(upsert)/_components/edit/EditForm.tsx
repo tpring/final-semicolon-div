@@ -2,7 +2,14 @@
 import React, { FormEvent, FormEventHandler, useEffect, useState } from 'react';
 import { TarchivePost, TBOARD_ITEM, TforumPost, TpostFormData, TqnaPost } from '@/types/upsert';
 import Link from 'next/link';
-import { BOARD_LIST, CATEGORY_LIST_EN, CATEGORY_LIST_KR, LOGIN_ALERT, VALIDATION_SEQUENCE } from '@/constants/upsert';
+import {
+  BOARD_LIST,
+  CATEGORY_LIST_EN,
+  CATEGORY_LIST_KR,
+  LOGIN_ALERT,
+  VALIDATION_SEQUENCE,
+  VALIDATION_SEQUENCE_KR
+} from '@/constants/upsert';
 import FormCategoryBox from './editform/FormCategoryBox';
 import FormTitleInput from './editform/FormTitleInput';
 import FormTagInput from './editform/FormTagInput';
@@ -10,7 +17,6 @@ import FormContentArea from './editform/FormContentArea';
 import { useRouter } from 'next/navigation';
 import { revalidate } from '@/actions/revalidate';
 import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import FormSubmitButton from '../FormSubmitButton';
 import { useAuth } from '@/context/auth.context';
 
@@ -55,12 +61,14 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
     //폼 유효성 검사 로직
     const invalidItems = Object.keys(postFormData).filter((key) => !postFormData[key]);
 
-    const invalidItem = VALIDATION_SEQUENCE.find((sequence) => {
+    const invalidItemIndex = VALIDATION_SEQUENCE.findIndex((sequence) => {
       return !!invalidItems.find((item) => item === sequence);
     });
 
+    const invalidItem = VALIDATION_SEQUENCE_KR[invalidItemIndex];
+
     if (invalidItem) {
-      toast.error(invalidItem + '을 입력해주세요!', { hideProgressBar: true });
+      toast.error(invalidItem + ' 입력이 필요합니다!', { hideProgressBar: true });
       return;
     }
 

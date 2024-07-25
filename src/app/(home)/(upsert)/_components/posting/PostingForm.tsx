@@ -6,10 +6,14 @@ import FormCategoryBox from './postingform/FormCategoryBox';
 import FormTitleInput from './postingform/FormTitleInput';
 import FormTagInput from './postingform/FormTagInput';
 import FormContentArea from './postingform/FormContentArea';
-
-import { CATEGORY_LIST_EN, CATEGORY_LIST_KR, LOGIN_ALERT, VALIDATION_SEQUENCE } from '@/constants/upsert';
+import {
+  CATEGORY_LIST_EN,
+  CATEGORY_LIST_KR,
+  LOGIN_ALERT,
+  VALIDATION_SEQUENCE,
+  VALIDATION_SEQUENCE_KR
+} from '@/constants/upsert';
 import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import FormSubmitButton from '../FormSubmitButton';
 import { useAuth } from '@/context/auth.context';
 import { useRouter } from 'next/navigation';
@@ -37,7 +41,7 @@ const PostingForm = () => {
     const formData = new FormData(event.currentTarget);
 
     const postFormData: TpostFormData = { user_id: user?.id as string, content: content };
-
+    console.log(formData.get('category'));
     formData.forEach((value, key) => {
       if (key === 'category') {
         postFormData[key] = CATEGORY_LIST_EN[CATEGORY_LIST_KR.indexOf(value as string)];
@@ -49,12 +53,14 @@ const PostingForm = () => {
     //폼 유효성 검사 로직
     const invalidItems = Object.keys(postFormData).filter((key) => !postFormData[key]);
 
-    const invalidItem = VALIDATION_SEQUENCE.find((sequence) => {
+    const invalidItemIndex = VALIDATION_SEQUENCE.findIndex((sequence) => {
       return !!invalidItems.find((item) => item === sequence);
     });
 
+    const invalidItem = VALIDATION_SEQUENCE_KR[invalidItemIndex];
+
     if (invalidItem) {
-      toast.error(invalidItem + '을 입력해주세요!', { hideProgressBar: true });
+      toast.error(invalidItem + ' 입력이 필요합니다!', { hideProgressBar: true });
       return;
     }
 

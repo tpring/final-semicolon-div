@@ -4,7 +4,7 @@ import UpsertTheme from '../../../UpsertTheme';
 type PostingCategoryProps = {
   selectedItemByCategory: TBOARD_ITEM;
 };
-const user = 'user';
+
 const PostingCategory = ({ selectedItemByCategory }: PostingCategoryProps) => {
   return (
     <div className="flex flex-col gap-4 my-2">

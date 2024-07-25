@@ -1,6 +1,6 @@
 'use client';
 
-import useFetchForumPosts from '@/hooks/conference/useFetchForumPosts';
+import useFetchForumPosts from '@/hooks/forum/useFetchForumPosts';
 import { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import { ForumCategory, Post, SortOption } from '@/types/posts/forumTypes';

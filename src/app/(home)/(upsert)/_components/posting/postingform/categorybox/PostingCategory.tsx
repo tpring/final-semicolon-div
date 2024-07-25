@@ -31,8 +31,8 @@ const PostingCategory = ({ selectedItemByCategory, setSelectedItemByCategory }: 
         value={selectedItemByCategory?.category}
         onChange={handleSelectChange}
       >
-        <option hidden disabled value={''}>
-          게시판 선택*
+        <option hidden value={''}>
+          카테고리 선택*
         </option>
         {BOARD_LIST.map((BOARD_ITEM) => {
           return (
@@ -45,7 +45,7 @@ const PostingCategory = ({ selectedItemByCategory, setSelectedItemByCategory }: 
       {selectedItemByCategory.category ? (
         <UpsertTheme theme={selectedItemByCategory} />
       ) : (
-        <h2 className="text-[#727272] font-semibold my-5">게시판을 선택해주세요!</h2>
+        <h2 className="text-[#727272] font-semibold my-5">카테고리를 선택해주세요!</h2>
       )}
     </div>
   );
