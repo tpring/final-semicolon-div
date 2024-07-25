@@ -1,5 +1,5 @@
 'use client';
-import { FORUM_SUB_CATEGORY_LIST } from '@/constants/posting';
+import { FORUM_SUB_CATEGORY_LIST } from '@/constants/upsert';
 import { TBOARD_ITEM } from '@/types/upsert';
 import { Dispatch } from 'react';
 
@@ -9,9 +9,9 @@ type ForumCategoryDropDownProps = {
 
 const ForumCategoryDropDown = ({ selectedSubCategoryForForum }: ForumCategoryDropDownProps) => {
   return (
-    <div className="">
+    <div className="my-4">
       <h2>카테고리</h2>
-      <select key={selectedSubCategoryForForum} name="sub-category" defaultValue={selectedSubCategoryForForum}>
+      <select key={selectedSubCategoryForForum} name="forum_category" defaultValue={selectedSubCategoryForForum}>
         <option value={''}>-----</option>
         {FORUM_SUB_CATEGORY_LIST.map((FORUM_SUB_CATEGORY_ITEM) => {
           return (

@@ -1,14 +1,19 @@
 'use client';
 import React, { FormEvent, FormEventHandler, useState } from 'react';
 import Link from 'next/link';
-import { TBOARD_ITEM } from '@/types/upsert';
+import { TBOARD_ITEM, TpostFormData } from '@/types/upsert';
 import FormCategoryBox from './postingform/FormCategoryBox';
 import FormTitleInput from './postingform/FormTitleInput';
 import FormTagInput from './postingform/FormTagInput';
 import FormContentArea from './postingform/FormContentArea';
 import FormSubmitButton from './postingform/FormSubmitButton';
+import { CATEGORY_LIST_EN, CATEGORY_LIST_KR, VALIDATION_SEQUENCE } from '@/constants/upsert';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const PostingForm = () => {
+  const testUser = { user_id: '5ff01201-e219-40ab-b621-ee2c79ed6d0e', email: 'ycdm03@gmail.com', nickname: 'ycmd03' };
+
   const [content, setContent] = useState<string>('');
   const [selectedItemByCategory, setSelectedItemByCategory] = useState<TBOARD_ITEM>({
     category: '',
@@ -16,20 +21,46 @@ const PostingForm = () => {
     content: ''
   });
 
-  const handleSubmit: FormEventHandler = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit: FormEventHandler = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    //값 잘 들어오는지 확인하는 임시 코드
-    console.log(formData.get('category-selector'));
-    selectedItemByCategory.category !== '포럼' ? null : console.log(formData.get('sub-category'));
-    console.log(formData.get('post-title'));
-    console.log(formData.get('post-tag'));
-    console.log(content);
+
+    const postFormData: TpostFormData = { user_id: testUser.user_id, content: content };
+
+    formData.forEach((value, key) => {
+      if (key === 'category') {
+        postFormData[key] = CATEGORY_LIST_EN[CATEGORY_LIST_KR.indexOf(value as string)];
+      } else {
+        postFormData[key] = value;
+      }
+    });
+
+    //폼 유효성 검사 로직
+    const invalidItems = Object.keys(postFormData).filter((key) => !postFormData[key]);
+
+    const invalidItem = VALIDATION_SEQUENCE.find((sequence) => {
+      return !!invalidItems.find((item) => item === sequence);
+    });
+
+    if (invalidItem) {
+      toast.error(invalidItem + '을 입력해주세요!', { hideProgressBar: true });
+      return;
+    }
+
+    //유효성 검사 통과시 업로드
+    const response = await fetch('/api/upsert/posting', {
+      method: 'POST',
+      body: JSON.stringify(postFormData)
+    });
+
+    const { message } = await response.json();
+    return toast.success(message, { hideProgressBar: true });
   };
 
   return (
     <div className="max-w-3xl mx-auto flex flex-col gap-y-5 max-h-screen">
-      <Link href={'/'}>뒤로가기 버튼 위치</Link>
+      <ToastContainer />
+      <Link href={'/'}>&lt;</Link>
       <form className="flex flex-col gap-y-10 h-full" onSubmit={handleSubmit}>
         <FormCategoryBox
           selectedItemByCategory={selectedItemByCategory}

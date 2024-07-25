@@ -1,10 +1,10 @@
-import { FORUM_SUB_CATEGORY_LIST } from '@/constants/posting';
+import { FORUM_SUB_CATEGORY_LIST } from '@/constants/upsert';
 
 const ForumCategoryDropDown = () => {
   return (
     <div className="">
       <h2>카테고리</h2>
-      <select name="sub-category">
+      <select name="forum_category">
         <option value={''}>-----</option>
         {FORUM_SUB_CATEGORY_LIST.map((FORUM_SUB_CATEGORY_ITEM) => {
           return (

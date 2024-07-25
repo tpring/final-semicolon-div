@@ -1,7 +1,7 @@
 'use client';
 import React, { ChangeEvent, ChangeEventHandler, Dispatch, SetStateAction } from 'react';
 
-import { BOARD_LIST } from '@/constants/posting';
+import { BOARD_LIST } from '@/constants/upsert';
 import { TBOARD_ITEM } from '@/types/upsert';
 import UpsertTheme from '../../../UpsertTheme';
 
@@ -26,13 +26,8 @@ const PostingCategory = ({ selectedItemByCategory, setSelectedItemByCategory }: 
 
   return (
     <div className="flex flex-col">
-      <select
-        name="category-selector"
-        id="category-selector"
-        value={selectedItemByCategory?.category}
-        onChange={handleSelectChange}
-      >
-        <option value={undefined}>-----</option>
+      <select name="category" id="category" value={selectedItemByCategory?.category} onChange={handleSelectChange}>
+        <option value={''}>-----</option>
         {BOARD_LIST.map((BOARD_ITEM) => {
           return (
             <option key={BOARD_ITEM.category} value={BOARD_ITEM.category}>
