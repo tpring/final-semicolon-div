@@ -1,7 +1,7 @@
 import React from 'react';
 import PostCard from './PostCard';
 import CommentCard from './CommentCard';
-import { useComments, usePosts } from '@/hooks/useBookmarks';
+import { useBookmarksComments, useBookmarksPosts } from '@/hooks/useBookmarks';
 
 //임시 이동 예정
 type Tag = {
@@ -35,7 +35,7 @@ const BookmarksList = () => {
     data: posts = { archivePosts: [], forumPosts: [], qnaPosts: [] },
     error: postError,
     isLoading: postLoading
-  } = usePosts();
+  } = useBookmarksPosts();
 
   const {
     data: comments = {
@@ -45,7 +45,7 @@ const BookmarksList = () => {
     },
     error: commentError,
     isLoading: commentLoading
-  } = useComments();
+  } = useBookmarksComments();
 
   if (postLoading || commentLoading) return <div>Loading...</div>;
   if (postError || commentError) return <div>Error: {postError?.message || commentError?.message}</div>;

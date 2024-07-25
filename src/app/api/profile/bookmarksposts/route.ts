@@ -28,7 +28,7 @@ export async function GET(request: Request) {
   }
 
   // 북마크에서 게시물 ID를 추출합니다.
-  const postIds = [
+  const BookmarksPostIds = [
     ...archiveBookmarks.map((b) => b.post_id),
     ...forumBookmarks.map((b) => b.post_id),
     ...qnaBookmarks.map((b) => b.post_id)
@@ -36,9 +36,9 @@ export async function GET(request: Request) {
 
   // 게시물 ID로 각 게시물 테이블에서 게시물을 가져옵니다.
   const postFetches = [
-    supabase.from('archive_posts').select('*,archive_tags(tag)').in('id', postIds),
-    supabase.from('forum_posts').select('*,forum_tags(tag)').in('id', postIds),
-    supabase.from('qna_posts').select('*,qna_tags(tag)').in('id', postIds)
+    supabase.from('archive_posts').select('*,archive_tags(tag)').in('id', BookmarksPostIds),
+    supabase.from('forum_posts').select('*,forum_tags(tag)').in('id', BookmarksPostIds),
+    supabase.from('qna_posts').select('*,qna_tags(tag)').in('id', BookmarksPostIds)
   ];
 
   const [archivePosts, forumPosts, qnaPosts] = await Promise.all(postFetches);

@@ -29,76 +29,77 @@ export async function GET() {
   }
 
   //댓글 id 추출
-  const commentIds = [
+  const bookmarkscommentIds = [
     ...archiveCommentBookmarks.map((b) => b.comment_id),
     ...forumCommentBookmarks.map((b) => b.comment_id),
     ...qnaCommentBookmarks.map((b) => b.comment_id)
   ];
 
   // comment_id로 각 게시물 테이블에서 게시물정보 가져옵니다.
-  const commentsFetches = [
-    supabase.from('archive_comments').select('*').in('id', commentIds),
-    supabase.from('forum_comments').select('*').in('id', commentIds),
-    supabase.from('qna_comments').select('*').in('id', commentIds)
+  const bookmarkscommentsFetches = [
+    supabase.from('archive_comments').select('*').in('id', bookmarkscommentIds),
+    supabase.from('forum_comments').select('*').in('id', bookmarkscommentIds),
+    supabase.from('qna_comments').select('*').in('id', bookmarkscommentIds)
   ];
 
-  const [archiveComment, forumComment, qnaComment] = await Promise.all(commentsFetches);
+  const [archiveBookmarksComment, forumBookmarksComment, qnaBookmarksComment] =
+    await Promise.all(bookmarkscommentsFetches);
 
   // 게시물을 가져오는 데 실패한 경우, 오류 응답을 반환합니다.
-  if (archiveComment.error || forumComment.error || qnaComment.error) {
+  if (archiveBookmarksComment.error || forumBookmarksComment.error || qnaBookmarksComment.error) {
     return new Response(JSON.stringify({ error: '댓글 가져오기 실패' }), { status: 500 });
   }
 
   // 댓글 데이터
-  const commentData = {
-    archiveComments: archiveComment.data,
-    forumComments: forumComment.data,
-    qnaComments: qnaComment.data
+  const bookmarksCommentData = {
+    archiveBookmarksComments: archiveBookmarksComment.data,
+    forumBookmarksComments: forumBookmarksComment.data,
+    qnaBookmarksCommentts: qnaBookmarksComment.data
   };
 
   // 게시물 ID 추출
-  const postIds = [
-    ...archiveComment.data.map((c) => c.post_id),
-    ...forumComment.data.map((c) => c.post_id),
-    ...qnaComment.data.map((c) => c.post_id)
+  const bookmarksPostIds = [
+    ...archiveBookmarksComment.data.map((c) => c.post_id),
+    ...forumBookmarksComment.data.map((c) => c.post_id),
+    ...qnaBookmarksComment.data.map((c) => c.post_id)
   ];
 
   // 게시물 정보를 가져옵니다.
   const postFetches = [
-    supabase.from('archive_posts').select('*, archive_tags(tag)').in('id', postIds),
-    supabase.from('forum_posts').select('*, forum_tags(tag)').in('id', postIds),
-    supabase.from('qna_posts').select('*, qna_tags(tag)').in('id', postIds)
+    supabase.from('archive_posts').select('*, archive_tags(tag)').in('id', bookmarksPostIds),
+    supabase.from('forum_posts').select('*, forum_tags(tag)').in('id', bookmarksPostIds),
+    supabase.from('qna_posts').select('*, qna_tags(tag)').in('id', bookmarksPostIds)
   ];
 
-  const [archivePosts, forumPosts, qnaPosts] = await Promise.all(postFetches);
+  const [archiveBookmarksPosts, forumBookmarksComments, qnaBookmarksComments] = await Promise.all(postFetches);
 
   // 게시물을 가져오는 데 실패한 경우, 오류 응답을 반환합니다.
-  if (archivePosts.error || forumPosts.error || qnaPosts.error) {
+  if (archiveBookmarksPosts.error || forumBookmarksComment.error || qnaBookmarksComment.error) {
     return new Response(JSON.stringify({ error: '포스트 가져오기 실패' }), { status: 500 });
   }
 
   // 게시물 데이터
-  const postData = {
-    archivePosts: archivePosts.data,
-    forumPosts: forumPosts.data,
-    qnaPosts: qnaPosts.data
+  const bookmarksPostData = {
+    archivePosts: archiveBookmarksPosts.data,
+    forumPosts: forumBookmarksComments.data,
+    qnaPosts: qnaBookmarksComments.data
   };
 
   // 댓글과 게시물 데이터를 통합합니다.
-  const combinedData = {
+  const bookmarkscombinedData = {
     archive: {
-      posts: postData.archivePosts,
-      comments: commentData.archiveComments
+      posts: bookmarksPostData.archivePosts,
+      comments: bookmarksCommentData.archiveBookmarksComments
     },
     forum: {
-      posts: postData.forumPosts,
-      comments: commentData.forumComments
+      posts: bookmarksPostData.forumPosts,
+      comments: bookmarksCommentData.forumBookmarksComments
     },
     qna: {
-      posts: postData.qnaPosts,
-      comments: commentData.qnaComments
+      posts: bookmarksPostData.qnaPosts,
+      comments: bookmarksCommentData.qnaBookmarksCommentts
     }
   };
 
-  return new Response(JSON.stringify(combinedData), { status: 200 });
+  return new Response(JSON.stringify(bookmarkscombinedData), { status: 200 });
 }

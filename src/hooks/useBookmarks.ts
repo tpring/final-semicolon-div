@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 // 수정 제네릭?
 
 // 포스트 데이터를 가져오는 함수
-const fetchPosts = async () => {
+const fetchBookmarksPosts = async () => {
   const response = await fetch('/api/profile/bookmarksposts');
   if (!response.ok) {
     throw new Error('포스트 정보 가져오기 실패');
@@ -12,16 +12,16 @@ const fetchPosts = async () => {
 };
 
 // 포스트 훅
-export const usePosts = () => {
+export const useBookmarksPosts = () => {
   return useQuery({
-    queryKey: ['posts'],
-    queryFn: fetchPosts
+    queryKey: ['bookmarksPosts'],
+    queryFn: fetchBookmarksPosts
   });
 };
 
 // 댓글 데이터를 가져오는 함수
-const fetchComments = async () => {
-  const response = await fetch('/api/profile/bookmarkcomments');
+const fetchBookmarksComments = async () => {
+  const response = await fetch('/api/profile/bookmarkscomments');
   if (!response.ok) {
     throw new Error('댓글 정보 가져오기 실패');
   }
@@ -29,10 +29,10 @@ const fetchComments = async () => {
 };
 
 // 댓글 훅
-export const useComments = () => {
+export const useBookmarksComments = () => {
   return useQuery({
-    queryKey: ['comments'],
-    queryFn: fetchComments
+    queryKey: ['bookmarksComments'],
+    queryFn: fetchBookmarksComments
   });
 };
 
