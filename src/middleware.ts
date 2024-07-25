@@ -4,7 +4,6 @@ import { createClient } from './supabase/client';
 export async function middleware(request: NextRequest) {
   const supabase = createClient();
   const { data } = await supabase.auth.getUser();
-  console.log(data); // { user: null }
 }
 
 export const config = {

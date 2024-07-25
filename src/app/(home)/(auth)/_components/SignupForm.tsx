@@ -9,6 +9,9 @@ import CheckboxGroup from './CheckboxGroup';
 import { useRouter } from 'next/navigation';
 import NicknameCheck from './NicknameCheck ';
 import PasswordFields from './PasswordFields';
+import ReCAPTCHA from 'react-google-recaptcha';
+
+const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY as string;
 
 const SignupForm = () => {
   const [password, setPassword] = useState<string>('');
@@ -23,13 +26,15 @@ const SignupForm = () => {
   const [passwordValid, setPasswordValid] = useState<boolean>(false);
   const [confirmPasswordValid, setConfirmPasswordValid] = useState<boolean>(false);
   const [nicknameValid, setNicknameValid] = useState<boolean>(false);
-  const [formValid, setFormValid] = useState<boolean>(false);
+  const [formValid, setFormValid] = useState<boolean>();
   const [isCheckedNickname, setIsCheckedNickname] = useState<boolean>(false);
 
   const [emailMessage, setEmailMessage] = useState<string>('');
   const [passwordMessage, setPasswordMessage] = useState<string>('');
   const [confirmPasswordMessage, setConfirmPasswordMessage] = useState<string>('');
   const [nicknameMessage, setNicknameMessage] = useState<string>('');
+
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
 
   const router = useRouter();
 
@@ -74,9 +79,19 @@ const SignupForm = () => {
         nicknameValid &&
         agreeTerms &&
         agreePrivacy &&
-        isCheckedNickname
+        isCheckedNickname &&
+        recaptchaToken !== null
     );
-  }, [emailValid, passwordValid, confirmPasswordValid, nicknameValid, agreeTerms, agreePrivacy, isCheckedNickname]);
+  }, [
+    emailValid,
+    passwordValid,
+    confirmPasswordValid,
+    nicknameValid,
+    agreeTerms,
+    agreePrivacy,
+    isCheckedNickname,
+    recaptchaToken
+  ]);
 
   const handleSignup = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -100,7 +115,8 @@ const SignupForm = () => {
         body: JSON.stringify({
           email,
           password,
-          nickname
+          nickname,
+          recaptchaToken
         })
       });
 
@@ -124,11 +140,14 @@ const SignupForm = () => {
     const form = event.currentTarget.closest('form') as HTMLFormElement;
     form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
   };
+  const onReCaptchaChange = (token: string | null) => {
+    setRecaptchaToken(token);
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <ToastContainer />
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
+      <div className="bg-white p-8 rounded shadow-md w-full max-w-lg">
         <h1 className="text-2xl font-bold mb-6 text-center">회원가입</h1>
         <form onSubmit={handleSignup}>
           <InputField
@@ -167,9 +186,8 @@ const SignupForm = () => {
             setAgreePrivacy={setAgreePrivacy}
           />
           <div className="mb-6">
-            <div className="bg-gray-200 p-6 rounded flex items-center justify-center">
-              {/* reCAPTCHA 자리 */}
-              <p className="text-gray-600">로봇이 아닙니다.</p>
+            <div className="p-6 rounded flex items-center justify-center">
+              <ReCAPTCHA sitekey={RECAPTCHA_SITE_KEY} onChange={onReCaptchaChange} />
             </div>
           </div>
           <SignupButton onClick={handleButtonClick} disabled={!formValid} />
