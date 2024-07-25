@@ -1,4 +1,4 @@
-import { PostCardProps } from '@/types/posts/forum';
+import { PostCardProps } from '@/types/posts/forumTypes';
 import MDEditor from '@uiw/react-md-editor';
 import dayjs from 'dayjs';
 import Image from 'next/image';
@@ -13,26 +13,14 @@ const PostCard = ({ post }: PostCardProps) => {
           )}
           <span>{post.user.nickname}</span>
         </div>
-        <span className="post-type">{post.category}</span>
+        <span className="post-type">{post.forum_category}</span>
       </div>
       <h2>{post.title}</h2>
-      {post.forum_image && post.forum_image.length > 0 && (
-        <div className="post-image">
-          {post.forum_image.map(
-            (image) =>
-              image.image_url && (
-                <Image
-                  key={image.id}
-                  src={image.image_url}
-                  alt="Post Image"
-                  width={300}
-                  height={300}
-                  objectFit="cover"
-                />
-              )
-          )}
-        </div>
-      )}
+      <div className="post-image">
+        {post.thumbnail && (
+          <Image src={post.thumbnail} alt="Post Thumbnail" width={300} height={300} objectFit="cover" />
+        )}
+      </div>
       <div className="post-content">
         <MDEditor.Markdown source={post.content} />
       </div>

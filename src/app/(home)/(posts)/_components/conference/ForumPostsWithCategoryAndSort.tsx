@@ -1,15 +1,18 @@
 'use client';
 
 import useFetchForumPosts from '@/hooks/conference/useFetchForumPosts';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
-import { ForumCategory, SortOption } from '@/types/posts/forum';
+import { ForumCategory, Post, SortOption } from '@/types/posts/forumTypes';
 import PostCard from './PostCard';
+import Link from 'next/link';
+import { useInView } from 'react-intersection-observer';
 
 const ForumPostsWithCategoryAndSort = () => {
-  const { data: posts, isPending, error } = useFetchForumPosts();
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isPending, error } = useFetchForumPosts();
   const [activeCategory, setActiveCategory] = useState<ForumCategory>('전체');
   const [sortBy, setSortBy] = useState<SortOption>('latest');
+  const [ref, inView] = useInView();
 
   const categories: ForumCategory[] = ['전체', '일상', '커리어', '자기개발', '토론', '코드리뷰'];
   const sortOptions: { value: SortOption; label: string }[] = [
@@ -18,13 +21,18 @@ const ForumPostsWithCategoryAndSort = () => {
     { value: 'mostLikes', label: '좋아요순' }
   ];
 
-  const filterAndSortPosts = (category: string, sortMethod: string) => {
-    if (!posts) return [];
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, fetchNextPage, hasNextPage]);
+
+  const filterAndSortPosts = (posts: Post[], category: ForumCategory, sortMethod: SortOption): Post[] => {
     let filteredPosts = category === '전체' ? posts : posts.filter((post) => post.forum_category === category);
 
     switch (sortMethod) {
       case 'latest':
-        return filteredPosts.sort((a, b) => dayjs(b.created_at).unix() - dayjs(a.created_at).unix());
+        return filteredPosts.sort((a, b) => dayjs(b.updated_at).unix() - dayjs(a.updated_at).unix());
       case 'mostComments':
         return filteredPosts.sort((a, b) => (b.forum_comment[0]?.count || 0) - (a.forum_comment[0]?.count || 0));
       case 'mostLikes':
@@ -41,6 +49,9 @@ const ForumPostsWithCategoryAndSort = () => {
   const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSortBy(event.target.value as SortOption);
   };
+
+  const allPosts = data?.pages.flatMap((page) => page.data) || [];
+  const fillteredAndSortedPost = filterAndSortPosts(allPosts, activeCategory, sortBy);
 
   return (
     <div>
@@ -66,17 +77,20 @@ const ForumPostsWithCategoryAndSort = () => {
           </select>
         </div>
       </div>
+      <Link href="/posting"> 글쓰기</Link>
       <div className="category-items">
         {isPending && <div>로딩중...</div>}
         {error && <div>에러 발생</div>}
-        {!isPending && !error && (!posts || posts.length === 0) && <div>게시물이 없습니다.</div>}
-        {!isPending && !error && posts.length > 0 && (
+        {!isPending && !error && fillteredAndSortedPost.length === 0 && <div>게시글이 없습니다.</div>}
+        {!isPending && !error && fillteredAndSortedPost.length > 0 && (
           <div className="posts-card">
-            {filterAndSortPosts(activeCategory, sortBy).map((post) => (
+            {fillteredAndSortedPost.map((post) => (
               <PostCard key={post.id} post={post} />
             ))}
           </div>
         )}
+        {isFetchingNextPage && <div>추가 게시물 로딩중...</div>}
+        <div ref={ref}></div>
       </div>
     </div>
   );

@@ -1,25 +1,24 @@
 'use client';
 
-import { Post } from '@/types/posts/forum';
-import { useQuery } from '@tanstack/react-query';
+import { FetchResult } from '@/types/posts/forumTypes';
+import { InfiniteData, QueryFunctionContext, useInfiniteQuery } from '@tanstack/react-query';
 
-const fetchForumPosts = async (): Promise<Post[]> => {
-  try {
-    const response = await fetch('/api/posts/conference');
-    const data = await response.json();
-    return data.data;
-  } catch (error) {
-    console.error('Error Fetching Forum Posts', error);
-    return [];
-  }
+const POSTS_PER_PAGE = 10;
+
+const fetchForumPosts = async ({ pageParam }: QueryFunctionContext<[string], number>): Promise<FetchResult> => {
+  const response = await fetch(`/api/posts/conference?page=${pageParam}&limit=${POSTS_PER_PAGE}`);
+  const data = await response.json();
+  return { data: data.data, nextPage: data.data.length === POSTS_PER_PAGE ? pageParam + 1 : null };
 };
 
 const useFetchForumPosts = () => {
-  return useQuery<Post[], Error>({
+  return useInfiniteQuery<FetchResult, Error, InfiniteData<FetchResult>, [string], number>({
     queryKey: ['forumPosts'],
     queryFn: fetchForumPosts,
-    staleTime: 1000 * 60 * 5,
-    gcTime: 1000 * 60 * 10
+    initialPageParam: 0,
+    getNextPageParam: (lastPage: FetchResult) => lastPage.nextPage
+    // staleTime: 1000 * 60 * 5,
+    // gcTime: 1000 * 60 * 10
   });
 };
 
