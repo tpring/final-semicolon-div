@@ -11,21 +11,15 @@ export async function POST(request: NextRequest) {
   const email = data.email;
   const password = data.password;
   const supabase = createClient();
-
   const {
-    data: { user },
-    error
+    data: { user }
   } = await supabase.auth.signInWithPassword({
     email,
     password
   });
 
-  if (error) {
-    console.log(error);
-    return NextResponse.json({ error: error.message }, { status: 401 });
+  if (!user) {
+    return NextResponse.json({ error: 'Wrong information.' }, { status: 401 });
   }
-
-  if (!user) return NextResponse.json('', { status: 401 });
-
   return NextResponse.json(user);
 }

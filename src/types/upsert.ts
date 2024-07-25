@@ -2,7 +2,6 @@ import { Database } from './supabase';
 
 export type TBOARD_ITEM = {
   category: string;
-  title: string;
   content: string;
 };
 

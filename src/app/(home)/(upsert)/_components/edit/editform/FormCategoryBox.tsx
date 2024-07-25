@@ -1,5 +1,5 @@
 import React, { Dispatch } from 'react';
-import { TarchivePost, TBOARD_ITEM, TforumPost, TqnaPost } from '@/types/upsert';
+import { TBOARD_ITEM } from '@/types/upsert';
 import PostingCategory from './categorybox/PostingCategory';
 import ForumCategoryDropDown from './categorybox/ForumCategoryDropDown';
 

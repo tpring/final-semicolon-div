@@ -18,7 +18,6 @@ const PostingCategory = ({ selectedItemByCategory, setSelectedItemByCategory }: 
     setSelectedItemByCategory(
       targetItemByCategory ?? {
         category: '',
-        title: '',
         content: ''
       }
     );
@@ -26,8 +25,16 @@ const PostingCategory = ({ selectedItemByCategory, setSelectedItemByCategory }: 
 
   return (
     <div className="flex flex-col">
-      <select name="category" id="category" value={selectedItemByCategory?.category} onChange={handleSelectChange}>
-        <option value={''}>-----</option>
+      <select
+        className="w-40  text-[#525252] border h-[26px] focus:border-blue-500 outline-none"
+        name="category"
+        id="category"
+        value={selectedItemByCategory?.category}
+        onChange={handleSelectChange}
+      >
+        <option hidden selected value={''}>
+          게시판 선택*
+        </option>
         {BOARD_LIST.map((BOARD_ITEM) => {
           return (
             <option key={BOARD_ITEM.category} value={BOARD_ITEM.category}>
@@ -36,7 +43,11 @@ const PostingCategory = ({ selectedItemByCategory, setSelectedItemByCategory }: 
           );
         })}
       </select>
-      {selectedItemByCategory ? <UpsertTheme theme={selectedItemByCategory} /> : <p>카테고리를 선택해보세요!</p>}
+      {selectedItemByCategory.category ? (
+        <UpsertTheme theme={selectedItemByCategory} />
+      ) : (
+        <h2 className="text-[#727272] font-semibold my-5">게시판을 선택해주세요!</h2>
+      )}
     </div>
   );
 };

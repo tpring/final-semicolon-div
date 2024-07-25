@@ -6,10 +6,11 @@ import FormCategoryBox from './postingform/FormCategoryBox';
 import FormTitleInput from './postingform/FormTitleInput';
 import FormTagInput from './postingform/FormTagInput';
 import FormContentArea from './postingform/FormContentArea';
-import FormSubmitButton from './postingform/FormSubmitButton';
+
 import { CATEGORY_LIST_EN, CATEGORY_LIST_KR, VALIDATION_SEQUENCE } from '@/constants/upsert';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import FormSubmitButton from '../FormSubmitButton';
 
 const PostingForm = () => {
   const testUser = { user_id: '5ff01201-e219-40ab-b621-ee2c79ed6d0e', email: 'ycdm03@gmail.com', nickname: 'ycmd03' };
@@ -17,7 +18,6 @@ const PostingForm = () => {
   const [content, setContent] = useState<string>('');
   const [selectedItemByCategory, setSelectedItemByCategory] = useState<TBOARD_ITEM>({
     category: '',
-    title: '',
     content: ''
   });
 

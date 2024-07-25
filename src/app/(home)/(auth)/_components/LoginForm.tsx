@@ -1,33 +1,32 @@
 'use client';
 import React, { useState } from 'react';
 import Link from 'next/link';
-import useUserStore from '@/store/useUserStore';
 import { useRouter } from 'next/navigation';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useAuth } from '@/context/auth.context';
 
 const LoginForm = () => {
   const router = useRouter();
-  const { email, setEmail } = useUserStore();
+  const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
+  const { logIn } = useAuth();
 
   const handleLogin = async (): Promise<void> => {
     setError(null);
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-      });
+      const response = await logIn(email, password);
 
-      const user = await response.json();
-      toast.success('로그인 성공!', {
-        autoClose: 2000,
-        onClose: () => router.replace('/')
-      });
+      if (response.status === 200) {
+        toast.success('로그인 성공!', {
+          autoClose: 2000,
+          onClose: () => router.replace('/')
+        });
+      } else {
+        setError('로그인 실패');
+        toast.error('로그인 중 에러가 발생했습니다.');
+      }
     } catch (err) {
       setError('로그인 실패');
       toast.error('로그인 중 에러가 발생했습니다.');

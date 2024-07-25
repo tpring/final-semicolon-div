@@ -7,11 +7,12 @@ import FormCategoryBox from './editform/FormCategoryBox';
 import FormTitleInput from './editform/FormTitleInput';
 import FormTagInput from './editform/FormTagInput';
 import FormContentArea from './editform/FormContentArea';
-import FormSubmitButton from './editform/FormSubmitButton';
+
 import { useRouter } from 'next/navigation';
 import { revalidate } from '@/actions/revalidate';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import FormSubmitButton from '../FormSubmitButton';
 
 type UpsertFormProps = {
   data: TforumPost | TqnaPost | TarchivePost;
@@ -25,7 +26,6 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
   const [content, setContent] = useState<string>('');
   const [selectedItemByCategory, setSelectedItemByCategory] = useState<TBOARD_ITEM>({
     category: '',
-    title: '',
     content: ''
   });
   const [selectedSubCategoryForForum, setSelectedSubCategoryForForum] = useState<string>('');

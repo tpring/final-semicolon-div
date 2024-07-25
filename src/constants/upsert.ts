@@ -2,11 +2,10 @@
 export const BOARD_LIST = [
   {
     category: '포럼',
-    title: '소통으로 하나가 되는 시간',
-    content: '다양한 개발자들을 만나고 지식의 폭을 넓혀 보세요!'
+    content: '님! 다양한 개발자들을 만나고 지식의 폭을 넓혀 보세요!'
   },
-  { category: 'Q&A', title: '질문하기', content: 'Q&A에서 최고의 개발자들과 함께 궁금증을 해결하세요!' },
-  { category: '아카이브', title: '아카이브?', content: '컴포넌트를 공유하고 북마크로 추가해보세요?' }
+  { category: 'Q&A', content: '님! Q&A에서 최고의 개발자들과 함께 궁금증을 해결하세요!' },
+  { category: '아카이브', content: '님! 컴포넌트를 공유하세요!' }
 ] as const;
 
 //포럼 포스트 선택시 dropdown 목록

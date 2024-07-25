@@ -18,8 +18,8 @@ const FormContentArea = ({ content, setContent, selectedItemByCategory }: FormCo
 
   return (
     <div className="">
-      <label className="block" htmlFor="post-content">
-        본문
+      <label className="block mb-2 text-[#525252]" htmlFor="post-content">
+        본문*
       </label>
       <MDEditor
         id="post-content"
