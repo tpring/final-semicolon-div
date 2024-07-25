@@ -1,4 +1,3 @@
-// components/NicknameCheck.tsx
 import React, { useEffect } from 'react';
 import InputField from './InputField';
 
