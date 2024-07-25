@@ -1,4 +1,3 @@
-'use client';
 import React, { ChangeEvent, ChangeEventHandler, Dispatch, SetStateAction } from 'react';
 
 import { BOARD_LIST } from '@/constants/upsert';

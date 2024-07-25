@@ -1,5 +1,3 @@
-'use client';
-
 import { TBOARD_ITEM } from '@/types/upsert';
 import UpsertTheme from '../../../UpsertTheme';
 

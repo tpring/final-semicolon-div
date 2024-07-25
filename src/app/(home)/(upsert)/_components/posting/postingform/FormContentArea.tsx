@@ -1,4 +1,3 @@
-'use client';
 import { TBOARD_ITEM } from '@/types/upsert';
 import MDEditor, { commands } from '@uiw/react-md-editor';
 import React, { Dispatch } from 'react';
@@ -9,7 +8,7 @@ type FormContentAreaProps = {
   selectedItemByCategory: TBOARD_ITEM;
 };
 
-const FormContentArea = ({ content, setContent, selectedItemByCategory }: FormContentAreaProps) => {
+const FormContentArea = ({ content, setContent }: FormContentAreaProps) => {
   const customExtraCommandsWithOutQnA = commands.getCommands().filter(() => false);
 
   const handleContentChange = (value?: string) => {

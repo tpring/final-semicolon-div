@@ -7,7 +7,6 @@ import FormCategoryBox from './editform/FormCategoryBox';
 import FormTitleInput from './editform/FormTitleInput';
 import FormTagInput from './editform/FormTagInput';
 import FormContentArea from './editform/FormContentArea';
-
 import { useRouter } from 'next/navigation';
 import { revalidate } from '@/actions/revalidate';
 import { toast, ToastContainer } from 'react-toastify';
@@ -124,7 +123,7 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
         />
         <FormTitleInput title={data.title} />
         <FormTagInput />
-        <FormContentArea content={content} setContent={setContent} selectedItemByCategory={selectedItemByCategory} />
+        <FormContentArea content={content} setContent={setContent} />
         <FormSubmitButton />
       </form>
     </div>

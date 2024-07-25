@@ -1,4 +1,3 @@
-'use client';
 import { FORUM_SUB_CATEGORY_LIST } from '@/constants/upsert';
 
 type ForumCategoryDropDownProps = {
