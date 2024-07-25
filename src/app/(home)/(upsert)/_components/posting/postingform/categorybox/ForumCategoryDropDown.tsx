@@ -8,7 +8,7 @@ const ForumCategoryDropDown = () => {
         className=" w-full text-[#525252] border h-[26px] border-gray-400 focus:border-blue-500 outline-none"
         name="forum_category"
       >
-        <option value={''} disabled hidden selected>
+        <option value={''} disabled hidden>
           카테고리를 선택해주세요!
         </option>
         {FORUM_SUB_CATEGORY_LIST.map((FORUM_SUB_CATEGORY_ITEM) => {

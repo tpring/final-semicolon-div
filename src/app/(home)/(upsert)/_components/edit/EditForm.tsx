@@ -29,6 +29,7 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
     content: ''
   });
   const [selectedSubCategoryForForum, setSelectedSubCategoryForForum] = useState<string>('');
+
   const [FORUM, QNA, ARCHIVE] = BOARD_LIST;
 
   const handleSubmit: FormEventHandler = async (event: FormEvent<HTMLFormElement>) => {

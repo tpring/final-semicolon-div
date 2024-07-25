@@ -32,7 +32,7 @@ const PostingCategory = ({ selectedItemByCategory, setSelectedItemByCategory }: 
         value={selectedItemByCategory?.category}
         onChange={handleSelectChange}
       >
-        <option hidden selected value={''}>
+        <option hidden disabled value={''}>
           게시판 선택*
         </option>
         {BOARD_LIST.map((BOARD_ITEM) => {
