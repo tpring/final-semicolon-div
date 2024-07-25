@@ -4,6 +4,7 @@ import useFetchForumPosts from '@/hooks/conference/useFetchForumPosts';
 import { useState } from 'react';
 import dayjs from 'dayjs';
 import { ForumCategory, SortOption } from '@/types/posts/forum';
+import PostCard from './PostCard';
 
 const ForumPostsWithCategoryAndSort = () => {
   const { data: posts, isPending, error } = useFetchForumPosts();
@@ -68,18 +69,13 @@ const ForumPostsWithCategoryAndSort = () => {
       <div className="category-items">
         {isPending && <div>로딩중...</div>}
         {error && <div>에러 발생</div>}
-        {!isPending && !error && posts && (
-          <ul>
+        {!isPending && !error && (!posts || posts.length === 0) && <div>게시물이 없습니다.</div>}
+        {!isPending && !error && posts.length > 0 && (
+          <div className="posts-card">
             {filterAndSortPosts(activeCategory, sortBy).map((post) => (
-              <li key={post.id}>
-                <div>
-                  <h1>{post.title}</h1>
-                  <p>댓글:{post.forum_comment[0]?.count || 0}</p>
-                  <p>좋아요:{post.forum_like[0]?.count || 0}</p>
-                </div>
-              </li>
+              <PostCard key={post.id} post={post} />
             ))}
-          </ul>
+          </div>
         )}
       </div>
     </div>

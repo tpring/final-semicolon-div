@@ -1,10 +1,21 @@
 import { Database } from '../supabase';
 
-type ForumPost = Database['public']['Tables']['forum_posts']['Row'];
+type Tables = Database['public']['Tables'];
+type ForumPost = Tables['forum_posts']['Row'];
+type ForumTag = Tables['forum_tags']['Row'];
+type ForumImage = Tables['forum_images']['Row'];
+type User = Tables['users']['Row'];
 
 export type Post = ForumPost & {
   forum_like: { count: number }[];
   forum_comment: { count: number }[];
+  forum_tags: ForumTag[];
+  forum_image: ForumImage[];
+  user: User;
+};
+
+export type PostCardProps = {
+  post: Post;
 };
 
 export type SortOption = 'latest' | 'mostComments' | 'mostLikes';
