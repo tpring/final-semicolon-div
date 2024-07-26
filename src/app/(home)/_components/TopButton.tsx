@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 
 const TopButton = () => {
-  const [topScroll, setTopScroll] = useState(false);
+  const [topScroll, setTopScroll] = useState<boolean>(false);
 
   useEffect(() => {
     const handleScroll = () => {
