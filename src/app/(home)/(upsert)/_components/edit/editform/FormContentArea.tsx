@@ -1,5 +1,6 @@
-import MDEditor, { commands } from '@uiw/react-md-editor';
 import { Dispatch } from 'react';
+
+import CustomMDEditor from '../../CustomMDEditor';
 
 type FormContentAreaProps = {
   content: string;
@@ -7,25 +8,10 @@ type FormContentAreaProps = {
 };
 
 const FormContentArea = ({ content, setContent }: FormContentAreaProps) => {
-  const customExtraCommandsWithOutQnA = commands.getCommands().filter(() => false);
-
-  const handleContentChange = (value?: string) => {
-    setContent(value!);
-  };
-
   return (
     <div className="">
-      <label className="block text-[#525252] mb-2" htmlFor="post-content">
-        본문*
-      </label>
-      <MDEditor
-        id="post-content"
-        value={content}
-        onChange={handleContentChange}
-        preview="edit"
-        height={400}
-        extraCommands={customExtraCommandsWithOutQnA}
-      />
+      <h5 className="block mb-2 text-gray-900 text-h5 font-bold">본문</h5>
+      <CustomMDEditor content={content} setContent={setContent} />
     </div>
   );
 };
