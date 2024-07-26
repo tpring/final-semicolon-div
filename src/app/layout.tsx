@@ -4,6 +4,7 @@ import './globals.css';
 
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { TanstackQueryProvider } from '@/providers/TanstackQueryProvider';
+import { AuthProvider } from '@/context/auth.context';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -21,8 +22,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <TanstackQueryProvider>
-          {children}
-          <ReactQueryDevtools initialIsOpen={false} />
+          <AuthProvider>
+            {' '}
+            {children}
+            <ReactQueryDevtools initialIsOpen={false} />
+          </AuthProvider>
         </TanstackQueryProvider>
       </body>
     </html>

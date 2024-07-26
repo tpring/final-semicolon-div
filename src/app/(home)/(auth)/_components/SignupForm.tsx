@@ -4,10 +4,11 @@ import Link from 'next/link';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import SignupButton from './SignupButton';
-import useUserStore from '@/store/useUserStore';
 import InputField from './InputField';
 import CheckboxGroup from './CheckboxGroup';
 import { useRouter } from 'next/navigation';
+import NicknameCheck from './NicknameCheck ';
+import PasswordFields from './PasswordFields';
 
 const SignupForm = () => {
   const [password, setPassword] = useState<string>('');
@@ -16,12 +17,19 @@ const SignupForm = () => {
   const [agreeTerms, setAgreeTerms] = useState<boolean>(false);
   const [agreePrivacy, setAgreePrivacy] = useState<boolean>(false);
 
-  const { email, setEmail, nickname, setNickname } = useUserStore();
+  const [email, setEmail] = useState<string>('');
+  const [nickname, setNickname] = useState<string>('');
   const [emailValid, setEmailValid] = useState<boolean>(false);
   const [passwordValid, setPasswordValid] = useState<boolean>(false);
   const [confirmPasswordValid, setConfirmPasswordValid] = useState<boolean>(false);
   const [nicknameValid, setNicknameValid] = useState<boolean>(false);
   const [formValid, setFormValid] = useState<boolean>(false);
+  const [isCheckedNickname, setIsCheckedNickname] = useState<boolean>(false);
+
+  const [emailMessage, setEmailMessage] = useState<string>('');
+  const [passwordMessage, setPasswordMessage] = useState<string>('');
+  const [confirmPasswordMessage, setConfirmPasswordMessage] = useState<string>('');
+  const [nicknameMessage, setNicknameMessage] = useState<string>('');
 
   const router = useRouter();
 
@@ -43,12 +51,32 @@ const SignupForm = () => {
     setEmailValid(validateEmail(email));
     setPasswordValid(validatePassword(password));
     setConfirmPasswordValid(password === confirmPassword);
-    setNicknameValid(validateNickname(nickname));
+    const isValidNickname = validateNickname(nickname);
+    setNicknameValid(isValidNickname);
+
+    setEmailMessage(validateEmail(email) ? '사용 가능한 이메일 주소입니다.' : '유효하지 않은 이메일 주소입니다.');
+    setPasswordMessage(
+      validatePassword(password)
+        ? '사용 가능한 비밀번호입니다.'
+        : '비밀번호는 영문, 숫자, 특수문자를 포함하여 10자 이상이어야 합니다.'
+    );
+    setConfirmPasswordMessage(
+      password === confirmPassword ? '비밀번호가 일치합니다.' : '비밀번호가 일치하지 않습니다.'
+    );
+    setNicknameMessage(isValidNickname ? '사용 가능한 닉네임입니다.' : '닉네임은 2자 이상 12자 이하여야 합니다.');
   }, [email, password, confirmPassword, nickname]);
 
   useEffect(() => {
-    setFormValid(emailValid && passwordValid && confirmPasswordValid && nicknameValid && agreeTerms && agreePrivacy);
-  }, [emailValid, passwordValid, confirmPasswordValid, nicknameValid, agreeTerms, agreePrivacy]);
+    setFormValid(
+      emailValid &&
+        passwordValid &&
+        confirmPasswordValid &&
+        nicknameValid &&
+        agreeTerms &&
+        agreePrivacy &&
+        isCheckedNickname
+    );
+  }, [emailValid, passwordValid, confirmPasswordValid, nicknameValid, agreeTerms, agreePrivacy, isCheckedNickname]);
 
   const handleSignup = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -63,25 +91,29 @@ const SignupForm = () => {
       return;
     }
 
-    const userData = {
-      email,
-      password,
-      nickname
-    };
-
     try {
       const response = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(userData)
+        body: JSON.stringify({
+          email,
+          password,
+          nickname
+        })
       });
 
-      toast.success('회원가입이 완료되었습니다.', {
-        autoClose: 2000,
-        onClose: () => router.replace('/login')
-      });
+      const result = await response.json();
+
+      if (response.ok) {
+        toast.success('회원가입이 완료되었습니다.', {
+          autoClose: 2000,
+          onClose: () => router.replace('/')
+        });
+      } else {
+        toast.error(result.error || '회원가입 중 오류가 발생했습니다.');
+      }
     } catch (error) {
       toast.error('회원가입 중 오류가 발생했습니다.');
     }
@@ -104,33 +136,28 @@ const SignupForm = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="이메일을 입력해 주세요."
+            valid={emailValid}
+            message={emailMessage}
           />
-          <InputField
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="비밀번호를 입력해 주세요."
+          <PasswordFields
+            password={password}
+            setPassword={setPassword}
+            confirmPassword={confirmPassword}
+            setConfirmPassword={setConfirmPassword}
+            passwordValid={passwordValid}
+            confirmPasswordValid={confirmPasswordValid}
+            passwordMessage={passwordMessage}
+            confirmPasswordMessage={confirmPasswordMessage}
           />
-          <InputField
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder="비밀번호를 한 번 더 입력해 주세요."
+          <NicknameCheck
+            nickname={nickname}
+            setNickname={setNickname}
+            nicknameValid={nicknameValid}
+            setNicknameValid={setNicknameValid}
+            setIsCheckedNickname={setIsCheckedNickname}
+            nicknameMessage={nicknameMessage}
+            setNicknameMessage={setNicknameMessage}
           />
-          <div className="text-sm text-gray-600 mb-4">영문/숫자/특수문자 포함 (10자 이상)</div>
-          <div className="mb-4 flex items-center space-x-2">
-            <div className="flex-grow">
-              <InputField
-                type="text"
-                value={nickname}
-                onChange={(e) => setNickname(e.target.value)}
-                placeholder="닉네임 (2~12자)를 입력해 주세요."
-              />
-            </div>
-            <button className="p-3 border rounded bg-blue-500 text-white hover:bg-blue-600 transition h-full">
-              중복 확인
-            </button>
-          </div>
           <CheckboxGroup
             agreeAll={agreeAll}
             setAgreeAll={setAgreeAll}

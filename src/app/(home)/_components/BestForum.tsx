@@ -1,12 +1,15 @@
 'use client';
-import { Tables } from '@/types/supabase';
+
 import { useQuery } from '@tanstack/react-query';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import Link from 'next/link';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { ResumesType } from '@/types/posts/forumTypes';
 
 const BestForum = () => {
-  const { data: forumList } = useQuery<Tables<'forum_posts'>[]>({
+  const { data: forumList } = useQuery({
     queryKey: ['bestForum'],
     queryFn: async () => {
       try {
@@ -45,14 +48,18 @@ const BestForum = () => {
   const handleRinkCopy = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
+      toast.success('링크가 복사되었습니다.', {
+        autoClose: 2000
+      });
     } catch (error) {}
   };
 
   return (
     <div>
+      <ToastContainer />
       <h1 className="text-xl font-semibold mb-7 ">오늘의 인기 포럼이에요🌟</h1>
       <Swiper navigation={true} modules={[Navigation]} slidesPerView={3} spaceBetween={10} className="mySwiper">
-        {forumList?.map((forum) => (
+        {forumList?.map((forum: ResumesType) => (
           <SwiperSlide key={forum.id}>
             <div className="w-90% border rounded-xl ml-1 px-4 ">
               <div className="flex justify-start items-center gap-4  border-b-[1px]">
@@ -74,7 +81,16 @@ const BestForum = () => {
                 <p className="text-sm text-right mt-4">{forum.created_at.slice(0, 10).replace(/-/g, '.')}</p>
               </Link>
               <div className="flex justify-between items-center py-2 text-sm">
-                <p>좋아요{forum.like.length}</p>
+                <div className="flex gap-4">
+                  <p>
+                    좋아요<span className="pl-1">{forum.like.length}</span>
+                  </p>
+                  <button
+                    onClick={() => handleRinkCopy(`${process.env.NEXT_PUBLIC_BASE_URL}/forum/detail/${forum.id}`)}
+                  >
+                    공유
+                  </button>
+                </div>
                 <p>댓글{forum.comments.length}</p>
               </div>
             </div>

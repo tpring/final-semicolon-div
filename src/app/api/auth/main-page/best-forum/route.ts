@@ -1,5 +1,4 @@
 import { createClient } from '@/supabase/server';
-
 import { NextResponse } from 'next/server';
 
 export async function GET() {
@@ -7,7 +6,7 @@ export async function GET() {
 
   const { data, error } = await supabase
     .from('forum_posts')
-    .select('*,users: user_id(*), like: forum_likes(*), comments: forum_comments(*)')
+    .select('*,users: user_id(*), like: forum_likes(*), comments: forum_comments(*), like_count:forum_likes(count)')
     .order('created_at', {
       ascending: false
     })

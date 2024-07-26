@@ -16,10 +16,9 @@ const PostsLink = () => {
           Q&A <span className="text-xl">›</span>
         </div>
       </Link>
-
       <Link
-        href={'/conference'}
-        className="bg-slate-200 w-1/3  h-[234px] flex flex-col justify-end p-5 rounded-2xl gap-1 text-white"
+        href={'/forum'}
+        className="bg-slate-200 w-1/3 h-[234px] flex flex-col justify-end p-5 rounded-2xl gap-1 text-white "
         style={{ backgroundImage: `url(${mainPageForum.src})` }}
       >
         <div>
@@ -27,10 +26,9 @@ const PostsLink = () => {
           포럼 <span className="text-xl">›</span>
         </div>
       </Link>
-
       <Link
         href={'/archiving'}
-        className="bg-slate-200 w-1/3 h-[234px]  flex flex-col justify-end p-5 rounded-2xl gap-1 text-white "
+        className="bg-slate-200 w-1/3 h-[234px] flex flex-col justify-end p-5 rounded-2xl gap-1 text-white "
         style={{ backgroundImage: `url(${mainPageArchiving.src})` }}
       >
         <div>
