@@ -1,4 +1,3 @@
-import React from 'react';
 import PostCard from './PostCard';
 import CommentCard from './CommentCard';
 import { useLikesComments, useLikesPosts } from '@/hooks/useLikes';

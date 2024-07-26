@@ -3,7 +3,7 @@
 import useActiveTabStore from '@/store/useActiveTabStore';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // 임시 User 타입
 type User = {
@@ -20,17 +20,31 @@ type User = {
 const ProfileContent = () => {
   const setActiveTab = useActiveTabStore((state) => state.setActiveTab);
 
-  const [user, setUser] = useState<User>({
-    id: '618962ac-e431-4ccd-9ca1-dc916435f8da',
-    profile_image:
-      'https://jtorewqfshytdtgldztv.supabase.co/storage/v1/object/sign/profile_image/18_20240511012529.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJwcm9maWxlX2ltYWdlX2ltYWdlLzE4XzIwMjQwNTExMDEyNTI5LnBuZyIsImlhdCI6MTcyMTYyNTQ3NiwiZXhwIjoyMDM2OTg1NDc2fQ.nKa_eNvxhs2qasseDYM8pO6mUZKPfrbnQr0TPBiSUPs',
-    email: 'admin@admin.com',
-    nickname: 'admin',
-    github_url: '',
-    info: 'Short info about the user.',
-    like: '10',
-    bookmark: '30'
-  });
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch('/api/profile/profileauth', { method: 'GET' });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch user data');
+        }
+
+        const data: User = await response.json();
+        console.log('Fetched user data:', data); // 확인을 위한 로그
+        setUser(data);
+      } catch (err: any) {
+        setError(err.message || 'An error occurred');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const handleLikeClick = () => {
     setActiveTab('likes');
@@ -40,16 +54,33 @@ const ProfileContent = () => {
     setActiveTab('bookmarks');
   };
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  if (!user) {
+    return <div>No user data available</div>;
+  }
+
   return (
     <div className="w-[740px] h-[566px] p-4 border rounded-lg shadow-lg">
       <div className="flex flex-col justify-center items-center mb-4">
         <Image
-          src={user.profile_image}
+          src={
+            user.profile_image ||
+            'https://jtorewqfshytdtgldztv.supabase.co/storage/v1/object/public/profile_image/free-icon-user-747376.png'
+          }
           alt="프로필 이미지"
           width={80}
           height={80}
           className="rounded-full bg-red-300"
+          priority
         />
+
         <div>
           <p className="text-lg font-semibold">{user.nickname}</p>
         </div>

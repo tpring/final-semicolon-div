@@ -35,8 +35,9 @@ export const useBookmarksComments = () => {
     queryFn: fetchBookmarksComments
   });
 };
-
-// 필요한 경우 추가 옵션 설정
-// staleTime: 5 * 60 * 1000, // 데이터가 신선하다고 간주되는 시간 (5분)
-// cacheTime: 10 * 60 * 1000, // 데이터가 캐시에 유지되는 시간 (10분)
-// refetchOnWindowFocus: false, // 창 포커스 시 데이터 새로고침 여부
+/*
+필요한 경우 추가 옵션 설정
+staleTime: 5 * 60 * 1000, // 데이터가 신선하다고 간주되는 시간 (5분)
+cacheTime: 10 * 60 * 1000, // 데이터가 캐시에 유지되는 시간 (10분)
+refetchOnWindowFocus: false, // 창 포커스 시 데이터 새로고침 여부 
+*/

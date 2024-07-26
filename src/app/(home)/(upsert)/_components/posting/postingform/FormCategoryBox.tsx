@@ -1,4 +1,4 @@
-import React, { Dispatch } from 'react';
+import { Dispatch } from 'react';
 import { TBOARD_ITEM } from '@/types/upsert';
 import PostingCategory from './categorybox/PostingCategory';
 import ForumCategoryDropDown from './categorybox/ForumCategoryDropDown';

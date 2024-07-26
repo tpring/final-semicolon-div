@@ -1,9 +1,9 @@
+import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/supabase/client';
 
 const supabase = createClient();
 
-// 설명 댓글북마크 관련 정보
-export async function GET() {
+export async function GET(request: NextRequest) {
   // 임시 사용자 ID
   const userId = 'd8e37eff-f7fa-4aea-9382-dd224d9fcd07';
 
@@ -25,17 +25,17 @@ export async function GET() {
 
   // 북마크를 가져오는 데 실패한 경우, 오류 응답을 반환합니다.
   if (archiveCommentError || forumCommentError || qnaCommentError) {
-    return new Response(JSON.stringify({ error: '댓글북마크 가져오기 실패' }), { status: 500 });
+    return NextResponse.json({ error: '댓글북마크 가져오기 실패' }, { status: 500 });
   }
 
-  //댓글 id 추출
+  // 댓글 ID 추출
   const commentIds = [
     ...archiveCommentBookmarks.map((b) => b.comment_id),
     ...forumCommentBookmarks.map((b) => b.comment_id),
     ...qnaCommentBookmarks.map((b) => b.comment_id)
   ];
 
-  // comment_id로 각 게시물 테이블에서 게시물정보 가져옵니다.
+  // comment_id로 각 게시물 테이블에서 게시물 정보를 가져옵니다.
   const commentsFetches = [
     supabase.from('archive_comments').select('*').in('id', commentIds),
     supabase.from('forum_comments').select('*').in('id', commentIds),
@@ -44,9 +44,9 @@ export async function GET() {
 
   const [archiveComment, forumComment, qnaComment] = await Promise.all(commentsFetches);
 
-  // 게시물을 가져오는 데 실패한 경우, 오류 응답을 반환합니다.
+  // 댓글을 가져오는 데 실패한 경우, 오류 응답을 반환합니다.
   if (archiveComment.error || forumComment.error || qnaComment.error) {
-    return new Response(JSON.stringify({ error: '댓글 가져오기 실패' }), { status: 500 });
+    return NextResponse.json({ error: '댓글 가져오기 실패' }, { status: 500 });
   }
 
   // 댓글 데이터
@@ -74,7 +74,7 @@ export async function GET() {
 
   // 게시물을 가져오는 데 실패한 경우, 오류 응답을 반환합니다.
   if (archivePosts.error || forumPosts.error || qnaPosts.error) {
-    return new Response(JSON.stringify({ error: '포스트 가져오기 실패' }), { status: 500 });
+    return NextResponse.json({ error: '포스트 가져오기 실패' }, { status: 500 });
   }
 
   // 게시물 데이터
@@ -100,5 +100,5 @@ export async function GET() {
     }
   };
 
-  return new Response(JSON.stringify(combinedData), { status: 200 });
+  return NextResponse.json(combinedData, { status: 200 });
 }

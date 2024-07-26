@@ -1,9 +1,9 @@
+import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/supabase/client';
 
 const supabase = createClient();
 
-// 설명 댓글북마크 관련 정보
-export async function GET() {
+export async function GET(request: NextRequest) {
   // 임시 사용자 ID
   const userId = 'd8e37eff-f7fa-4aea-9382-dd224d9fcd07';
 
@@ -25,17 +25,17 @@ export async function GET() {
 
   // 북마크를 가져오는 데 실패한 경우, 오류 응답을 반환합니다.
   if (archiveCommentError || forumCommentError || qnaCommentError) {
-    return new Response(JSON.stringify({ error: '댓글북마크 가져오기 실패' }), { status: 500 });
+    return NextResponse.json({ error: '댓글북마크 가져오기 실패' }, { status: 500 });
   }
 
-  //댓글 id 추출
+  // 댓글 ID 추출
   const bookmarkscommentIds = [
     ...archiveCommentBookmarks.map((b) => b.comment_id),
     ...forumCommentBookmarks.map((b) => b.comment_id),
     ...qnaCommentBookmarks.map((b) => b.comment_id)
   ];
 
-  // comment_id로 각 게시물 테이블에서 게시물정보 가져옵니다.
+  // comment_id로 각 게시물 테이블에서 게시물 정보 가져오기
   const bookmarkscommentsFetches = [
     supabase.from('archive_comments').select('*').in('id', bookmarkscommentIds),
     supabase.from('forum_comments').select('*').in('id', bookmarkscommentIds),
@@ -47,7 +47,7 @@ export async function GET() {
 
   // 게시물을 가져오는 데 실패한 경우, 오류 응답을 반환합니다.
   if (archiveBookmarksComment.error || forumBookmarksComment.error || qnaBookmarksComment.error) {
-    return new Response(JSON.stringify({ error: '댓글 가져오기 실패' }), { status: 500 });
+    return NextResponse.json({ error: '댓글 가져오기 실패' }, { status: 500 });
   }
 
   // 댓글 데이터
@@ -71,18 +71,18 @@ export async function GET() {
     supabase.from('qna_posts').select('*, qna_tags(tag)').in('id', bookmarksPostIds)
   ];
 
-  const [archiveBookmarksPosts, forumBookmarksComments, qnaBookmarksComments] = await Promise.all(postFetches);
+  const [archiveBookmarksPosts, forumBookmarksPosts, qnaBookmarksPosts] = await Promise.all(postFetches);
 
   // 게시물을 가져오는 데 실패한 경우, 오류 응답을 반환합니다.
-  if (archiveBookmarksPosts.error || forumBookmarksComment.error || qnaBookmarksComment.error) {
-    return new Response(JSON.stringify({ error: '포스트 가져오기 실패' }), { status: 500 });
+  if (archiveBookmarksPosts.error || forumBookmarksPosts.error || qnaBookmarksPosts.error) {
+    return NextResponse.json({ error: '포스트 가져오기 실패' }, { status: 500 });
   }
 
   // 게시물 데이터
   const bookmarksPostData = {
     archivePosts: archiveBookmarksPosts.data,
-    forumPosts: forumBookmarksComments.data,
-    qnaPosts: qnaBookmarksComments.data
+    forumPosts: forumBookmarksPosts.data,
+    qnaPosts: qnaBookmarksPosts.data
   };
 
   // 댓글과 게시물 데이터를 통합합니다.
@@ -101,5 +101,5 @@ export async function GET() {
     }
   };
 
-  return new Response(JSON.stringify(bookmarkscombinedData), { status: 200 });
+  return NextResponse.json(bookmarkscombinedData, { status: 200 });
 }

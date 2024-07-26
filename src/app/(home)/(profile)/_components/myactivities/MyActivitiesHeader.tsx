@@ -1,5 +1,3 @@
-import React from 'react';
-
 type MyActivitiesHeaderProps = {
   setActiveTab: (tab: string) => void;
   activeTab: string;

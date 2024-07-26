@@ -1,5 +1,3 @@
-import React from 'react';
-
 //임시 이동 예정
 type CommentCardProps = {
   title: string;
