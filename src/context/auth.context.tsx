@@ -2,10 +2,14 @@
 
 import { createClient } from '@/supabase/client';
 import { User } from '@supabase/supabase-js';
+import { Result } from 'postcss';
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
 
 type UserData = {
   nickname: string | null;
+  profile_image: string | null;
+  info: string | null;
+  github_url: string | null;
 };
 
 type AuthContextValue = {
@@ -40,7 +44,11 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const supabase = createClient();
 
   const fetchUserData = async (userId: string) => {
-    const { data, error } = await supabase.from('users').select('nickname').eq('id', userId).single();
+    const { data, error } = await supabase
+      .from('users')
+      .select('nickname,profile_image,info,github_url')
+      .eq('id', userId)
+      .single();
 
     if (error) {
       console.error('Error fetching user data:', error);
@@ -70,14 +78,22 @@ export function AuthProvider({ children }: PropsWithChildren) {
       },
       body: JSON.stringify(data)
     });
-    const user = await response.json();
+    const result = await response.json();
 
     if (response.status === 401) {
       return { status: 401, message: '로그인에 실패했습니다.' };
     }
+    const { user } = result;
+    console.log(user);
 
     setMe(user);
-    fetchUserData(user.id);
+    setUserData({
+      nickname: user.nickname,
+      profile_image: user.profile_image,
+      info: user.info,
+      github_url: user.github_url
+    });
+
     return { status: 200 };
   };
 
@@ -101,12 +117,12 @@ export function AuthProvider({ children }: PropsWithChildren) {
       },
       body: JSON.stringify(data)
     });
-    const user = await response.json();
+    const result = await response.json();
 
     if (response.status === 401) {
       return { status: 401, message: '회원가입에 실패했습니다.' };
     }
-
+    const { user } = result;
     setMe(user);
     fetchUserData(user.id);
     return { status: 200 };
