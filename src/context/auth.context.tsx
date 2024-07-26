@@ -2,7 +2,6 @@
 
 import { createClient } from '@/supabase/client';
 import { User } from '@supabase/supabase-js';
-import { Result } from 'postcss';
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
 
 type UserData = {
