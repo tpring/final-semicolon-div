@@ -18,7 +18,7 @@ const Header = () => {
   const pathname = usePathname();
 
   const getLinkClasses = (path: string) => {
-    return pathname === path ? 'text-blue-500' : 'text-gray-700';
+    return pathname === path ? 'text-main-500' : 'text-neutral-900';
   };
 
   const handleLogout = async () => {
@@ -29,10 +29,10 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-white w-full mt-12">
+    <header className="bg-white w-full mt-5">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <div className="flex items-center space-x-8 ml-40">
-          <div>
+          <div className="mt-3">
             <Link href={'/'}>
               <Logo />
             </Link>
