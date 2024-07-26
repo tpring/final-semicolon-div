@@ -4,10 +4,8 @@ import LandingPage from './_components/LandingPage';
 import MainPageTag from './_components/MainPageTag';
 import Notice from './_components/Notice';
 import PostsLink from './_components/PostsLink';
-import Service from './_components/Service';
 import TodayQna from './_components/TodayQna';
 import TopButton from './_components/TopButton';
-import WebsiteLink from './_components/WebsiteLink';
 
 const HomePage = () => {
   return (
@@ -21,7 +19,6 @@ const HomePage = () => {
         <TopButton />
         <Notice />
       </div>
-      <Service />
     </div>
   );
 };
