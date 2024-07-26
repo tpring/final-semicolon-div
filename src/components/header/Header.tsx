@@ -3,23 +3,19 @@
 import Logo from '@/assets/images/Logo';
 import SearchButton from '@/assets/images/SearchButton';
 import { useAuth } from '@/context/auth.context';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Header = () => {
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const { isLoggedIn, logOut, me } = useAuth();
+  const { isLoggedIn, logOut, userData } = useAuth();
   const pathname = usePathname();
 
   const getLinkClasses = (path: string) => {
     return pathname === path ? 'text-blue-500' : 'text-gray-700';
-  };
-
-  const toggleSearch = () => {
-    setIsSearchOpen(!isSearchOpen);
   };
 
   const handleLogout = async () => {
@@ -30,15 +26,17 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-white w-full">
-      <div className="container mx-auto px-4 py-2 flex justify-between items-center">
-        <div className="flex items-center space-x-8">
-          <Link href={'/'}>
-            <Logo />
-          </Link>
-          <div className="flex space-x-8">
+    <header className="bg-white w-full mt-12">
+      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+        <div className="flex items-center space-x-8 ml-40">
+          <div>
             <Link href={'/'}>
-              <h1 className={`hidden lg:inline border-0 rounded-md p-1 font-bold ${getLinkClasses('/')}`}>메인</h1>
+              <Logo />
+            </Link>
+          </div>
+          <div className="flex space-x-8 mt-10">
+            <Link href={'/'}>
+              <h1 className={`hidden lg:inline border-0 rounded-md p-2 font-bold mt-4 ${getLinkClasses('/')}`}>메인</h1>
             </Link>
             <Link href={'/forum'}>
               <h1 className={`hidden lg:inline border-0 rounded-md p-1 font-bold ${getLinkClasses('/conference')}`}>
@@ -53,62 +51,64 @@ const Header = () => {
                 아카이브
               </h1>
             </Link>
-            <Link href={'/notification'}>
-              <h1 className={`hidden lg:inline border-0 rounded-md p-1 font-bold ${getLinkClasses('/notification')}`}>
-                공지
-              </h1>
-            </Link>
           </div>
         </div>
-        <div className="flex space-x-2 items-center">
-          {isSearchOpen && (
-            <input
-              type="text"
-              placeholder="검색어를 입력하세요"
-              className="hidden sm:inline ml-2 border-2 border-purple-500 font-bold focus:outline-purple-800 rounded-md p-2 w-64"
-            />
-          )}
-          <button onClick={toggleSearch} className="focus:outline-none">
-            <SearchButton />
-          </button>
+        <div className="absolute inset-x-0 mx-auto flex justify-center items-center border-2 border-blue-500 rounded-md p-2 w-64 mt-10">
+          <SearchButton />
+          <input
+            type="text"
+            placeholder="검색어를 입력하세요"
+            className="hidden sm:inline pr-3 w-full font-bold focus:outline-none"
+          />
+        </div>
+        <div className="flex space-x-2 items-center mr-40 mt-10">
           {isLoggedIn ? (
             <>
               <Link href={'/profile'}>
-                <h1 className="hidden md:inline border-0 rounded-md p-1 font-bold">마이페이지</h1>
+                {userData && userData.profile_image && (
+                  <div className="relative w-10 h-10">
+                    <Image
+                      src={userData.profile_image}
+                      alt="Profile"
+                      layout="fill"
+                      objectFit="cover"
+                      className="rounded-full"
+                    />
+                  </div>
+                )}
               </Link>
-              <button onClick={handleLogout}>
-                <h1 className="md:hidden bg-blue-500 border-0 rounded-md p-1 ml-2 font-bold text-white">로그아웃</h1>
-              </button>
-              <button onClick={handleLogout}>
-                <h1 className="hidden md:inline bg-blue-500 border-0 rounded-md p-1 font-bold text-white">로그아웃</h1>
-              </button>
+              <Link href={'/posting'}>
+                <h1 className="md:hidden bg-blue-500 border-0 rounded-md px-4 py-2 ml-2 font-bold text-white ">
+                  글쓰기
+                </h1>
+              </Link>
+              <Link href={'/posting'}>
+                <h1 className="hidden md:inline bg-blue-500 border-0 rounded-md px-4 py-2 font-bold text-white">
+                  글쓰기
+                </h1>
+              </Link>
+              <button onClick={handleLogout}>로그아웃</button>
             </>
           ) : (
             <>
               <Link href={'/login'}>
-                <h1 className={`md:hidden bg-blue-500 border-0 rounded-md p-1 ml-2 font-bold text-white `}>로그인</h1>
+                <h1 className={`md:hidden  border-0 rounded-md p-1 ml-2 font-bold `}>로그인</h1>
               </Link>
               <Link href={'/login'}>
                 <h1 className={`hidden md:inline border-0 rounded-md p-1 font-bold`}>로그인</h1>
               </Link>
+              <h1>|</h1>
               <Link href={'/signup'}>
-                <h1 className={`hidden md:inline bg-blue-500 border-0 rounded-md p-1 font-bold text-white `}>
-                  회원가입
-                </h1>
+                <h1 className={`hidden md:inline  border-0 rounded-md p-1 font-bold `}>회원가입</h1>
+              </Link>
+              <Link href={'/login'}>
+                <h1 className={`hidden md:inline bg-blue-500 text-white border-0 rounded-md p-2 font-bold `}>글쓰기</h1>
               </Link>
             </>
           )}
         </div>
       </div>
-      {isSearchOpen && (
-        <div className="fixed top-14 left-1/2 transform -translate-x-1/2 w-full flex justify-center">
-          <input
-            type="text"
-            placeholder="검색어를 입력하세요"
-            className="sm:hidden ml-2 border-2 border-blue-500 focus:border-blue-800 rounded-md p-2 w-64 font-bold"
-          />
-        </div>
-      )}
+
       <ToastContainer />
     </header>
   );
