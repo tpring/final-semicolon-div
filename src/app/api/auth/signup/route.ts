@@ -1,5 +1,4 @@
 import { createClient } from '@/supabase/server';
-import { error } from 'console';
 import { NextRequest, NextResponse } from 'next/server';
 
 type RequestData = {
