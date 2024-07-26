@@ -22,16 +22,14 @@
   font-weight: 700;
   font-style: normal;
 }
-body {
-  font-family: 'Pretendard', sans-serif;
-}
-/* @layer base {
+
+@layer base {
   body {
     @apply font-main;
   }
-} */
+}
 
-/* @import 'swiper/css';
+@import 'swiper/css';
 @import 'swiper/css/navigation';
 
 .swiper-pagination-bullet {
@@ -39,4 +37,4 @@ body {
 }
 .swiper-pagination-bullet-active {
   background-color: #ced7e3 !important;
-} */
+}
