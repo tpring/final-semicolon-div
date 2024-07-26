@@ -26,7 +26,7 @@ const SignupForm = () => {
   const [passwordValid, setPasswordValid] = useState<boolean>(false);
   const [confirmPasswordValid, setConfirmPasswordValid] = useState<boolean>(false);
   const [nicknameValid, setNicknameValid] = useState<boolean>(false);
-  const [formValid, setFormValid] = useState<boolean>();
+  const [formValid, setFormValid] = useState<boolean>(false);
   const [isCheckedNickname, setIsCheckedNickname] = useState<boolean>(false);
 
   const [emailMessage, setEmailMessage] = useState<string>('');

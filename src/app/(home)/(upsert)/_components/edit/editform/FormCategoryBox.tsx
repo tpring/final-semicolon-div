@@ -1,5 +1,5 @@
-import React, { Dispatch } from 'react';
-import { TarchivePost, TBOARD_ITEM, TforumPost, TqnaPost } from '@/types/upsert';
+import { Dispatch } from 'react';
+import { TBOARD_ITEM } from '@/types/upsert';
 import PostingCategory from './categorybox/PostingCategory';
 import ForumCategoryDropDown from './categorybox/ForumCategoryDropDown';
 
@@ -9,17 +9,10 @@ type FormCategoryBoxProps = {
   setSelectedItemByCategory: Dispatch<React.SetStateAction<TBOARD_ITEM>>;
 };
 
-const FormCategoryBox = ({
-  selectedSubCategoryForForum,
-  selectedItemByCategory,
-  setSelectedItemByCategory
-}: FormCategoryBoxProps) => {
+const FormCategoryBox = ({ selectedSubCategoryForForum, selectedItemByCategory }: FormCategoryBoxProps) => {
   return (
     <div className="flex flex-col">
-      <PostingCategory
-        selectedItemByCategory={selectedItemByCategory}
-        setSelectedItemByCategory={setSelectedItemByCategory}
-      />
+      <PostingCategory selectedItemByCategory={selectedItemByCategory} />
       {
         //최상위 분류 카테고리가 포럼일경우 포럼 카테고리 드롭다운 생성
         selectedItemByCategory?.category === '포럼' ? (

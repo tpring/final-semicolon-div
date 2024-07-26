@@ -1,9 +1,8 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-
+import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider } from '@/context/auth.context';
 import TanstackQueryProvider from '@/providers/TanstackQueryProvider';
 
