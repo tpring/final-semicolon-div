@@ -23,7 +23,6 @@ const TodayQna = () => {
       } catch (error) {}
     }
   });
-  console.log(iconList);
 
   return (
     <div>

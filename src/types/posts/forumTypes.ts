@@ -25,7 +25,3 @@ export type FetchResult = {
   data: Post[];
   nextPage: number | null;
 };
-
-export type ResumesType = ForumPost & {
-  users: User;
-};

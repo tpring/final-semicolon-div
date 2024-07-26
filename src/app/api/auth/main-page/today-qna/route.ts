@@ -11,6 +11,8 @@ export async function GET() {
       ascending: false
     })
     .limit(8);
-
+  if (!data) {
+    return NextResponse.json([]);
+  }
   return NextResponse.json(data);
 }

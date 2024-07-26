@@ -1,35 +1,87 @@
 'use client';
-import React, { FormEvent, FormEventHandler, useState } from 'react';
+import { FormEvent, FormEventHandler, useState } from 'react';
 import Link from 'next/link';
-import { TBOARD_ITEM } from '@/types/upsert';
+import { TBOARD_ITEM, TpostFormData } from '@/types/upsert';
 import FormCategoryBox from './postingform/FormCategoryBox';
 import FormTitleInput from './postingform/FormTitleInput';
 import FormTagInput from './postingform/FormTagInput';
 import FormContentArea from './postingform/FormContentArea';
-import FormSubmitButton from './postingform/FormSubmitButton';
+import {
+  CATEGORY_LIST_EN,
+  CATEGORY_LIST_KR,
+  LOGIN_ALERT,
+  VALIDATION_SEQUENCE,
+  VALIDATION_SEQUENCE_KR
+} from '@/constants/upsert';
+import { toast, ToastContainer } from 'react-toastify';
+import FormSubmitButton from '../FormSubmitButton';
+import { useAuth } from '@/context/auth.context';
+import { useRouter } from 'next/navigation';
 
 const PostingForm = () => {
+  const { me: user } = useAuth();
+  const router = useRouter();
+
   const [content, setContent] = useState<string>('');
   const [selectedItemByCategory, setSelectedItemByCategory] = useState<TBOARD_ITEM>({
     category: '',
-    title: '',
     content: ''
   });
 
-  const handleSubmit: FormEventHandler = (event: FormEvent<HTMLFormElement>) => {
+  if (!user?.id) {
+    toast.error(LOGIN_ALERT, { hideProgressBar: false, autoClose: 1500 });
+    setTimeout(() => {
+      router.push('/login');
+    }, 1500);
+    return;
+  }
+
+  const handleSubmit: FormEventHandler = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    //값 잘 들어오는지 확인하는 임시 코드
-    console.log(formData.get('category-selector'));
-    selectedItemByCategory.category !== '포럼' ? null : console.log(formData.get('sub-category'));
-    console.log(formData.get('post-title'));
-    console.log(formData.get('post-tag'));
-    console.log(content);
+    const postFormData: TpostFormData = { user_id: user?.id as string, content: content };
+
+    formData.forEach((value, key) => {
+      if (key === 'category') {
+        postFormData[key] = CATEGORY_LIST_EN[CATEGORY_LIST_KR.indexOf(value as string)];
+      } else {
+        postFormData[key] = value;
+      }
+    });
+
+    //폼 유효성 검사 로직
+    const invalidItems = Object.keys(postFormData).filter((key) => !postFormData[key]);
+
+    const invalidItemIndex = VALIDATION_SEQUENCE.findIndex((sequence) => {
+      return !!invalidItems.find((item) => item === sequence);
+    });
+
+    const invalidItem = VALIDATION_SEQUENCE_KR[invalidItemIndex];
+
+    if (invalidItem) {
+      toast.error(invalidItem + ' 입력이 필요합니다!', { hideProgressBar: true });
+      return;
+    }
+
+    //유효성 검사 통과시 업로드
+    const response = await fetch('/api/upsert/posting', {
+      method: 'POST',
+      body: JSON.stringify(postFormData)
+    });
+
+    const { message } = await response.json();
+
+    toast.success(message, { autoClose: 1500 });
+    setTimeout(() => {
+      router.push('/');
+    }, 1500);
+    return;
   };
 
   return (
     <div className="max-w-3xl mx-auto flex flex-col gap-y-5 max-h-screen">
-      <Link href={'/'}>뒤로가기 버튼 위치</Link>
+      <ToastContainer />
+      <Link href={'/'}>&lt;</Link>
       <form className="flex flex-col gap-y-10 h-full" onSubmit={handleSubmit}>
         <FormCategoryBox
           selectedItemByCategory={selectedItemByCategory}

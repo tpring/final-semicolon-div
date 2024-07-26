@@ -6,7 +6,6 @@ import { Navigation } from 'swiper/modules';
 import Link from 'next/link';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { ResumesType } from '@/types/posts/forumTypes';
 
 const BestForum = () => {
   const { data: forumList } = useQuery({
@@ -45,6 +44,7 @@ const BestForum = () => {
     return `${Math.floor(betweenTimeDay / 365)}년전`;
   };
 
+  //링크 공유
   const handleRinkCopy = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
@@ -59,7 +59,7 @@ const BestForum = () => {
       <ToastContainer />
       <h1 className="text-xl font-semibold mb-7 ">오늘의 인기 포럼이에요🌟</h1>
       <Swiper navigation={true} modules={[Navigation]} slidesPerView={3} spaceBetween={10} className="mySwiper">
-        {forumList?.map((forum: ResumesType) => (
+        {forumList?.map((forum: any) => (
           <SwiperSlide key={forum.id}>
             <div className="w-90% border rounded-xl ml-1 px-4 ">
               <div className="flex justify-start items-center gap-4  border-b-[1px]">
@@ -85,9 +85,7 @@ const BestForum = () => {
                   <p>
                     좋아요<span className="pl-1">{forum.like.length}</span>
                   </p>
-                  <button
-                    onClick={() => handleRinkCopy(`${process.env.NEXT_PUBLIC_BASE_URL}/forum/detail/${forum.id}`)}
-                  >
+                  <button onClick={() => handleRinkCopy(`${process.env.NEXT_PUBLIC_BASE_URL}/forum/${forum.id}`)}>
                     공유
                   </button>
                 </div>
