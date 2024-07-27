@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAuth } from '@/context/auth.context';
+import OAuthButtons from './OAuthButtons'; // OAuthButtons 컴포넌트를 불러옴
+import { createClient } from '@/supabase/client';
 
 const LoginForm = () => {
   const router = useRouter();
@@ -12,6 +14,7 @@ const LoginForm = () => {
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const { logIn } = useAuth();
+  const supabase = createClient();
 
   const handleLogin = async (): Promise<void> => {
     setError(null);
@@ -30,6 +33,33 @@ const LoginForm = () => {
     } catch (err) {
       setError('로그인 실패');
       toast.error('로그인 중 에러가 발생했습니다.');
+    }
+  };
+
+  const handleOAuthLogin = async (provider: 'google' | 'kakao' | 'github') => {
+    setError(null);
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: provider,
+        options: {
+          redirectTo: 'http://localhost:3000'
+        }
+      });
+
+      if (error) {
+        console.error(`${provider} 로그인 오류:`, error);
+        setError(`Failed to log in with ${provider}. ${error.message}`);
+        toast.error(`Failed to log in with ${provider}.`);
+      } else {
+        toast.success('로그인 성공!', {
+          autoClose: 2000,
+          onClose: () => router.replace('/')
+        });
+      }
+    } catch (err) {
+      console.error('OAuth 로그인 중 에러가 발생했습니다:', err);
+      setError('OAuth 로그인 실패');
+      toast.error('OAuth 로그인 중 에러가 발생했습니다.');
     }
   };
 
@@ -57,7 +87,7 @@ const LoginForm = () => {
             className="w-full p-3 border rounded"
           />
         </div>
-        <button onClick={handleLogin} className="w-full p-3 bg-blue-500 hover:bg-blue-600  text-white rounded">
+        <button onClick={handleLogin} className="w-full p-3 bg-blue-500 hover:bg-blue-600 text-white rounded">
           로그인
         </button>
         <div className="mt-4 text-center">
@@ -68,14 +98,8 @@ const LoginForm = () => {
             </Link>
           </p>
         </div>
-        <div className="mt-4 text-center">
-          <p className="text-gray-600">SNS 계정으로 로그인/회원가입</p>
-          <div className="flex justify-center mt-2">
-            <button className="bg-yellow-500 p-2 rounded-full mx-2">Kakao</button>
-            <button className="bg-slate-200 p-2 rounded-full mx-2">Google</button>
-            <button className="bg-black p-2 rounded-full mx-2 text-white">GitHub</button>
-          </div>
-        </div>
+        {/* Include the OAuthButtons component */}
+        <OAuthButtons handleLogin={handleOAuthLogin} />
       </div>
     </div>
   );
