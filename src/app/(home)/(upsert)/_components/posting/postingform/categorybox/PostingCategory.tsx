@@ -25,14 +25,14 @@ const PostingCategory = ({ selectedItemByCategory, setSelectedItemByCategory }: 
   return (
     <div className="flex flex-col">
       <select
-        className="w-40  text-[#525252] border h-[26px] focus:border-blue-500 outline-none"
+        className="w-[337px]  text-neutral-800 border h-[51px] rounded-lg text-body1 focus:border-main-400 outline-none"
         name="category"
         id="category"
         value={selectedItemByCategory?.category}
         onChange={handleSelectChange}
       >
         <option hidden value={''}>
-          카테고리 선택*
+          게시판을 선택해 주세요
         </option>
         {BOARD_LIST.map((BOARD_ITEM) => {
           return (

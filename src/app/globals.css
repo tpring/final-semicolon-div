@@ -38,3 +38,17 @@
 .swiper-pagination-bullet-active {
   background-color: #ced7e3 !important;
 }
+
+.w-md-editor {
+  border-radius: 8px !important;
+  border-color: #dbdbdb !important;
+}
+
+.w-md-editor-toolbar {
+  border-radius: 8px 8px 0 0 !important;
+  border-color: #dbdbdb !important;
+}
+
+.w-md-editor-content {
+  border-color: #dbdbdb !important;
+}
