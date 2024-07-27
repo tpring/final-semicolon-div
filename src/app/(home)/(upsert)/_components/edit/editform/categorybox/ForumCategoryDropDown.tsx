@@ -7,9 +7,8 @@ type ForumCategoryDropDownProps = {
 const ForumCategoryDropDown = ({ selectedSubCategoryForForum }: ForumCategoryDropDownProps) => {
   return (
     <div className="my-4">
-      <h2 className="mb-2 text-[#525252] ">카테고리*</h2>
       <select
-        className="w-full text-[#525252] border h-[26px] border-gray-400 focus:border-blue-500 outline-none"
+        className="w-[337px]  text-neutral-800 border h-[51px] rounded-lg text-body1 focus:border-main-400 outline-none"
         key={selectedSubCategoryForForum}
         name="forum_category"
         defaultValue={selectedSubCategoryForForum}

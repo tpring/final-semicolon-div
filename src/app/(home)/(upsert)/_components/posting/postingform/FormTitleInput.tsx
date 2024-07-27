@@ -1,11 +1,11 @@
 const FormTitleInput = () => {
   return (
     <div>
-      <label className="block mb-2 text-[#525252] " htmlFor="title">
-        제목*
+      <label className="block mb-2 text-neutral-900 text-h5 font-bold" htmlFor="title">
+        제목
       </label>
       <input
-        className="px-1 w-full text-[#525252] border h-[26px] border-gray-400 focus:border-blue-500 outline-none "
+        className="px-1 w-full text-neutral-900 border h-[51px] rounded-xl border-neutral-100 focus:border-main-400 outline-none "
         type="text"
         name="title"
         id="title"

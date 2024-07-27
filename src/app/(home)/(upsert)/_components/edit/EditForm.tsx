@@ -19,6 +19,7 @@ import { revalidate } from '@/actions/revalidate';
 import { toast, ToastContainer } from 'react-toastify';
 import FormSubmitButton from '../FormSubmitButton';
 import { useAuth } from '@/context/auth.context';
+import BackArrowIcon from '@/assets/images/upsert_image/BackArrowIcon';
 
 type UpsertFormProps = {
   data: TforumPost | TqnaPost | TarchivePost;
@@ -128,9 +129,11 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
   }, [data, user]);
 
   return (
-    <div className="max-w-3xl mx-auto flex flex-col gap-y-5 max-h-screen">
+    <div className="w-[1204px] mx-auto flex flex-col gap-y-5 max-h-screen">
       <ToastContainer />
-      <Link href={'/'}>&lt;</Link>
+      <Link href={'/'}>
+        <BackArrowIcon />
+      </Link>
       <form className="flex flex-col gap-y-10 h-full" onSubmit={handleSubmit}>
         <FormCategoryBox
           selectedSubCategoryForForum={selectedSubCategoryForForum}
