@@ -1,5 +1,5 @@
+import { POST_IMAGE_URL } from '@/constants/upsert';
 import { createClient } from '@/supabase/server';
-import { NextRequest } from 'next/server';
 
 export const POST = async (request: Request) => {
   const supabase = createClient();
@@ -10,6 +10,10 @@ export const POST = async (request: Request) => {
   const { data, error: uploadError } = await supabase.storage.from('posts_image').upload(`posts/${name}`, file);
 
   return uploadError
-    ? Response.json({ message: '업로드 실패!' })
-    : Response.json({ url: `https://jtorewqfshytdtgldztv.supabase.co/storage/v1/object/public/${data?.fullPath}` });
+    ? Response.json({ message: '이미지 업로드에 실패했습니다!' })
+    : Response.json({
+        name: file.name,
+        storageName: name,
+        url: POST_IMAGE_URL + data?.fullPath
+      });
 };

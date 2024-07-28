@@ -24,3 +24,6 @@ export const LOGIN_ALERT = '로그인이 필요한 기능입니다! 로그인 �
 
 //이미지 업로드 로딩문구
 export const IMAGE_UPLOAD_TEXT = '![Image](이미지 업로드 중!)';
+
+//수파베이스 글 작성, 수정 이미지 경로
+export const POST_IMAGE_URL = 'https://jtorewqfshytdtgldztv.supabase.co/storage/v1/object/public/';
