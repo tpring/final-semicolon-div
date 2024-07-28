@@ -1,58 +1,116 @@
+import { createClient } from '@/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/supabase/client';
-
-const supabase = createClient();
 
 export async function GET(request: NextRequest) {
-  // 임시 사용자 ID
-  const userId = 'd8e37eff-f7fa-4aea-9382-dd224d9fcd07';
+  const supabase = createClient();
 
-  // 사용자 ID로 좋아요를 가져옵니다.
-  const { data: archiveLikes, error: archiveError } = await supabase
+  const userId = request.headers.get('user-id');
+
+  if (!userId) {
+    return NextResponse.json({ error: 'User ID가 없습니다.' }, { status: 400 });
+  }
+
+  // 게시물 좋아요 관련 데이터 가져오기
+  const { data: archiveLikedPosts, error: archiveLikesError } = await supabase
     .from('archive_likes')
     .select('post_id')
     .eq('user_id', userId);
 
-  const { data: forumLikes, error: forumError } = await supabase
+  const { data: forumLikedPosts, error: forumLikesError } = await supabase
     .from('forum_likes')
     .select('post_id')
     .eq('user_id', userId);
 
-  const { data: qnaLikes, error: qnaError } = await supabase.from('qna_likes').select('post_id').eq('user_id', userId);
+  const { data: qnaLikedPosts, error: qnaLikesError } = await supabase
+    .from('qna_likes')
+    .select('post_id')
+    .eq('user_id', userId);
 
-  // 좋아요를 가져오는 데 실패한 경우, 오류 응답을 반환합니다.
-  if (archiveError || forumError || qnaError) {
+  if (archiveLikesError || forumLikesError || qnaLikesError) {
     return NextResponse.json({ error: '좋아요 가져오기 실패' }, { status: 500 });
   }
 
-  // 좋아요에서 게시물 ID를 추출합니다.
   const postIds = [
-    ...archiveLikes.map((b) => b.post_id),
-    ...forumLikes.map((b) => b.post_id),
-    ...qnaLikes.map((b) => b.post_id)
+    ...archiveLikedPosts.map((like) => like.post_id),
+    ...forumLikedPosts.map((like) => like.post_id),
+    ...qnaLikedPosts.map((like) => like.post_id)
   ];
 
-  // 게시물 ID로 각 게시물 테이블에서 게시물 정보를 가져옵니다.
+  // 게시물 및 태그 데이터 가져오기
   const postFetches = [
-    supabase.from('archive_posts').select('*, archive_tags(tag)').in('id', postIds),
-    supabase.from('forum_posts').select('*, forum_tags(tag)').in('id', postIds),
-    supabase.from('qna_posts').select('*, qna_tags(tag)').in('id', postIds)
+    supabase
+      .from('archive_posts')
+      .select('id, user_id, title, content, thumbnail, created_at, updated_at, category')
+      .in('id', postIds),
+    supabase
+      .from('forum_posts')
+      .select('id, user_id, title, content, thumbnail, created_at, updated_at, category, forum_category')
+      .in('id', postIds),
+    supabase
+      .from('qna_posts')
+      .select('id, user_id, title, content, thumbnail, created_at, updated_at, category')
+      .in('id', postIds)
   ];
 
-  const [archivePosts, forumPosts, qnaPosts] = await Promise.all(postFetches);
+  const tagFetches = [
+    supabase.from('archive_tags').select('post_id, tag').in('post_id', postIds),
+    supabase.from('forum_tags').select('post_id, tag').in('post_id', postIds),
+    supabase.from('qna_tags').select('post_id, tag').in('post_id', postIds)
+  ];
 
-  // 게시물을 가져오는 데 실패한 경우, 오류 응답을 반환합니다.
-  if (archivePosts.error || forumPosts.error || qnaPosts.error) {
-    return NextResponse.json({ error: '게시물 가져오기 실패' }, { status: 500 });
+  const [archivePostsResponse, forumPostsResponse, qnaPostsResponse] = await Promise.all(postFetches);
+  const [archiveTagsResponse, forumTagsResponse, qnaTagsResponse] = await Promise.all(tagFetches);
+
+  if (
+    archivePostsResponse.error ||
+    forumPostsResponse.error ||
+    qnaPostsResponse.error ||
+    archiveTagsResponse.error ||
+    forumTagsResponse.error ||
+    qnaTagsResponse.error
+  ) {
+    return NextResponse.json({ error: '게시물 또는 태그 가져오기 실패' }, { status: 500 });
   }
 
-  // 게시물 데이터를 통합합니다.
-  const allPosts = {
-    archivePosts: archivePosts.data,
-    forumPosts: forumPosts.data,
-    qnaPosts: qnaPosts.data
+  const postUserIds = [
+    ...archivePostsResponse.data.map((c) => c.user_id),
+    ...forumPostsResponse.data.map((c) => c.user_id),
+    ...qnaPostsResponse.data.map((c) => c.user_id)
+  ];
+
+  const { data: commentUsers, error: commentUserError } = await supabase
+    .from('users')
+    .select('id, nickname, profile_image')
+    .in('id', postUserIds);
+
+  if (commentUserError) {
+    return NextResponse.json({ error: '댓글 유저 정보 가져오기 실패' }, { status: 500 });
+  }
+
+  const postData = {
+    archivePosts: archivePostsResponse.data.map((post) => ({
+      ...post,
+      user: commentUsers.find((user) => user.id === post.user_id),
+      tags: archiveTagsResponse.data.filter((tag) => tag.post_id === post.id).map((tag) => tag.tag)
+    })),
+    forumPosts: forumPostsResponse.data.map((post) => ({
+      ...post,
+      user: commentUsers.find((user) => user.id === post.user_id),
+      tags: forumTagsResponse.data.filter((tag) => tag.post_id === post.id).map((tag) => tag.tag)
+    })),
+    qnaPosts: qnaPostsResponse.data.map((post) => ({
+      ...post,
+      user: commentUsers.find((user) => user.id === post.user_id),
+      tags: qnaTagsResponse.data.filter((tag) => tag.post_id === post.id).map((tag) => tag.tag)
+    }))
   };
 
-  // 최종 결과를 응답으로 반환합니다.
-  return NextResponse.json(allPosts, { status: 200 });
+  return NextResponse.json(
+    {
+      archivePosts: postData.archivePosts,
+      forumPosts: postData.forumPosts,
+      qnaPosts: postData.qnaPosts
+    },
+    { status: 200 }
+  );
 }

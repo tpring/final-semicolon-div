@@ -3,23 +3,22 @@ import PostCard from './PostCard';
 import CommentCard from './CommentCard';
 import { useBookmarksComments, useBookmarksPosts } from '@/hooks/useBookmarks';
 
-//임시 이동 예정
-type Tag = {
-  id: string;
-  post_id: string;
-  tag: string;
-};
-
-//임시 이동 예정
 type CombinedItem =
   | {
       type: 'post';
       id: string;
       title: string;
       content: string;
-      image: string;
+      thumbnail: string;
       tags: string[];
       created_at: string;
+      category: string;
+      forum_category: string;
+      user: {
+        id: string;
+        nickname: string;
+        profile_image: string;
+      };
     }
   | {
       type: 'comment';
@@ -28,6 +27,12 @@ type CombinedItem =
       tags: string[];
       comment: string;
       created_at: string;
+      category: string;
+      user: {
+        id: string;
+        nickname: string;
+        profile_image: string;
+      };
     };
 
 const BookmarksList = () => {
@@ -52,14 +57,14 @@ const BookmarksList = () => {
 
   // 게시물과 댓글을 하나의 배열로 병합
   const postArray = [...posts.archivePosts, ...posts.forumPosts, ...posts.qnaPosts];
+  const commentPostArray = [...comments.archive.posts, ...comments.forum.posts, ...comments.qna.posts];
   const commentArray = [...comments.archive.comments, ...comments.forum.comments, ...comments.qna.comments];
 
-  // 게시물 데이터를 ID를 기준으로 맵핑하여 조회할 수 있도록 합니다.
   const postMap = new Map<string, { title: string; tags: string[] }>();
-  postArray.forEach((post) => {
+  commentPostArray.forEach((post) => {
     postMap.set(post.id, {
       title: post.title,
-      tags: Array.isArray(post.tags) ? post.tags.map((tag: Tag) => tag.tag) : []
+      tags: post.tags || []
     });
   });
 
@@ -70,12 +75,18 @@ const BookmarksList = () => {
       id: post.id,
       title: post.title,
       content: post.content,
-      image: (post.images && post.images.length > 0 ? post.images[0]?.image_url : '') || '',
-      tags: Array.isArray(post.tags) ? post.tags.map((tag: Tag) => tag.tag) : [],
-      created_at: post.created_at
+      thumbnail: post.thumbnail || '',
+      category: post.category,
+      tags: post.tags || [],
+      created_at: post.created_at,
+      forum_category: post.forum_category || '',
+      user: {
+        id: post.user.id,
+        nickname: post.user.nickname,
+        profile_image: post.user.profile_image
+      }
     })),
     ...commentArray.map((comment) => {
-      // 댓글이 참조하는 게시물의 정보를 가져옵니다.
       const postInfo = postMap.get(comment.post_id) || { title: '', tags: [] };
       return {
         type: 'comment' as const,
@@ -83,7 +94,13 @@ const BookmarksList = () => {
         title: postInfo.title,
         tags: postInfo.tags,
         comment: comment.comment,
-        created_at: comment.created_at
+        created_at: comment.created_at,
+        category: comment.category,
+        user: {
+          id: comment.user.id,
+          nickname: comment.user.nickname,
+          profile_image: comment.user.profile_image
+        }
       };
     })
   ];
@@ -103,9 +120,13 @@ const BookmarksList = () => {
               <PostCard
                 title={item.title}
                 content={item.content}
-                image={item.image}
+                thumbnail={item.thumbnail}
                 tags={item.tags}
                 time={item.created_at}
+                category={item.category}
+                forum_category={item.forum_category}
+                nickname={item.user.nickname}
+                profile_image={item.user.profile_image}
               />
             ) : (
               <CommentCard
@@ -113,6 +134,9 @@ const BookmarksList = () => {
                 tags={item.tags}
                 comment={item.comment}
                 time={new Date(item.created_at)}
+                category={item.category}
+                nickname={item.user.nickname}
+                profile_image={item.user.profile_image}
               />
             )}
           </div>
