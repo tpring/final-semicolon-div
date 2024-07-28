@@ -87,11 +87,10 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
     }
 
     await revalidate('/', 'page');
-    toast.success(message, { hideProgressBar: true });
-    setTimeout(() => {
-      router.push('/');
-    }, 1500);
-
+    toast.success(message, {
+      hideProgressBar: true,
+      onClose: () => router.push(`/${selectedItemByCategory.category}`)
+    });
     return;
   };
 
@@ -99,15 +98,10 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
     if (!data) {
       return;
     } else if (!user) {
-      toast.error(LOGIN_ALERT, { autoClose: 1500, hideProgressBar: true });
-      setTimeout(() => {
-        router.push('/login');
-      }, 1500);
+      toast.error(LOGIN_ALERT, { autoClose: 1500, hideProgressBar: true, onClose: () => router.push(`/login`) });
     } else if (data.user_id !== user?.id) {
-      toast.error('권한이 없습니다!', { autoClose: 1500, hideProgressBar: true });
-      setTimeout(() => {
-        router.push('/');
-      }, 1500);
+      toast.error('권한이 없습니다!', { autoClose: 1500, hideProgressBar: true, onClose: () => router.push(`/`) });
+
       return;
     }
 
