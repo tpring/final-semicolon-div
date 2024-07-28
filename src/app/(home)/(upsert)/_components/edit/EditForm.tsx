@@ -86,7 +86,7 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
       return;
     }
 
-    await revalidate('/');
+    await revalidate('/', 'page');
     toast.success(message, { hideProgressBar: true });
     setTimeout(() => {
       router.push('/');
