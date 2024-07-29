@@ -42,7 +42,7 @@ const ForumDetailPost = ({ params }: { params: { id: string } }) => {
         </div>
       ))}
       <InputComments />
-      <ForumComments />
+      <ForumComments params={params} />
     </div>
   );
 };

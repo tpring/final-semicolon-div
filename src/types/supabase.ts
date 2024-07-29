@@ -1069,7 +1069,11 @@ export type Database = {
           github_url: string | null
           id: string
           info: string | null
+<<<<<<< HEAD
           nickname: string
+=======
+          nickname: string | null
+>>>>>>> 08c634d6005f33216f713e6e2bf0b23f996b81a5
           profile_image: string
         }
         Insert: {
@@ -1077,7 +1081,11 @@ export type Database = {
           github_url?: string | null
           id?: string
           info?: string | null
+<<<<<<< HEAD
           nickname: string
+=======
+          nickname?: string | null
+>>>>>>> 08c634d6005f33216f713e6e2bf0b23f996b81a5
           profile_image?: string
         }
         Update: {
@@ -1085,7 +1093,11 @@ export type Database = {
           github_url?: string | null
           id?: string
           info?: string | null
+<<<<<<< HEAD
           nickname?: string
+=======
+          nickname?: string | null
+>>>>>>> 08c634d6005f33216f713e6e2bf0b23f996b81a5
           profile_image?: string
         }
         Relationships: [
