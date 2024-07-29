@@ -26,7 +26,7 @@ const getForumPosts = async (req: NextRequest) => {
     return NextResponse.json({ data: [], count: 0 });
   }
 
-  return NextResponse.json({ data: posts, count, nextpage: posts.length === limit ? page + 1 : null });
+  return NextResponse.json({ data: posts, count, nextPage: posts.length === limit ? page + 1 : null });
 };
 
 export async function GET(req: NextRequest) {
