@@ -52,3 +52,7 @@
 .w-md-editor-content {
   border-color: #dbdbdb !important;
 }
+
+.w-md-editor-text-input {
+  min-height: 512px !important;
+}

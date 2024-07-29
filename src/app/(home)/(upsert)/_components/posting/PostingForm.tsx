@@ -30,10 +30,8 @@ const PostingForm = () => {
   });
 
   if (!user?.id) {
-    toast.error(LOGIN_ALERT, { hideProgressBar: false, autoClose: 1500 });
-    setTimeout(() => {
-      router.push('/login');
-    }, 1500);
+    toast.error(LOGIN_ALERT, { hideProgressBar: false, autoClose: 1500, onClose: () => router.push(`/login`) });
+
     return;
   }
 
@@ -69,13 +67,8 @@ const PostingForm = () => {
       method: 'POST',
       body: JSON.stringify(postFormData)
     });
-
     const { message } = await response.json();
-
-    toast.success(message, { autoClose: 1500 });
-    setTimeout(() => {
-      router.push('/');
-    }, 1500);
+    toast.success(message, { autoClose: 1500, onClose: () => router.push(`/${selectedItemByCategory.category}`) });
     return;
   };
 
