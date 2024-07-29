@@ -4,8 +4,9 @@ import { useQuery } from '@tanstack/react-query';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import Link from 'next/link';
-import { toast, ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { handleRinkCopy, timeForToday } from '@/components/public';
 
 const BestForum = () => {
   const { data: forumList } = useQuery({
@@ -18,41 +19,6 @@ const BestForum = () => {
       } catch (error) {}
     }
   });
-  console.log(forumList);
-
-  //게시글 시간표시 함수 ex)방금전, 20분전, 1시간전 등..
-  const timeForToday = (value: string) => {
-    const today = new Date();
-    const timeValue = new Date(value);
-
-    const betweenTime = Math.floor((today.getTime() - timeValue.getTime()) / 1000 / 60);
-    if (betweenTime < 1) return '방금전';
-    if (betweenTime < 60) {
-      return `${betweenTime}분전`;
-    }
-
-    const betweenTimeHour = Math.floor(betweenTime / 60);
-    if (betweenTimeHour < 24) {
-      return `${betweenTimeHour}시간전`;
-    }
-
-    const betweenTimeDay = Math.floor(betweenTime / 60 / 24);
-    if (betweenTimeDay < 365) {
-      return `${betweenTimeDay}일전`;
-    }
-
-    return `${Math.floor(betweenTimeDay / 365)}년전`;
-  };
-
-  //링크 공유
-  const handleRinkCopy = async (text: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      toast.success('링크가 복사되었습니다.', {
-        autoClose: 2000
-      });
-    } catch (error) {}
-  };
 
   return (
     <div>
@@ -69,11 +35,14 @@ const BestForum = () => {
                   <div className="flex justify-start items-center gap-1">
                     <p className="text-sm text-gray-500">{forum.forum_category}</p>
                     <span className="text-sm text-gray-500">▪</span>
-                    <p className="text-sm text-gray-500">{timeForToday(forum.created_at)}</p>
+                    <p className="text-sm text-gray-500">
+                      {timeForToday(forum.updated_at ? forum.updated_at : forum.created_at)}
+                      <span className="text-xs">{forum.updated_at && '(수정됨)'}</span>
+                    </p>
                   </div>
                 </div>
               </div>
-              <Link href={`/conference/${forum.id}`}>
+              <Link href={`/forum/${forum.id}`}>
                 <div className=" flex flex-col gap-1 h-80 mt-4 ">
                   <h1 className="text-lg font-semibold ">{forum.title}</h1>
                   <p className="normal  overflow-hidden ">{forum.content}</p>

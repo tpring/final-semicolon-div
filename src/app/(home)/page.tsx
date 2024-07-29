@@ -5,7 +5,7 @@ import MainPageTag from './_components/MainPageTag';
 import Notice from './_components/Notice';
 import PostsLink from './_components/PostsLink';
 import TodayQna from './_components/TodayQna';
-import TopButton from './_components/TopButton';
+import TopButton from '../../components/TopButton';
 
 const HomePage = () => {
   return (
