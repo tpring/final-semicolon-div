@@ -31,14 +31,14 @@ const ResentQnaPosts = () => {
     goToPage: goToSelectedPage
   } = useFetchQnaPosts('selected');
 
-  const handleTabClick = (newStatus: string) => {
-    setStatus(newStatus);
-    if (newStatus === 'waiting') {
-      goToWaitingPage(waitingPage);
-    } else {
-      goToSelectedPage(selectedPage);
-    }
-  };
+  // const handleTabClick = (newStatus: string) => {
+  //   setStatus(newStatus);
+  //   if (newStatus === 'waiting') {
+  //     goToWaitingPage(waitingPage);
+  //   } else {
+  //     goToSelectedPage(selectedPage);
+  //   }
+  // };
 
   useEffect(() => {
     if (status === 'waiting') {
@@ -51,7 +51,7 @@ const ResentQnaPosts = () => {
   const filterAndSortPosts = (posts: Post[], sortMethod: SortOption): Post[] => {
     switch (sortMethod) {
       case 'latest':
-        return posts.sort((a, b) => dayjs(b.updated_at).unix() - dayjs(a.updated_at).unix());
+        return posts.sort((a, b) => dayjs(b.created_at).unix() - dayjs(a.created_at).unix());
       case 'mostComments':
         return posts.sort((a, b) => (b.qna_comment[0]?.count || 0) - (a.qna_comment[0]?.count || 0));
       case 'mostLikes':
@@ -113,7 +113,7 @@ const ResentQnaPosts = () => {
                 />
                 <div>
                   <strong>{post.user.nickname}</strong>
-                  <p>{dayjs(post.updated_at).format('YYYY-MM-DD')}</p>
+                  <p>{dayjs(post.updated_at).format('YYYY-MM-DD HH:mm')}</p>
                 </div>
               </div>
               <h2>{post.title}</h2>
