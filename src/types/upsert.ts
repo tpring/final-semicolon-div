@@ -12,3 +12,9 @@ export type TarchivePost = Database['public']['Tables']['archive_posts']['Row'];
 export type TqnaPost = Database['public']['Tables']['qna_posts']['Row'];
 
 export type TpostFormData = { [key: string]: FormDataEntryValue };
+
+export type TimageInfo = {
+  name: string;
+  url: string;
+  storageName: string;
+};
