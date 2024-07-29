@@ -1,0 +1,38 @@
+import { TBOARD_ITEM } from '@/types/upsert';
+import { create } from 'zustand';
+
+type TusePostingCategoryStore = {
+  categoryGroup: TBOARD_ITEM;
+  subCategory: string;
+  categoryOpen: boolean;
+  subCategoryOpen: boolean;
+  setCategoryGroup: (categoryGroup: TBOARD_ITEM) => void;
+  setSubCategory: (subCategory: string) => void;
+  setCategoryOpen: () => void;
+  setSubCategoryOpen: () => void;
+  clearCategory: () => void;
+};
+
+export const usePostingCategoryStore = create<TusePostingCategoryStore>((set) => ({
+  categoryGroup: { category: '', content: '' },
+  subCategory: '카테고리를 선택해주세요!',
+  categoryOpen: false,
+  subCategoryOpen: false,
+  setCategoryGroup: ({ category, content }) =>
+    set(() => ({
+      categoryGroup: { category, content }
+    })),
+  setSubCategory: (subCategory) =>
+    set(() => ({
+      subCategory: subCategory
+    })),
+  setCategoryOpen: () => set((state) => ({ categoryOpen: !state.categoryOpen })),
+  setSubCategoryOpen: () => set((state) => ({ subCategoryOpen: !state.subCategoryOpen })),
+  clearCategory: () =>
+    set({
+      categoryGroup: { category: '', content: '' },
+      subCategory: '카테고리를 선택해주세요!',
+      categoryOpen: false,
+      subCategoryOpen: false
+    })
+}));

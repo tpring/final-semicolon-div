@@ -1,7 +1,7 @@
 const FormTitleInput = () => {
   return (
     <div>
-      <label className="block mb-2 text-neutral-900 text-h5 font-bold" htmlFor="title">
+      <label className="block mb-2 text-neutral-900 text-h5 font-bold " htmlFor="title">
         제목
       </label>
       <input
