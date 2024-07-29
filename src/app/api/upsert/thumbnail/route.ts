@@ -8,6 +8,9 @@ export const POST = async (request: Request) => {
   const name = formData.get('name') as string;
   const thumbnail = formData.get('thumbnail') as File;
   const category = formData.get('category') as 'forum' | 'category' | 'archive';
+  if (thumbnail.size === 0) {
+    return Response.json({ url: null });
+  }
 
   const { data, error: uploadError } = await supabase.storage
     .from('posts_image')

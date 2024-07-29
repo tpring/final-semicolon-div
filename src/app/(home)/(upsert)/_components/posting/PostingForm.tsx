@@ -75,7 +75,9 @@ const PostingForm = () => {
     const thumbnailFormData = new FormData(event.currentTarget);
     thumbnailFormData.append('category', category);
     thumbnailFormData.append('name', uuidv4());
+
     //유효성 검사 통과시 업로드 썸네일 업로드 후 글업로드
+
     const thumbnail = await fetch('/api/upsert/thumbnail', {
       method: 'POST',
       body: thumbnailFormData
