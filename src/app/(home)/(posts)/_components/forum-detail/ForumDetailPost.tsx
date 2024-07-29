@@ -1,9 +1,10 @@
 'use client';
+
 import { useQuery } from '@tanstack/react-query';
-import { timeForToday } from '@/components/public';
 import { forumDetailType } from '@/types/posts/forumDetailTypes';
 import InputComments from './InputComment';
 import ForumComments from './ForumComments';
+import { timeForToday } from '@/components/timeForToday';
 
 const ForumDetailPost = ({ params }: { params: { id: string } }) => {
   const { data: forumDetail, error } = useQuery<forumDetailType[]>({

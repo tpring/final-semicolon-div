@@ -1,8 +1,9 @@
 'use client';
+import { forumCommentsType } from '@/types/posts/forumDetailTypes';
 import { useQuery } from '@tanstack/react-query';
 
 const ForumComments = ({ params }: { params: { id: string } }) => {
-  const { data: comments } = useQuery({
+  const { data: comments } = useQuery<forumCommentsType[]>({
     queryKey: ['forumComments'],
     queryFn: async () => {
       try {
@@ -14,9 +15,9 @@ const ForumComments = ({ params }: { params: { id: string } }) => {
   });
   console.log(comments);
   return (
-    <div>
-      {comments.map((comment) => (
-        <div key={comment.id}>
+    <div className=" flex flex-col mt-4 gap-4">
+      {comments?.map((comment) => (
+        <div key={comment.id} className="w-full border">
           <h2>{comment.user.nickname}</h2>
           <p>{comment.comment}</p>
         </div>

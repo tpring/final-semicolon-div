@@ -6,8 +6,9 @@ import { Navigation } from 'swiper/modules';
 import Link from 'next/link';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { handleRinkCopy, timeForToday } from '@/components/public';
 import { BestForumType } from '@/types/mainpage';
+import { timeForToday } from '@/components/timeForToday';
+import { handleRinkCopy } from '@/components/handleRinkCopy';
 
 const BestForum = () => {
   const { data: forumList } = useQuery<BestForumType[]>({
