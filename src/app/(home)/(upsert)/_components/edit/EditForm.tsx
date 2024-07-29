@@ -19,6 +19,7 @@ import { revalidate } from '@/actions/revalidate';
 import { toast, ToastContainer } from 'react-toastify';
 import FormSubmitButton from '../FormSubmitButton';
 import { useAuth } from '@/context/auth.context';
+import BackArrowIcon from '@/assets/images/upsert_image/BackArrowIcon';
 
 type UpsertFormProps = {
   data: TforumPost | TqnaPost | TarchivePost;
@@ -85,12 +86,11 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
       return;
     }
 
-    await revalidate('/');
-    toast.success(message, { hideProgressBar: true });
-    setTimeout(() => {
-      router.push('/');
-    }, 1500);
-
+    await revalidate('/', 'page');
+    toast.success(message, {
+      hideProgressBar: true,
+      onClose: () => router.push(`/${selectedItemByCategory.category}`)
+    });
     return;
   };
 
@@ -98,15 +98,10 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
     if (!data) {
       return;
     } else if (!user) {
-      toast.error(LOGIN_ALERT, { autoClose: 1500, hideProgressBar: true });
-      setTimeout(() => {
-        router.push('/login');
-      }, 1500);
+      toast.error(LOGIN_ALERT, { autoClose: 1500, hideProgressBar: true, onClose: () => router.push(`/login`) });
     } else if (data.user_id !== user?.id) {
-      toast.error('권한이 없습니다!', { autoClose: 1500, hideProgressBar: true });
-      setTimeout(() => {
-        router.push('/');
-      }, 1500);
+      toast.error('권한이 없습니다!', { autoClose: 1500, hideProgressBar: true, onClose: () => router.push(`/`) });
+
       return;
     }
 
@@ -128,9 +123,11 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
   }, [data, user]);
 
   return (
-    <div className="max-w-3xl mx-auto flex flex-col gap-y-5 max-h-screen">
+    <div className="w-[1204px] mx-auto flex flex-col gap-y-5 max-h-screen">
       <ToastContainer />
-      <Link href={'/'}>&lt;</Link>
+      <Link href={'/'}>
+        <BackArrowIcon />
+      </Link>
       <form className="flex flex-col gap-y-10 h-full" onSubmit={handleSubmit}>
         <FormCategoryBox
           selectedSubCategoryForForum={selectedSubCategoryForForum}

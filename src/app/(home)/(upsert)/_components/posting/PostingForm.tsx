@@ -17,6 +17,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import FormSubmitButton from '../FormSubmitButton';
 import { useAuth } from '@/context/auth.context';
 import { useRouter } from 'next/navigation';
+import BackArrowIcon from '@/assets/images/upsert_image/BackArrowIcon';
 
 const PostingForm = () => {
   const { me: user } = useAuth();
@@ -29,10 +30,8 @@ const PostingForm = () => {
   });
 
   if (!user?.id) {
-    toast.error(LOGIN_ALERT, { hideProgressBar: false, autoClose: 1500 });
-    setTimeout(() => {
-      router.push('/login');
-    }, 1500);
+    toast.error(LOGIN_ALERT, { hideProgressBar: false, autoClose: 1500, onClose: () => router.push(`/login`) });
+
     return;
   }
 
@@ -68,20 +67,17 @@ const PostingForm = () => {
       method: 'POST',
       body: JSON.stringify(postFormData)
     });
-
     const { message } = await response.json();
-
-    toast.success(message, { autoClose: 1500 });
-    setTimeout(() => {
-      router.push('/');
-    }, 1500);
+    toast.success(message, { autoClose: 1500, onClose: () => router.push(`/${selectedItemByCategory.category}`) });
     return;
   };
 
   return (
-    <div className="max-w-3xl mx-auto flex flex-col gap-y-5 max-h-screen">
+    <div className="w-[1204px] mx-auto flex flex-col gap-y-5 max-h-screen">
       <ToastContainer />
-      <Link href={'/'}>&lt;</Link>
+      <Link className="mb-4" href={'/'}>
+        <BackArrowIcon />
+      </Link>
       <form className="flex flex-col gap-y-10 h-full" onSubmit={handleSubmit}>
         <FormCategoryBox
           selectedItemByCategory={selectedItemByCategory}
