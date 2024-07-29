@@ -7,9 +7,10 @@ import Link from 'next/link';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { handleRinkCopy, timeForToday } from '@/components/public';
+import { BestForumType } from '@/types/mainpage';
 
 const BestForum = () => {
-  const { data: forumList } = useQuery({
+  const { data: forumList } = useQuery<BestForumType[]>({
     queryKey: ['bestForum'],
     queryFn: async () => {
       try {
@@ -25,7 +26,7 @@ const BestForum = () => {
       <ToastContainer />
       <h1 className="text-xl font-semibold mb-7 ">오늘의 인기 포럼이에요🌟</h1>
       <Swiper navigation={true} modules={[Navigation]} slidesPerView={3} spaceBetween={10} className="mySwiper">
-        {forumList?.map((forum: any) => (
+        {forumList?.map((forum) => (
           <SwiperSlide key={forum.id}>
             <div className="w-90% border rounded-xl ml-1 px-4 ">
               <div className="flex justify-start items-center gap-4  border-b-[1px]">

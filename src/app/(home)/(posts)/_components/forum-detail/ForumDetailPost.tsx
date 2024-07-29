@@ -1,11 +1,12 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
 import { timeForToday } from '@/components/public';
-import { Tables } from '@/types/supabase';
-import Bookmark from './Bookmark';
+import { forumDetailType } from '@/types/posts/forumDetailTypes';
+import InputComments from './InputComment';
+import ForumComments from './ForumComments';
 
 const ForumDetailPost = ({ params }: { params: { id: string } }) => {
-  const { data: forumDetail, error } = useQuery<Tables<'forum_posts'>[]>({
+  const { data: forumDetail, error } = useQuery<forumDetailType[]>({
     queryKey: ['forumDetail'],
     queryFn: async () => {
       try {
@@ -37,14 +38,11 @@ const ForumDetailPost = ({ params }: { params: { id: string } }) => {
             <h2>{post.title}</h2>
             <p>{post.content}</p>
           </div>
-          <p>
-            {post.updated_at
-              ? post.updated_at.slice(0, 10).replace(/-/g, '.')
-              : post.created_at.slice(0, 10).replace(/-/g, '.')}
-          </p>
-          <Bookmark params={params} />
+          <p>{post.created_at.slice(0, 16).replace(/-/g, '.').replace(/T/g, ' ')}</p>
         </div>
       ))}
+      <InputComments />
+      <ForumComments />
     </div>
   );
 };
