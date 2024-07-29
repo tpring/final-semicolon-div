@@ -20,6 +20,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import FormSubmitButton from '../FormSubmitButton';
 import { useAuth } from '@/context/auth.context';
 import BackArrowIcon from '@/assets/images/upsert_image/BackArrowIcon';
+import ThumbNailBox from '../ThumbNailBox';
 
 type UpsertFormProps = {
   data: TforumPost | TqnaPost | TarchivePost;
@@ -136,6 +137,7 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
         />
         <FormTitleInput title={data.title} />
         <FormTagInput />
+        <ThumbNailBox />
         <FormContentArea content={content} setContent={setContent} />
         <FormSubmitButton />
       </form>
