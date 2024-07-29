@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAuth } from '@/context/auth.context';
-import OAuthButtons from './OAuthButtons'; // OAuthButtons 컴포넌트를 불러옴
+import OAuthButtons from './OAuthButtons';
 import { createClient } from '@/supabase/client';
 
 const LoginForm = () => {
@@ -13,7 +13,7 @@ const LoginForm = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
-  const { logIn } = useAuth();
+  const { logIn, me } = useAuth();
   const supabase = createClient();
 
   const handleLogin = async (): Promise<void> => {
@@ -98,7 +98,6 @@ const LoginForm = () => {
             </Link>
           </p>
         </div>
-        {/* Include the OAuthButtons component */}
         <OAuthButtons handleLogin={handleOAuthLogin} />
       </div>
     </div>
