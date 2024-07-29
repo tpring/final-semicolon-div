@@ -8,7 +8,7 @@ const PostsLink = () => {
     <div className="flex justify-between items-center gap-5 mt-5">
       <Link
         href={'/qna'}
-        className="bg-slate-200 w-1/3 h-[234px] flex flex-col justify-end p-5 rounded-2xl gap-1 text-white "
+        className="bg-slate-200 w-1/3 h-[234px] flex flex-col justify-end p-5 rounded-2xl gap-1 text-white  "
         style={{ backgroundImage: `url(${mainPageQna.src})` }}
       >
         <div>
