@@ -69,7 +69,6 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
     });
 
     const invalidItem = VALIDATION_SEQUENCE_KR[invalidItemIndex];
-
     if (invalidItem) {
       toast.error(invalidItem + ' 입력이 필요합니다!', { autoClose: 1500, hideProgressBar: true });
       return;
@@ -136,6 +135,7 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
         <PostingCategory />
         <FormTitleInput title={data.title} />
         <FormTagInput />
+        <h5 className="block mb-2 text-gray-900 text-h5 font-bold">썸네일</h5>
         <ThumbNailBox />
         <FormContentArea content={content} setContent={setContent} />
         <FormSubmitButton />

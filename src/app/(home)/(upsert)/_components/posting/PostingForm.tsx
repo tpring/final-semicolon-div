@@ -22,6 +22,7 @@ import { usePostingCategoryStore } from '@/store/postingCategoryStore';
 import PostingCategoryBox from './postingform/PostingCategoryBox';
 import UpsertTheme from '../UpsertTheme';
 import ThumbNailBox from '../ThumbNailBox';
+import { v4 as uuidv4 } from 'uuid';
 
 const PostingForm = () => {
   const { categoryGroup, subCategory, clearCategory } = usePostingCategoryStore();
@@ -48,7 +49,7 @@ const PostingForm = () => {
       return;
     }
 
-    const postFormData: TpostFormData = {
+    const postData: TpostFormData = {
       user_id: user?.id as string,
       content: content,
       category,
@@ -56,11 +57,11 @@ const PostingForm = () => {
     };
 
     formData.forEach((value, key) => {
-      postFormData[key] = value;
+      postData[key] = value;
     });
 
     //폼 유효성 검사 로직
-    const invalidItems = Object.keys(postFormData).filter((key) => !postFormData[key]);
+    const invalidItems = Object.keys(postData).filter((key) => !postData[key]);
     const invalidItemIndex = VALIDATION_SEQUENCE.findIndex((sequence) => {
       return !!invalidItems.find((item) => item === sequence);
     });
@@ -71,12 +72,27 @@ const PostingForm = () => {
       return;
     }
 
-    // 유효성 검사 통과시 업로드 썸네일 업로드 후 글업로드
+    const thumbnailFormData = new FormData(event.currentTarget);
+    thumbnailFormData.append('category', category);
+    thumbnailFormData.append('name', uuidv4());
+    //유효성 검사 통과시 업로드 썸네일 업로드 후 글업로드
+    const thumbnail = await fetch('/api/upsert/thumbnail', {
+      method: 'POST',
+      body: thumbnailFormData
+    });
+    const { url: thumbnailUrl, message: thumbnailMessage } = await thumbnail.json();
+
+    if (thumbnailMessage) {
+      toast.error(thumbnailMessage);
+      return;
+    }
+
     const response = await fetch('/api/upsert/posting', {
       method: 'POST',
-      body: JSON.stringify(postFormData)
+      body: JSON.stringify({ ...postData, thumbnailUrl })
     });
     const { message } = await response.json();
+
     toast.success(message, { autoClose: 1500, onClose: () => router.push(`/${category}`) });
     clearCategory();
     return;
@@ -93,7 +109,6 @@ const PostingForm = () => {
         <PostingCategoryBox />
         <FormTitleInput />
         <FormTagInput />
-        <h5 className="block mb-2 text-gray-900 text-h5 font-bold">썸네일</h5>
         <ThumbNailBox />
         <FormContentArea content={content} setContent={setContent} />
         <FormSubmitButton />
