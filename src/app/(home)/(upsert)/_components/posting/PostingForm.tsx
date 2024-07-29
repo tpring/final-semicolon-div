@@ -40,7 +40,10 @@ const PostingForm = () => {
     const formData = new FormData(event.currentTarget);
     const category = CATEGORY_LIST_EN[CATEGORY_LIST_KR.indexOf(categoryGroup.category)];
 
-    if (!FORUM_SUB_CATEGORY_LIST.find((FORUM_SUB_CATEGORY) => subCategory === FORUM_SUB_CATEGORY)) {
+    if (
+      category === 'forum' &&
+      !FORUM_SUB_CATEGORY_LIST.find((FORUM_SUB_CATEGORY) => subCategory === FORUM_SUB_CATEGORY)
+    ) {
       toast.error('포럼 서브 카테고리를 선택해 주세요!', { autoClose: 1500 });
       return;
     }
@@ -67,7 +70,6 @@ const PostingForm = () => {
       toast.error(invalidItem + ' 입력이 필요합니다!', { hideProgressBar: true });
       return;
     }
-    console.log(formData.get('thumbnail'));
 
     // 유효성 검사 통과시 업로드 썸네일 업로드 후 글업로드
     const response = await fetch('/api/upsert/posting', {
@@ -76,7 +78,6 @@ const PostingForm = () => {
     });
     const { message } = await response.json();
     toast.success(message, { autoClose: 1500, onClose: () => router.push(`/${category}`) });
-    console.log(category);
     clearCategory();
     return;
   };
