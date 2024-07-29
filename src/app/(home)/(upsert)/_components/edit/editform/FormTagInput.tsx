@@ -3,10 +3,15 @@ import React from 'react';
 const FormTagInput = () => {
   return (
     <div>
-      <label className="block" htmlFor="post-tag">
+      <label className="block mb-2 text-gray-900 text-h5 font-bold" htmlFor="tag">
         태그
       </label>
-      <input className="border-2 w-full border-black rounded" type="text" name="post-tag" id="post-tag" />
+      <input
+        className="px-1 w-full  text-neutral-900 text-body1 border h-[51px] rounded-xl border-neutral-100 focus:border-main-400 outline-none"
+        type="text"
+        name="tag"
+        id="tag"
+      />
     </div>
   );
 };

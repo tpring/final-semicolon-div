@@ -1064,7 +1064,7 @@ export type Database = {
           id: string;
           info: string | null;
           nickname: string | null;
-          profile_image: string | null;
+          profile_image: string;
         };
         Insert: {
           email: string;
@@ -1072,7 +1072,7 @@ export type Database = {
           id?: string;
           info?: string | null;
           nickname?: string | null;
-          profile_image?: string | null;
+          profile_image?: string;
         };
         Update: {
           email?: string;
@@ -1080,7 +1080,7 @@ export type Database = {
           id?: string;
           info?: string | null;
           nickname?: string | null;
-          profile_image?: string | null;
+          profile_image?: string;
         };
         Relationships: [
           {

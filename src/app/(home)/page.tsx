@@ -1,12 +1,11 @@
+import Header from '@/components/header/Header';
 import BestForum from './_components/BestForum';
 import LandingPage from './_components/LandingPage';
 import MainPageTag from './_components/MainPageTag';
 import Notice from './_components/Notice';
 import PostsLink from './_components/PostsLink';
-import Service from './_components/Service';
 import TodayQna from './_components/TodayQna';
-import TopButton from './_components/TopButton';
-import WebsiteLink from './_components/WebsiteLink';
+import TopButton from '../../components/TopButton';
 
 const HomePage = () => {
   return (
@@ -20,7 +19,6 @@ const HomePage = () => {
         <TopButton />
         <Notice />
       </div>
-      <Service />
     </div>
   );
 };

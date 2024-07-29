@@ -1,36 +1,17 @@
-'use client';
-import { TBOARD_ITEM } from '@/types/upsert';
-import MDEditor, { commands } from '@uiw/react-md-editor';
-import React, { Dispatch, useState } from 'react';
+import { Dispatch } from 'react';
+
+import CustomMDEditor from '../../CustomMDEditor';
 
 type FormContentAreaProps = {
   content: string;
   setContent: Dispatch<React.SetStateAction<string>>;
-  selectedItemByCategory: TBOARD_ITEM;
 };
 
-const FormContentArea = ({ content, setContent, selectedItemByCategory }: FormContentAreaProps) => {
-  const customCommandsWithOutQnA = commands.getCommands().filter((command) => !command?.name?.includes('code'));
-  const customExtraCommandsWithOutQnA = commands.getCommands().filter(() => false);
-
-  const handleContentChange = (value?: string) => {
-    setContent(value!);
-  };
-
+const FormContentArea = ({ content, setContent }: FormContentAreaProps) => {
   return (
     <div className="">
-      <label className="block" htmlFor="post-content">
-        본문
-      </label>
-      <MDEditor
-        id="post-content"
-        value={content}
-        onChange={handleContentChange}
-        preview="edit"
-        height={400}
-        commands={selectedItemByCategory.category === 'Q&A' ? commands.getCommands() : customCommandsWithOutQnA}
-        extraCommands={customExtraCommandsWithOutQnA}
-      />
+      <h5 className="block mb-2 text-gray-900 text-h5 font-bold">본문</h5>
+      <CustomMDEditor content={content} setContent={setContent} />
     </div>
   );
 };

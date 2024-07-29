@@ -1,47 +1,12 @@
-'use client';
-import React, { ChangeEvent, ChangeEventHandler, Dispatch, SetStateAction, useEffect } from 'react';
-
-import { BOARD_LIST } from '@/constants/posting';
-import { TBOARD_ITEM } from '@/types/upsert';
+import { usePostingCategoryStore } from '@/store/postingCategoryStore';
 import UpsertTheme from '../../../UpsertTheme';
 
-type PostingCategoryProps = {
-  selectedItemByCategory: TBOARD_ITEM;
-  setSelectedItemByCategory: Dispatch<SetStateAction<TBOARD_ITEM>>;
-};
-
-const PostingCategory = ({ selectedItemByCategory, setSelectedItemByCategory }: PostingCategoryProps) => {
-  const handleSelectChange: ChangeEventHandler = (event: ChangeEvent<HTMLSelectElement>) => {
-    const targetItemByCategory = BOARD_LIST.find((BOARD_ITEM) => {
-      return BOARD_ITEM.category === event.currentTarget.value;
-    });
-    setSelectedItemByCategory(
-      targetItemByCategory ?? {
-        category: '',
-        title: '',
-        content: ''
-      }
-    );
-  };
-
+const PostingCategory = () => {
+  const { categoryGroup } = usePostingCategoryStore();
   return (
-    <div className="flex flex-col">
-      <select
-        name="category-selector"
-        id="category-selector"
-        value={selectedItemByCategory?.category}
-        onChange={handleSelectChange}
-      >
-        <option value={undefined}>-----</option>
-        {BOARD_LIST.map((BOARD_ITEM) => {
-          return (
-            <option key={BOARD_ITEM.category} value={BOARD_ITEM.category}>
-              {BOARD_ITEM.category}
-            </option>
-          );
-        })}
-      </select>
-      {selectedItemByCategory ? <UpsertTheme theme={selectedItemByCategory} /> : <p>카테고리를 선택해보세요!</p>}
+    <div className="flex flex-col gap-4 my-2">
+      <h1 className="font-bold text-xl w-40  text-gray-700  h-[26px]">{categoryGroup.category}</h1>
+      <span className="text-gray-400 ">{categoryGroup.category ? <UpsertTheme /> : null}</span>
     </div>
   );
 };
