@@ -1,4 +1,4 @@
-const filled_like = () => {
+const FilledLike = () => {
   return (
     <svg width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -9,4 +9,4 @@ const filled_like = () => {
   );
 };
 
-export default filled_like;
+export default FilledLike;
