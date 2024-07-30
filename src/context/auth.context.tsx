@@ -2,7 +2,6 @@
 
 import { createClient } from '@/supabase/client';
 import { User } from '@supabase/supabase-js';
-import { Result } from 'postcss';
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
 
 type UserData = {
@@ -20,6 +19,7 @@ type AuthContextValue = {
   logIn: (email: string, password: string) => Promise<{ status: number; message?: string }>;
   logOut: () => Promise<{ status: number; message?: string }>;
   signUp: (email: string, password: string, nickname: string) => Promise<{ status: number; message?: string }>;
+  updateUserData: (updates: Partial<UserData>) => void;
 };
 
 const initialValue: AuthContextValue = {
@@ -29,7 +29,8 @@ const initialValue: AuthContextValue = {
   userData: null,
   logIn: async () => ({ status: 0 }),
   logOut: async () => ({ status: 0 }),
-  signUp: async () => ({ status: 0 })
+  signUp: async () => ({ status: 0 }),
+  updateUserData: () => {}
 };
 
 const AuthContext = createContext<AuthContextValue>(initialValue);
@@ -60,6 +61,16 @@ export function AuthProvider({ children }: PropsWithChildren) {
     } else {
       setUserData(null);
     }
+  };
+
+  // 유저 정보 업데이트 함수
+  const updateUserData: AuthContextValue['updateUserData'] = (updates) => {
+    setUserData((prevData) => {
+      if (prevData === null) {
+        return { ...updates } as UserData;
+      }
+      return { ...prevData, ...updates };
+    });
   };
 
   // 로그인 함수
@@ -163,7 +174,8 @@ export function AuthProvider({ children }: PropsWithChildren) {
     userData,
     logIn,
     logOut,
-    signUp
+    signUp,
+    updateUserData
   };
 
   if (!isInitialized) return null;

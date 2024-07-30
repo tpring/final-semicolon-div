@@ -1,134 +1,183 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import Image from 'next/image';
-import EditableField from './setting/EditableField';
-import { User as UserType } from '@/types/profile/profileType';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/context/auth.context';
+import NicknameModal from './setting/NicknameModal';
+import GithubUrlModal from './setting/GithubUrlModal';
+import InfoModal from './setting/InfoModal';
+import Image from 'next/image';
+import { upDateImage, uploadImage } from '@/utils/imageUpload';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ProfileSetting = () => {
-  const { me, userData } = useAuth();
-  const [user, setUser] = useState<UserType | null>(null);
-  const [showInput, setShowInput] = useState<null | string>(null);
-  const userDefaultImage =
-    'https://jtorewqfshytdtgldztv.supabase.co/storage/v1/object/public/profile_image/free-icon-user-747376.png?t=2024-07-22T05%3A29%3A24.993Z';
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { userData, me, updateUserData } = useAuth();
+  const [nickname, setNickname] = useState('');
+  const [profileImage, setProfileImage] = useState('');
+  const [info, setInfo] = useState('');
+  const [githubUrl, setGithubUrl] = useState('');
+  const [isNicknameModalOpen, setNicknameModalOpen] = useState(false);
+  const [isGithubUrlModalOpen, setGithubUrlModalOpen] = useState(false);
+  const [isInfoModalOpen, setInfoModalOpen] = useState(false);
+  const newProfileRef = useRef<File | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (userData) {
-      setUser({
-        id: me?.id ?? '',
-        profile_image: userData.profile_image || userDefaultImage,
-        email: me?.email ?? '',
-        nickname: userData.nickname ?? '',
-        github_url: userData.github_url ?? '',
-        info: userData.info ?? ''
-      });
+      setNickname(userData.nickname || '');
+      setProfileImage(userData.profile_image || '');
+      setInfo(userData.info || '');
+      setGithubUrl(userData.github_url || '');
     }
-  }, [me, userData]);
+  }, [userData]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setUser((prevUser) => {
-      if (prevUser) {
-        return {
-          ...prevUser,
-          [name]: value
-        };
-      }
-      return prevUser;
-    });
-  };
-
-  const handleLabelClick = (field: string) => {
-    setShowInput((prevField) => (prevField === field ? null : field));
-  };
-
-  // 프로필 이미지 파일 변경 핸들러
-  const handleProfileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      const file = event.target.files[0];
-      // 파일 업로드 처리 로직을 추가하세요
-    }
-  };
-
-  // 프로필 이미지 클릭 핸들러
   const handleImageClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  // 유저 정보 업데이트 함수
-  const updateUser = async () => {
-    if (user && me) {
-      const userConfirmed = confirm('저장하시겠습니까?');
-      if (!userConfirmed) return;
-
-      const requestData = {
-        userId: user.id,
-        profile_image: user.profile_image || '',
-        nickname: user.nickname || '',
-        github_url: user.github_url || '',
-        info: user.info || ''
-      };
-
-      console.log('Sending update request with data:', requestData);
-
-      const response = await fetch('/api/profile/profileauth', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(requestData)
-      });
-
-      const result = await response.json();
-      if (response.ok) {
-        alert('User updated successfully');
-      } else {
-        console.error('Failed to update user:', result.error);
-        alert('Failed to update user');
-      }
+    if (inputRef.current) {
+      inputRef.current.click();
     }
   };
+
+  const handleImageUpload: React.ChangeEventHandler<HTMLInputElement> = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file || !me?.id) return;
+
+    newProfileRef.current = file;
+
+    const userId = me.id;
+    const defaultProfileImage =
+      'https://jtorewqfshytdtgldztv.supabase.co/storage/v1/object/public/profile_images/default_profile_image.png';
+
+    const oldPath = profileImage.split('/').slice(-1)[0];
+    const filePath = `${userId}_${Date.now()}.png`;
+
+    let publicUrl: string | null = null;
+
+    try {
+      if (profileImage === defaultProfileImage) {
+        publicUrl = await uploadImage(file as File, filePath);
+      } else {
+        publicUrl = await upDateImage(file as File, filePath, oldPath);
+      }
+
+      if (publicUrl) {
+        await updateProfile({ profile_image: publicUrl });
+        setProfileImage(publicUrl);
+        updateUserData({ profile_image: publicUrl });
+      } else {
+        toast.error('이미지 업로드에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('이미지 업로드 실패:', (error as Error).message);
+    }
+  };
+
+  const handleNicknameUpdate = async (newNickname: string) => {
+    setNickname(newNickname);
+    await updateProfile({ nickname: newNickname });
+    updateUserData({ nickname: newNickname });
+  };
+
+  const handleGithubUrlUpdate = async (newGithubUrl: string) => {
+    setGithubUrl(newGithubUrl);
+    await updateProfile({ github_url: newGithubUrl });
+    updateUserData({ github_url: newGithubUrl });
+  };
+
+  const handleInfoUpdate = async (newInfo: string) => {
+    setInfo(newInfo);
+    await updateProfile({ info: newInfo });
+    updateUserData({ info: newInfo });
+  };
+
+  const updateProfile = async (
+    updates: Partial<{ nickname: string; profile_image: string; info: string; github_url: string }>
+  ) => {
+    if (!me) return;
+
+    const response = await fetch('/api/profile/profileauth', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        user_id: me.id,
+        ...updates
+      })
+    });
+
+    if (response.ok) {
+      toast.success('프로필이 성공적으로 수정되었습니다.');
+    } else {
+      toast.error('프로필이 성공 실패했습니다.');
+    }
+  };
+
+  if (!userData) return <p>Loading...</p>;
 
   return (
-    <div className="w-full max-w-md mx-auto p-4">
-      <p>계정 관리</p>
-      <p>서비스에서 사용하는 내 계정 정보를 관리할 수 있습니다.</p>
-      <div onClick={handleImageClick}>
-        <Image src={user?.profile_image || userDefaultImage} alt="Profile" width={200} height={200} priority />
-        <input type="file" accept="image/*" onChange={handleProfileChange} ref={fileInputRef} />
+    <div className="w-[850px] h-[831px] flex flex-col justify-center items-center p-6 border border-sub-200 rounded-lg">
+      <ToastContainer />
+      <div className="w-[588px]">
+        <div className="mb-4 flex flex-col justify-center items-center">
+          <div
+            className="relative w-32 h-32 border border-[#ccc] rounded-full overflow-hidden bg-[#fdfbfb] flex items-center justify-center cursor-pointer"
+            onClick={handleImageClick}
+          >
+            {profileImage ? (
+              <Image
+                src={profileImage}
+                alt="Profile"
+                fill
+                priority
+                className="rounded-full object-cover"
+                sizes="120px"
+              />
+            ) : (
+              <div></div>
+            )}
+            <input type="file" className="hidden" ref={inputRef} onChange={handleImageUpload} accept=".png" />
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300 bg-black bg-opacity-30 rounded-full">
+              <span className="text-white text-title">+</span>
+            </div>
+          </div>
+          <p className="p-[24px_0_24px_0]">{nickname}님, 좋은 하루 보내세요!</p>
+        </div>
+        <div className="flex justify-between p-[24px_0_24px_0]">
+          <span>이메일</span>
+          <span>{me?.email}</span>
+        </div>
+        <div className="flex justify-between p-[24px_0_24px_0]">
+          <span>닉네임</span>
+          <span onClick={() => setNicknameModalOpen(true)}>{nickname} ›</span>
+          <NicknameModal
+            isOpen={isNicknameModalOpen}
+            onClose={() => setNicknameModalOpen(false)}
+            currentNickname={nickname}
+            onNicknameUpdate={handleNicknameUpdate}
+          />
+        </div>
+        <div className="flex justify-between p-[24px_0_24px_0]">
+          <span>깃허브 링크</span>
+          <span onClick={() => setGithubUrlModalOpen(true)}>{githubUrl} ›</span>
+          <GithubUrlModal
+            isOpen={isGithubUrlModalOpen}
+            onClose={() => setGithubUrlModalOpen(false)}
+            currentGithubUrl={githubUrl}
+            onGithubUrlUpdate={handleGithubUrlUpdate}
+          />
+        </div>
+        <div onClick={() => setInfoModalOpen(true)} className="flex justify-between p-[24px_0_24px_0]">
+          <span>자기소개</span>
+          <span>›</span>
+        </div>
+        <p>{info}</p>
+        <InfoModal
+          isOpen={isInfoModalOpen}
+          onClose={() => setInfoModalOpen(false)}
+          currentInfo={info}
+          onInfoUpdate={handleInfoUpdate}
+        />
       </div>
-      <div className="flex items-center mb-4">
-        <span className="mr-[90px]">이메일</span>
-        <span>{user?.email}</span>
-      </div>
-      <EditableField
-        label="닉네임"
-        name="nickname"
-        value={user?.nickname || ''}
-        showInput={showInput}
-        onChange={handleChange}
-        onLabelClick={handleLabelClick}
-      />
-      <EditableField
-        label="깃허브 링크"
-        name="github_url"
-        value={user?.github_url || ''}
-        showInput={showInput}
-        onChange={handleChange}
-        onLabelClick={handleLabelClick}
-      />
-      <EditableField
-        label="자기소개"
-        name="info"
-        value={user?.info || ''}
-        showInput={showInput}
-        onChange={handleChange}
-        onLabelClick={handleLabelClick}
-      />
-      <button onClick={updateUser}>저장</button>
     </div>
   );
 };

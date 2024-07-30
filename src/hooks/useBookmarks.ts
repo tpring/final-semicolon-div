@@ -1,43 +1,60 @@
+import { useAuth } from '@/context/auth.context';
 import { useQuery } from '@tanstack/react-query';
 
-// 수정 제네릭?
-
 // 포스트 데이터를 가져오는 함수
-const fetchBookmarksPosts = async () => {
-  const response = await fetch('/api/profile/bookmarksposts');
+const fetchBookmarksPosts = async (userId: string) => {
+  const response = await fetch('/api/profile/bookmarksposts', {
+    headers: {
+      'user-id': userId
+    }
+  });
   if (!response.ok) {
-    throw new Error('포스트 정보 가져오기 실패');
+    throw new Error('포스트 정보를 가져오는 데 실패했습니다.');
   }
   return response.json();
 };
 
 // 포스트 훅
 export const useBookmarksPosts = () => {
+  const { me } = useAuth();
+  const userId = me?.id;
+
   return useQuery({
-    queryKey: ['bookmarksPosts'],
-    queryFn: fetchBookmarksPosts
+    queryKey: ['bookmarksPosts', userId],
+    queryFn: () => {
+      if (!userId) throw new Error('사용자 ID가 필요합니다.');
+      return fetchBookmarksPosts(userId);
+    },
+    enabled: !!userId,
+    staleTime: 5 * 60 * 1000
   });
 };
 
 // 댓글 데이터를 가져오는 함수
-const fetchBookmarksComments = async () => {
-  const response = await fetch('/api/profile/bookmarkscomments');
+const fetchBookmarksComments = async (userId: string) => {
+  const response = await fetch('/api/profile/bookmarkscomments', {
+    headers: {
+      'user-id': userId
+    }
+  });
   if (!response.ok) {
-    throw new Error('댓글 정보 가져오기 실패');
+    throw new Error('댓글 정보를 가져오는 데 실패했습니다.');
   }
   return response.json();
 };
 
 // 댓글 훅
 export const useBookmarksComments = () => {
+  const { me } = useAuth();
+  const userId = me?.id;
+
   return useQuery({
-    queryKey: ['bookmarksComments'],
-    queryFn: fetchBookmarksComments
+    queryKey: ['bookmarksComments', userId],
+    queryFn: () => {
+      if (!userId) throw new Error('사용자 ID가 필요합니다.');
+      return fetchBookmarksComments(userId);
+    },
+    enabled: !!userId,
+    staleTime: 5 * 60 * 1000
   });
 };
-/*
-필요한 경우 추가 옵션 설정
-staleTime: 5 * 60 * 1000, // 데이터가 신선하다고 간주되는 시간 (5분)
-cacheTime: 10 * 60 * 1000, // 데이터가 캐시에 유지되는 시간 (10분)
-refetchOnWindowFocus: false, // 창 포커스 시 데이터 새로고침 여부 
-*/
