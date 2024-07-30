@@ -14,7 +14,8 @@ export const POST = async (request: NextRequest) => {
           user_id: jsonData.user_id,
           title: jsonData.title,
           content: jsonData.content,
-          forum_category: jsonData.forum_category
+          forum_category: jsonData.forum_category,
+          thumbnail: jsonData.thumbnailUrl
         }
       ])
       .select();
@@ -27,7 +28,8 @@ export const POST = async (request: NextRequest) => {
         {
           user_id: jsonData.user_id,
           title: jsonData.title,
-          content: jsonData.content
+          content: jsonData.content,
+          thumbnail: jsonData.thumbnailUrl
         }
       ])
       .select();
@@ -39,7 +41,8 @@ export const POST = async (request: NextRequest) => {
         {
           user_id: jsonData.user_id,
           title: jsonData.title,
-          content: jsonData.content
+          content: jsonData.content,
+          thumbnail: jsonData.thumbnailUrl
         }
       ])
       .select();
