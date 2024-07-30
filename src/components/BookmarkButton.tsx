@@ -4,16 +4,24 @@ import FilledBookmark from '@/assets/images/bookmark/FilledBookmark';
 import UnfilledBookmark from '@/assets/images/bookmark/UnfilledBookmark';
 import { useAuth } from '@/context/auth.context';
 import { useBookmark } from '@/hooks/bookmark/useBookmark';
-import { bookmarkButton } from '@/types/buttons/bookmark';
+import { BookmarkButtonProps, BookmarkType } from '@/types/buttons/bookmark';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 
-const BookmarkButton = ({ postId }: bookmarkButton) => {
+const BookmarkButton = ({ id, type }: BookmarkButtonProps) => {
   const { me } = useAuth();
   const { bookmarks, setBookmarks } = useBookmark();
-  const [loading, setLoading] = useState(false);
 
-  const isBookmarked = bookmarks.includes(postId);
+  const bookmarksMap: { [key in BookmarkType]: string[] } = {
+    forum: bookmarks.forumBookmarks,
+    forumComment: bookmarks.forumCommentBookmarks,
+    qna: bookmarks.qnaBookmarks,
+    qnaComment: bookmarks.qnaCommentBookmarks,
+    archive: bookmarks.archiveBookmarks,
+    archiveComment: bookmarks.archiveCommentBookmarks
+  };
+  const currentBookmarks = bookmarksMap[type] || [];
+  const isBookmarked = currentBookmarks.includes(id);
 
   const handleBookmark = async () => {
     if (!me) {
@@ -21,39 +29,47 @@ const BookmarkButton = ({ postId }: bookmarkButton) => {
       return;
     }
 
-    const previousState = bookmarks;
-    const updatedBookmarks = isBookmarked ? bookmarks.filter((id) => id! == postId) : [...bookmarks, postId];
+    const previousBookmarks = { ...bookmarks };
+    const updatedBookmarks = isBookmarked
+      ? currentBookmarks.filter((bookmarkId) => bookmarkId !== id)
+      : [...currentBookmarks, id];
 
-    setBookmarks(updatedBookmarks);
-
-    setLoading(true);
+    setBookmarks((prev) => ({
+      ...prev,
+      [`${type}Bookmarks`]: updatedBookmarks
+    }));
 
     try {
+      console.log('Sending request:', {
+        user_id: me.id,
+        post_id: type.includes('Comment') ? undefined : id,
+        comment_id: type.includes('Comment') ? id : undefined,
+        type
+      });
       const response = await fetch('api/common/bookmark', {
         method: isBookmarked ? 'DELETE' : 'POST',
         headers: {
           'Context-Type': 'application/json'
         },
-        body: JSON.stringify({ user_id: me.id, post_id: postId })
+        body: JSON.stringify({
+          user_id: me.id,
+          post_id: type.includes('Comment') ? undefined : id,
+          comment_id: type.includes('Comment') ? id : undefined,
+          type
+        })
       });
-      const result = await response.json();
-      if (response.ok) {
-        setBookmarks((prev) => (isBookmarked ? prev.filter((id) => id !== postId) : [...prev, postId]));
-      } else {
-        throw new Error(result.error);
+
+      if (!response.ok) {
+        const errorResult = await response.json();
+        console.error('Server response error:', errorResult);
+        throw new Error('Failed to update bookmark');
       }
     } catch (error) {
       console.error('bookmark 2', error);
-      setBookmarks(previousState);
-    } finally {
-      setLoading(false);
+      setBookmarks(previousBookmarks);
     }
   };
-  return (
-    <button onClick={handleBookmark} disabled={loading}>
-      {isBookmarked ? <FilledBookmark /> : <UnfilledBookmark />}
-    </button>
-  );
+  return <button onClick={handleBookmark}>{isBookmarked ? <FilledBookmark /> : <UnfilledBookmark />}</button>;
 };
 
 export default BookmarkButton;

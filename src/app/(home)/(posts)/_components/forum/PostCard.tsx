@@ -49,7 +49,7 @@ const PostCard = ({ post }: PostCardProps) => {
           </div>
         </div>
       </Link>
-      <BookmarkButton postId={post.id} />
+      <BookmarkButton id={post.id} type="forum" />
     </>
   );
 };
