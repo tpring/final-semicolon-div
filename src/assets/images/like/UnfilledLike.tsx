@@ -1,4 +1,4 @@
-const unfilled_like = () => {
+const UnfilledLike = () => {
   return (
     <svg width="20" height="19" viewBox="0 0 20 19" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -11,4 +11,4 @@ const unfilled_like = () => {
   );
 };
 
-export default unfilled_like;
+export default UnfilledLike;

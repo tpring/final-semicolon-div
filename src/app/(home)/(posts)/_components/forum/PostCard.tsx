@@ -1,4 +1,5 @@
-import BookmarkButton from '@/components/BookmarkButton';
+import BookmarkButton from '@/components/common/BookmarkButton';
+import LikeButton from '@/components/common/LikeButton';
 import { PostCardProps } from '@/types/posts/forumTypes';
 import MDEditor from '@uiw/react-md-editor';
 import dayjs from 'dayjs';
@@ -50,6 +51,7 @@ const PostCard = ({ post }: PostCardProps) => {
         </div>
       </Link>
       <BookmarkButton id={post.id} type="forum" />
+      <LikeButton id={post.id} type="forum" />
     </>
   );
 };
