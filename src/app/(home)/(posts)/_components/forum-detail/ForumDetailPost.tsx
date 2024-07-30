@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { forumDetailType } from '@/types/posts/forumDetailTypes';
 import InputComments from './InputComment';
 import ForumComments from './ForumComments';
-import { timeForToday } from '@/components/timeForToday';
+import { timeForToday } from '@/utils/timeForToday';
 
 const ForumDetailPost = ({ params }: { params: { id: string } }) => {
   const { data: forumDetail, error } = useQuery<forumDetailType[]>({
@@ -42,8 +42,8 @@ const ForumDetailPost = ({ params }: { params: { id: string } }) => {
           <p>{post.created_at.slice(0, 16).replace(/-/g, '.').replace(/T/g, ' ')}</p>
         </div>
       ))}
-      <InputComments params={params} />
-      <ForumComments params={params} />
+      <InputComments />
+      <ForumComments />
     </div>
   );
 };

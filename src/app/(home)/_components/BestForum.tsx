@@ -7,8 +7,8 @@ import Link from 'next/link';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { BestForumType } from '@/types/mainpage';
-import { timeForToday } from '@/components/timeForToday';
-import { handleRinkCopy } from '@/components/handleRinkCopy';
+import { timeForToday } from '@/utils/timeForToday';
+import { handleRinkCopy } from '@/utils/handleRinkCopy';
 
 const BestForum = () => {
   const { data: forumList } = useQuery<BestForumType[]>({
