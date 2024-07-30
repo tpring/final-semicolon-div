@@ -87,21 +87,63 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: '댓글 유저 정보 가져오기 실패' }, { status: 500 });
   }
 
+  // 좋아요 수 및 댓글 수 가져오기
+  const likeAndCommentCountFetches = [
+    supabase.from('archive_likes').select('post_id', { count: 'exact' }).in('post_id', postIds),
+    supabase.from('forum_likes').select('post_id', { count: 'exact' }).in('post_id', postIds),
+    supabase.from('qna_likes').select('post_id', { count: 'exact' }).in('post_id', postIds),
+
+    supabase.from('archive_comments').select('post_id', { count: 'exact' }).in('post_id', postIds),
+    supabase.from('forum_comments').select('post_id', { count: 'exact' }).in('post_id', postIds),
+    supabase.from('qna_comments').select('post_id', { count: 'exact' }).in('post_id', postIds)
+  ];
+
+  const [
+    archiveLikesCountResponse,
+    forumLikesCountResponse,
+    qnaLikesCountResponse,
+    archiveCommentCountResponse,
+    forumCommentCountResponse,
+    qnaCommentCountResponse
+  ] = await Promise.all(likeAndCommentCountFetches);
+
+  if (
+    archiveLikesCountResponse.error ||
+    forumLikesCountResponse.error ||
+    qnaLikesCountResponse.error ||
+    archiveCommentCountResponse.error ||
+    forumCommentCountResponse.error ||
+    qnaCommentCountResponse.error
+  ) {
+    return NextResponse.json({ error: '좋아요 수 또는 댓글 수 가져오기 실패' }, { status: 500 });
+  }
+
+  const countOrDefault = (response: any[], postId: string) => {
+    const item = response.find((item) => item.post_id === postId);
+    return item ? item.count : 0;
+  };
+
   const postData = {
     archivePosts: archivePostsResponse.data.map((post) => ({
       ...post,
       user: commentUsers.find((user) => user.id === post.user_id),
-      tags: archiveTagsResponse.data.filter((tag) => tag.post_id === post.id).map((tag) => tag.tag)
+      tags: archiveTagsResponse.data.filter((tag) => tag.post_id === post.id).map((tag) => tag.tag),
+      likesCount: countOrDefault(archiveLikesCountResponse.data, post.id),
+      commentsCount: countOrDefault(archiveCommentCountResponse.data, post.id)
     })),
     forumPosts: forumPostsResponse.data.map((post) => ({
       ...post,
       user: commentUsers.find((user) => user.id === post.user_id),
-      tags: forumTagsResponse.data.filter((tag) => tag.post_id === post.id).map((tag) => tag.tag)
+      tags: forumTagsResponse.data.filter((tag) => tag.post_id === post.id).map((tag) => tag.tag),
+      likesCount: countOrDefault(forumLikesCountResponse.data, post.id),
+      commentsCount: countOrDefault(forumCommentCountResponse.data, post.id)
     })),
     qnaPosts: qnaPostsResponse.data.map((post) => ({
       ...post,
       user: commentUsers.find((user) => user.id === post.user_id),
-      tags: qnaTagsResponse.data.filter((tag) => tag.post_id === post.id).map((tag) => tag.tag)
+      tags: qnaTagsResponse.data.filter((tag) => tag.post_id === post.id).map((tag) => tag.tag),
+      likesCount: countOrDefault(qnaLikesCountResponse.data, post.id),
+      commentsCount: countOrDefault(qnaCommentCountResponse.data, post.id)
     }))
   };
 
