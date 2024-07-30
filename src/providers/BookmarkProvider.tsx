@@ -1,6 +1,5 @@
 'use client';
 
-import Bookmark from '@/components/Bookmark';
 import { useAuth } from '@/context/auth.context';
 import { BookmarkContextType, BookmarkProviderProps } from '@/types/buttons/bookmark';
 import { createContext, useEffect, useState } from 'react';
