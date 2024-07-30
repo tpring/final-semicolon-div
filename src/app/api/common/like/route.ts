@@ -40,10 +40,16 @@ export const POST = async (request: NextRequest) => {
     type: LikeType;
   };
   const supabase = createClient();
-  let table: (typeof TABLES)[keyof typeof TABLES];
-  let record: { post_id?: string; comment_id?: string; user_id: string } = { user_id };
 
   try {
+    if (!user_id || (!post_id && !comment_id)) {
+      return NextResponse.json({ error: 'user_id and either post_id or comment_id are required' }, { status: 400 });
+    }
+
+    let record: { post_id: string; user_id: string } | { comment_id: string; user_id: string };
+
+    let table: (typeof TABLES)[keyof typeof TABLES];
+
     switch (type) {
       case 'forum':
       case 'qna':
@@ -51,7 +57,7 @@ export const POST = async (request: NextRequest) => {
         if (!post_id) {
           return NextResponse.json({ error: 'post_id is required' }, { status: 400 });
         }
-        record.post_id = post_id;
+        record = { post_id, user_id };
         table = TABLES[type];
         break;
       case 'forumComment':
@@ -60,11 +66,11 @@ export const POST = async (request: NextRequest) => {
         if (!comment_id) {
           return NextResponse.json({ error: 'comment_id is required' }, { status: 400 });
         }
-        record.comment_id = comment_id;
+        record = { comment_id, user_id };
         table = TABLES[type];
         break;
       default:
-        return NextResponse.json({ error: 'Invalid bookmark type' }, { status: 400 });
+        return NextResponse.json({ error: 'Invalid like type' }, { status: 400 });
     }
 
     const { data: like, error } = await supabase.from(table).insert(record).select();
@@ -75,7 +81,7 @@ export const POST = async (request: NextRequest) => {
 
     return NextResponse.json(like);
   } catch (error) {
-    console.error('bookmarkRoute12', error);
+    console.error('likeRoute', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 };
