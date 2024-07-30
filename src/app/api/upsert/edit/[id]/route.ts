@@ -1,7 +1,6 @@
-import { CATEGORY_LIST_EN } from '@/constants/upsert';
 import { EDIT_ERROR_MASSAGE, EDIT_SUCCESS_MASSAGE, POST_LOAD_ERROR_MASSAGE } from '@/constants/upsert.api';
 import { createClient } from '@/supabase/server';
-import { TarchivePost, Tcategory, TforumPost, TqnaPost } from '@/types/upsert';
+import { TarchivePost, TforumPost, TqnaPost } from '@/types/upsert';
 import { NextRequest } from 'next/server';
 
 type Tparams = { params: { id: string } };
@@ -47,7 +46,8 @@ export const PATCH = async (request: NextRequest, { params }: Tparams) => {
       .update({
         content: jsonData.content,
         title: jsonData.title,
-        forum_category: (jsonData as TforumPost).forum_category
+        forum_category: (jsonData as TforumPost).forum_category,
+        thumbnail: jsonData.thumbnail
       })
       .eq('id', post_id)
       .eq('user_id', jsonData.user_id)
@@ -58,7 +58,8 @@ export const PATCH = async (request: NextRequest, { params }: Tparams) => {
       .from(`${category}_posts`)
       .update({
         content: jsonData.content,
-        title: jsonData.title
+        title: jsonData.title,
+        thumbnail: jsonData.thumbnail
       })
       .eq('id', post_id)
       .eq('user_id', jsonData.user_id)
@@ -69,7 +70,8 @@ export const PATCH = async (request: NextRequest, { params }: Tparams) => {
       .from(`${category}_posts`)
       .update({
         content: jsonData.content,
-        title: jsonData.title
+        title: jsonData.title,
+        thumbnail: jsonData.thumbnail
       })
       .eq('id', post_id)
       .eq('user_id', jsonData.user_id)
