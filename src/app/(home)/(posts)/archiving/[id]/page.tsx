@@ -1,5 +1,11 @@
+import ArchivingDetailForm from '../../_components/Archiving/ ArchivingDetailForm';
+
 const ArchivingDetailPage = () => {
-  return <div></div>;
+  return (
+    <div>
+      <ArchivingDetailForm />
+    </div>
+  );
 };
 
 export default ArchivingDetailPage;

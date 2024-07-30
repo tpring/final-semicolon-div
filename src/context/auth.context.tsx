@@ -18,7 +18,12 @@ type AuthContextValue = {
   userData: UserData | null;
   logIn: (email: string, password: string) => Promise<{ status: number; message?: string }>;
   logOut: () => Promise<{ status: number; message?: string }>;
-  signUp: (email: string, password: string, nickname: string) => Promise<{ status: number; message?: string }>;
+  signUp: (
+    email: string,
+    password: string,
+    nickname: string,
+    recaptchaToken: string | null
+  ) => Promise<{ status: number; message?: string }>;
 };
 
 const initialValue: AuthContextValue = {
@@ -66,15 +71,10 @@ export function AuthProvider({ children }: PropsWithChildren) {
     if (!email || !password) {
       return { status: 401, message: '이메일, 비밀번호 모두 채워 주세요!' };
     }
-    const data = {
-      email,
-      password
-    };
+    const data = { email, password };
     const response = await fetch('/api/auth/login', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     });
     const result = await response.json();
@@ -82,38 +82,23 @@ export function AuthProvider({ children }: PropsWithChildren) {
     if (response.status === 401) {
       return { status: 401, message: '로그인에 실패했습니다.' };
     }
-    const { user } = result;
-    console.log(user);
 
+    const { user } = result;
     setMe(user);
-    setUserData({
-      nickname: user.nickname,
-      profile_image: user.profile_image,
-      info: user.info,
-      github_url: user.github_url
-    });
+    await fetchUserData(user.id);
 
     return { status: 200 };
   };
 
-  // 가입 함수
-  const signUp: AuthContextValue['signUp'] = async (email, password, nickname) => {
+  // 회원가입 함수
+  const signUp: AuthContextValue['signUp'] = async (email, password, nickname, recaptchaToken) => {
     if (!email || !password) {
-      return { status: 401, message: '이메일, 비밀번호 모두 채워 주세요.' };
+      return { status: 401, message: '이메일, 비밀번호 모두 채워 주세요!' };
     }
-    if (me) {
-      await logOut();
-    }
-    const data = {
-      email,
-      password,
-      nickname
-    };
+    const data = { email, password, nickname, recaptchaToken };
     const response = await fetch('/api/auth/signup', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     });
     const result = await response.json();
@@ -121,9 +106,13 @@ export function AuthProvider({ children }: PropsWithChildren) {
     if (response.status === 401) {
       return { status: 401, message: '회원가입에 실패했습니다.' };
     }
-    const { user } = result;
-    setMe(user);
-    fetchUserData(user.id);
+
+    // 회원가입 후 로그인 처리
+    const loginResponse = await logIn(email, password);
+    if (loginResponse.status !== 200) {
+      return { status: loginResponse.status, message: '회원가입은 되었지만 로그인에 실패했습니다.' };
+    }
+
     return { status: 200 };
   };
 
@@ -139,20 +128,22 @@ export function AuthProvider({ children }: PropsWithChildren) {
   };
 
   useEffect(() => {
-    try {
-      fetch('/api/auth/me')
-        .then(async (response) => {
-          if (response.status === 200) {
-            const user = await response.json();
-            setMe(user);
-            fetchUserData(user.id);
-          }
-          setIsInitialized(true);
-        })
-        .catch(() => setIsInitialized(true));
-    } catch (e) {
-      setIsInitialized(true);
-    }
+    const initializeAuth = async () => {
+      try {
+        const response = await fetch('/api/auth/me');
+        if (response.status === 200) {
+          const user = await response.json();
+          setMe(user);
+          await fetchUserData(user.id);
+        }
+      } catch (error) {
+        console.error('Error initializing auth:', error);
+      } finally {
+        setIsInitialized(true);
+      }
+    };
+
+    initializeAuth();
   }, []);
 
   const value: AuthContextValue = {

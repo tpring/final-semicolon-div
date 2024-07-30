@@ -7,9 +7,10 @@ import SignupButton from './SignupButton';
 import InputField from './InputField';
 import CheckboxGroup from './CheckboxGroup';
 import { useRouter } from 'next/navigation';
-import NicknameCheck from './NicknameCheck ';
 import PasswordFields from './PasswordFields';
 import ReCAPTCHA from 'react-google-recaptcha';
+import { useAuth } from '@/context/auth.context';
+import NicknameCheck from './NicknameCheck ';
 
 const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY as string;
 
@@ -37,6 +38,7 @@ const SignupForm = () => {
   const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
 
   const router = useRouter();
+  const { signUp } = useAuth();
 
   useEffect(() => {
     const validateEmail = (email: string) => {
@@ -106,32 +108,15 @@ const SignupForm = () => {
       return;
     }
 
-    try {
-      const response = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email,
-          password,
-          nickname,
-          recaptchaToken
-        })
+    const result = await signUp(email, password, nickname, recaptchaToken);
+
+    if (result.status === 200) {
+      toast.success('회원가입이 완료되었습니다.', {
+        autoClose: 2000,
+        onClose: () => router.replace('/')
       });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        toast.success('회원가입이 완료되었습니다.', {
-          autoClose: 2000,
-          onClose: () => router.replace('/')
-        });
-      } else {
-        toast.error(result.error || '회원가입 중 오류가 발생했습니다.');
-      }
-    } catch (error) {
-      toast.error('회원가입 중 오류가 발생했습니다.');
+    } else {
+      toast.error(result.message || '회원가입 중 오류가 발생했습니다.');
     }
   };
 
@@ -140,6 +125,7 @@ const SignupForm = () => {
     const form = event.currentTarget.closest('form') as HTMLFormElement;
     form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
   };
+
   const onReCaptchaChange = (token: string | null) => {
     setRecaptchaToken(token);
   };
