@@ -1,10 +1,14 @@
+import { useAuth } from '@/context/auth.context';
 import { useQuery } from '@tanstack/react-query';
 
-// 수정 제네릭?
-
 // 포스트 데이터를 가져오는 함수
-const fetchLikesPosts = async () => {
-  const response = await fetch('/api/profile/likesposts');
+const fetchLikesPosts = async (userId: string) => {
+  const response = await fetch('/api/profile/likesposts', {
+    cache: 'no-store',
+    headers: {
+      'user-id': userId
+    }
+  });
   if (!response.ok) {
     throw new Error('포스트 정보 가져오기 실패');
   }
@@ -13,15 +17,27 @@ const fetchLikesPosts = async () => {
 
 // 포스트 훅
 export const useLikesPosts = () => {
+  const { me } = useAuth();
+  const userId = me?.id;
+
   return useQuery({
-    queryKey: ['likesPosts'],
-    queryFn: fetchLikesPosts
+    queryKey: ['likesPosts', userId],
+    queryFn: () => {
+      if (!userId) throw new Error('사용자 ID가 필요합니다.');
+      return fetchLikesPosts(userId);
+    },
+    enabled: !!userId,
+    staleTime: 5 * 60 * 1000
   });
 };
 
 // 댓글 데이터를 가져오는 함수
-const fetchLikeComments = async () => {
-  const response = await fetch('/api/profile/likescomments');
+const fetchLikesComments = async (userId: string) => {
+  const response = await fetch('/api/profile/likescomments', {
+    headers: {
+      'user-id': userId
+    }
+  });
   if (!response.ok) {
     throw new Error('댓글 정보 가져오기 실패');
   }
@@ -30,13 +46,16 @@ const fetchLikeComments = async () => {
 
 // 댓글 훅
 export const useLikesComments = () => {
+  const { me } = useAuth();
+  const userId = me?.id;
+
   return useQuery({
-    queryKey: ['likesComments'],
-    queryFn: fetchLikeComments
+    queryKey: ['likesComments', userId],
+    queryFn: () => {
+      if (!userId) throw new Error('사용자 ID가 필요합니다.');
+      return fetchLikesComments(userId);
+    },
+    enabled: !!userId,
+    staleTime: 5 * 60 * 1000
   });
 };
-
-// 필요한 경우 추가 옵션 설정
-// staleTime: 5 * 60 * 1000, // 데이터가 신선하다고 간주되는 시간 (5분)
-// cacheTime: 10 * 60 * 1000, // 데이터가 캐시에 유지되는 시간 (10분)
-// refetchOnWindowFocus: false, // 창 포커스 시 데이터 새로고침 여부

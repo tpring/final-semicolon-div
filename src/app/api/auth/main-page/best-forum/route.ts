@@ -1,8 +1,7 @@
 import { createClient } from '@/supabase/server';
-import { Database } from '@/types/supabase';
 import { NextResponse } from 'next/server';
 
-export async function GET() {
+export const GET = async () => {
   const supabase = createClient();
 
   const { data, error } = await supabase
@@ -16,9 +15,8 @@ export async function GET() {
   const dataLikeSort = data?.sort((a, b) => (b.like_count[0]?.count || 0) - (a.like_count[0]?.count || 0));
   const bestForum = dataLikeSort?.slice(0, 6);
 
-  console.log(bestForum);
   if (!data) {
     return NextResponse.json([]);
   }
   return NextResponse.json(bestForum);
-}
+};

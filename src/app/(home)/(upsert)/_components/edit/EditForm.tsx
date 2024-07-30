@@ -24,6 +24,7 @@ import BackArrowIcon from '@/assets/images/upsert_image/BackArrowIcon';
 import ThumbNailBox from '../ThumbNailBox';
 import { usePostingCategoryStore } from '@/store/postingCategoryStore';
 import PostingCategory from './editform/categorybox/PostingCategory';
+import { v4 as uuidv4 } from 'uuid';
 
 type UpsertFormProps = {
   data: TforumPost | TqnaPost | TarchivePost;
@@ -35,22 +36,23 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
   const { categoryGroup, subCategory, setCategoryGroup, setSubCategory } = usePostingCategoryStore();
   const router = useRouter();
   const [content, setContent] = useState<string>('');
+  const [prevUrl, setPrevUrl] = useState<string>('');
+  const [isThumbnailUrlDeleted, setisThumbnailUrlDeleted] = useState<boolean>(false);
   const [FORUM, QNA, ARCHIVE] = BOARD_LIST;
 
   const handleSubmit: FormEventHandler = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const category = CATEGORY_LIST_EN[CATEGORY_LIST_KR.indexOf(categoryGroup.category)];
-
     if (
       category === 'forum' &&
       !FORUM_SUB_CATEGORY_LIST.find((FORUM_SUB_CATEGORY) => subCategory === FORUM_SUB_CATEGORY)
     ) {
-      toast.error('포럼 서브 카테고리를 선택해 주세요!', { autoClose: 1500 });
+      toast.error('포럼 서브 카테고리를 선택해 주세요!', { autoClose: 1500, hideProgressBar: true });
       return;
     }
 
-    const postFormData: TpostFormData = {
+    const postData: TpostFormData = {
       user_id: user?.id as string,
       content: content,
       category,
@@ -58,28 +60,46 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
     };
 
     formData.forEach((value, key) => {
-      postFormData[key] = value;
+      postData[key] = value;
     });
 
     //폼 유효성 검사 로직
-    const invalidItems = Object.keys(postFormData).filter((key) => !postFormData[key]);
+    const invalidItems = Object.keys(postData).filter((key) => !postData[key]);
 
     const invalidItemIndex = VALIDATION_SEQUENCE.findIndex((sequence) => {
       return !!invalidItems.find((item) => item === sequence);
     });
 
     const invalidItem = VALIDATION_SEQUENCE_KR[invalidItemIndex];
-
     if (invalidItem) {
       toast.error(invalidItem + ' 입력이 필요합니다!', { autoClose: 1500, hideProgressBar: true });
+      return;
+    }
+
+    const thumbnailFormData = new FormData(event.currentTarget);
+    thumbnailFormData.append('category', category);
+    thumbnailFormData.append('name', uuidv4());
+    thumbnailFormData.append('prevUrl', prevUrl);
+    if (isThumbnailUrlDeleted) {
+      thumbnailFormData.append('isThumbnailUrlDeleted', `${isThumbnailUrlDeleted}`);
+    }
+    //썸네일 상태 검사 로직
+    const thumbnail = await fetch('/api/upsert/thumbnail', {
+      method: 'PATCH',
+      body: thumbnailFormData
+    });
+
+    const { url: thumbnailUrl, message: thumbnailMessage } = await thumbnail.json();
+
+    if (thumbnailMessage) {
+      toast.error(thumbnailMessage);
       return;
     }
 
     //유효성 검사 통과시 업데이트 요청
     const response = await fetch(path, {
       method: 'PATCH',
-      body: JSON.stringify({ ...postFormData, path }),
-      headers: { 'Content-Type': 'application/json' }
+      body: JSON.stringify({ ...postData, path, thumbnail: thumbnailUrl })
     });
     const { data, message } = await response.json();
 
@@ -105,7 +125,6 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
       toast.error(LOGIN_ALERT, { autoClose: 1500, hideProgressBar: true, onClose: () => router.push(`/login`) });
     } else if (data.user_id !== user?.id) {
       toast.error('권한이 없습니다!', { autoClose: 1500, hideProgressBar: true, onClose: () => router.push(`/`) });
-
       return;
     }
 
@@ -114,14 +133,17 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
         setCategoryGroup(FORUM);
         setSubCategory((data as TforumPost).forum_category);
         setContent(data.content);
+        setPrevUrl(data.thumbnail ?? '');
         break;
       case 'qna':
         setCategoryGroup(QNA);
         setContent(data.content);
+        setPrevUrl(data.thumbnail ?? '');
         break;
       case 'archive':
         setCategoryGroup(ARCHIVE);
         setContent(data.content);
+        setPrevUrl(data.thumbnail ?? '');
         break;
     }
   }, [data, user]);
@@ -136,7 +158,7 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
         <PostingCategory />
         <FormTitleInput title={data.title} />
         <FormTagInput />
-        <ThumbNailBox />
+        <ThumbNailBox prevUrl={prevUrl} setisThumbnailUrlDeleted={setisThumbnailUrlDeleted} />
         <FormContentArea content={content} setContent={setContent} />
         <FormSubmitButton />
       </form>

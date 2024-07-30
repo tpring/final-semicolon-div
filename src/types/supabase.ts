@@ -928,6 +928,7 @@ export type Database = {
           }
         ];
       };
+<<<<<<< HEAD
       qna_post_reply: {
         Row: {
           created_at: string;
@@ -970,6 +971,8 @@ export type Database = {
           }
         ];
       };
+=======
+>>>>>>> 2d0200e67ca1480cddef23a00a08f8d59a53f167
       qna_posts: {
         Row: {
           category: string;
