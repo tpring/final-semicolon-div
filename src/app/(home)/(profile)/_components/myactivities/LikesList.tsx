@@ -1,40 +1,20 @@
-import PostCard from './PostCard';
-import CommentCard from './CommentCard';
+import { useState } from 'react';
 import { useLikesComments, useLikesPosts } from '@/hooks/useLikes';
-
-type CombinedItem =
-  | {
-      type: 'post';
-      id: string;
-      title: string;
-      content: string;
-      thumbnail: string;
-      tags: string[];
-      created_at: string;
-      category: string;
-      forum_category: string;
-      user: {
-        id: string;
-        nickname: string;
-        profile_image: string;
-      };
-    }
-  | {
-      type: 'comment';
-      id: string;
-      title: string;
-      tags: string[];
-      comment: string;
-      created_at: string;
-      category: string;
-      user: {
-        id: string;
-        nickname: string;
-        profile_image: string;
-      };
-    };
+import { CombinedItem } from '@/types/profile/profileType';
+import { combineItems } from '@/utils/combineItems';
+import FilterControls from './common/FilterControls';
+import PostCard from './common/PostCard';
+import CommentCard from './common/CommentCard';
+import MyActivitiesPagination from './common/MyActivitiesPagination';
 
 const LikesList = () => {
+  const forumCategories = ['일상', '커리어', '자기개발', '토론', '코드 리뷰'];
+  const [selectedCategory, setSelectedCategory] = useState<'all' | 'qna' | 'forum' | 'archive'>('all');
+  const [selectedForumCategory, setSelectedForumCategory] = useState<string | null>(null);
+  const [selectedType, setSelectedType] = useState<'all' | 'post' | 'comment'>('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedItems, setSelectedItems] = useState<Map<string, { category: string; type: string }>>(new Map());
+
   const {
     data: posts = { archivePosts: [], forumPosts: [], qnaPosts: [] },
     error: postError,
@@ -43,9 +23,9 @@ const LikesList = () => {
 
   const {
     data: comments = {
-      archive: { commentPosts: [], comments: [] },
-      forum: { commentPosts: [], comments: [] },
-      qna: { commentPosts: [], comments: [] }
+      archive: { posts: [], comments: [] },
+      forum: { posts: [], comments: [] },
+      qna: { posts: [], comments: [] }
     },
     error: commentError,
     isLoading: commentLoading
@@ -54,66 +34,112 @@ const LikesList = () => {
   if (postLoading || commentLoading) return <div>Loading...</div>;
   if (postError || commentError) return <div>Error: {postError?.message || commentError?.message}</div>;
 
-  const postArray = [...posts.archivePosts, ...posts.forumPosts, ...posts.qnaPosts];
-  const commentPostArray = [...comments.archive.posts, ...comments.forum.posts, ...comments.qna.posts];
-  const commentArray = [...comments.archive.comments, ...comments.forum.comments, ...comments.qna.comments];
-
-  const postMap = new Map<string, { title: string; tags: string[] }>();
-  commentPostArray.forEach((post) => {
-    postMap.set(post.id, {
-      title: post.title,
-      tags: post.tags || []
-    });
-  });
-
-  const combinedItems: CombinedItem[] = [
-    ...postArray.map((post) => ({
-      type: 'post' as const,
-      id: post.id,
-      title: post.title,
-      content: post.content,
-      thumbnail: post.thumbnail || '',
-      category: post.category,
-      tags: post.tags || [],
-      created_at: post.created_at,
-      forum_category: post.forum_category || '',
-      user: {
-        id: post.user.id,
-        nickname: post.user.nickname,
-        profile_image: post.user.profile_image
-      }
-    })),
-    ...commentArray.map((comment) => {
-      const postInfo = postMap.get(comment.post_id) || { title: '', tags: [] };
-      return {
-        type: 'comment' as const,
-        id: comment.id,
-        title: postInfo.title,
-        tags: postInfo.tags,
-        comment: comment.comment,
-        created_at: comment.created_at,
-        category: comment.category,
-        user: {
-          id: comment.user.id,
-          nickname: comment.user.nickname,
-          profile_image: comment.user.profile_image
-        }
-      };
-    })
-  ];
+  const combinedItems: CombinedItem[] = combineItems(posts, comments);
 
   combinedItems.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
+  const categoryFilteredItems =
+    selectedCategory === 'all'
+      ? combinedItems
+      : selectedCategory === 'forum'
+        ? combinedItems.filter(
+            (item) =>
+              item.category === 'forum' &&
+              (selectedForumCategory === '전체' ||
+                !selectedForumCategory ||
+                item.forum_category === selectedForumCategory)
+          )
+        : combinedItems.filter((item) => item.category === selectedCategory);
+
+  const typeFilteredItems =
+    selectedType === 'all' ? categoryFilteredItems : categoryFilteredItems.filter((item) => item.type === selectedType);
+
+  const itemsPerPage = 4;
+  const totalPages = Math.ceil(typeFilteredItems.length / itemsPerPage);
+  const paginatedItems = typeFilteredItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  const handleCheckboxChange = (id: string, category: string, type: string) => {
+    setSelectedItems((prev) => {
+      const newMap = new Map(prev);
+      if (newMap.has(id)) {
+        newMap.delete(id);
+      } else {
+        newMap.set(id, { category, type });
+      }
+      return newMap;
+    });
+  };
+
+  const handleDelete = async () => {
+    try {
+      // 카테고리별로 삭제할 항목들을 분리
+      const postsToDelete: { id: string; category: string }[] = [];
+      const commentsToDelete: { id: string; category: string }[] = [];
+
+      // 선택된 항목을 기반으로 posts와 comments를 카테고리별로 분류
+      selectedItems.forEach((value, key) => {
+        if (value.type === 'post') {
+          postsToDelete.push({ id: key, category: value.category });
+        } else if (value.type === 'comment') {
+          commentsToDelete.push({ id: key, category: value.category });
+        }
+      });
+
+      // 포스트 삭제 요청
+      if (postsToDelete.length > 0) {
+        const response = await fetch('/api/profile/likesposts', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ postsToDelete })
+        });
+        if (!response.ok) throw new Error('포스트 삭제 요청 실패');
+      }
+
+      // 댓글 삭제 요청
+      if (commentsToDelete.length > 0) {
+        const response = await fetch('/api/profile/likescomments', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ commentsToDelete })
+        });
+        if (!response.ok) throw new Error('댓글 삭제 요청 실패');
+      }
+
+      // 선택된 항목 초기화
+      setSelectedItems(new Map());
+    } catch (error) {
+      console.error('삭제 처리 중 오류 발생:', error);
+    }
+  };
+
   return (
-    <div>
+    <div className="relative min-h-screen">
       <h2>좋아요 목록</h2>
-      {combinedItems.length === 0 ? (
+      <button onClick={handleDelete} className="border bg-sub-200 text-white rounded">
+        선택한 항목 삭제
+      </button>
+      <FilterControls
+        selectedCategory={selectedCategory}
+        selectedForumCategory={selectedForumCategory}
+        selectedType={selectedType}
+        onCategoryChange={setSelectedCategory}
+        onForumCategoryChange={setSelectedForumCategory}
+        onTypeChange={setSelectedType}
+        forumCategories={forumCategories}
+      />
+
+      {paginatedItems.length === 0 ? (
         <div>좋아요를 추가해보세요</div>
       ) : (
-        combinedItems.map((item) => (
+        paginatedItems.map((item) => (
           <div key={item.id} className="mb-6">
             {item.type === 'post' ? (
               <PostCard
+                id={item.id}
                 title={item.title}
                 content={item.content}
                 thumbnail={item.thumbnail}
@@ -123,9 +149,12 @@ const LikesList = () => {
                 forum_category={item.forum_category}
                 nickname={item.user.nickname}
                 profile_image={item.user.profile_image}
+                isSelected={selectedItems.has(item.id)}
+                onCheckboxChange={(id) => handleCheckboxChange(id, item.category, 'post')}
               />
             ) : (
               <CommentCard
+                id={item.id}
                 title={item.title}
                 tags={item.tags}
                 comment={item.comment}
@@ -133,11 +162,14 @@ const LikesList = () => {
                 category={item.category}
                 nickname={item.user.nickname}
                 profile_image={item.user.profile_image}
+                isSelected={selectedItems.has(item.id)}
+                onCheckboxChange={(id) => handleCheckboxChange(id, item.category, 'comment')}
               />
             )}
           </div>
         ))
       )}
+      <MyActivitiesPagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
     </div>
   );
 };

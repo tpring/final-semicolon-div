@@ -114,3 +114,25 @@ export async function GET(request: NextRequest) {
     { status: 200 }
   );
 }
+
+export async function DELETE(req: NextRequest) {
+  const supabase = createClient();
+
+  const { postsToDelete } = await req.json();
+
+  // 댓글 좋아요 삭제
+  if (postsToDelete.category === 'archive') {
+    const { error } = await supabase.from('archive_comment_likes').delete().in('id', postsToDelete.id);
+    if (error) throw new Error('댓글 좋아요 삭제 실패 (archive)');
+  } else if (postsToDelete.category === 'forum') {
+    const { error } = await supabase.from('forum_comment_likes').delete().in('id', postsToDelete.id);
+    if (error) throw new Error('댓글 좋아요 삭제 실패 (forum)');
+  } else if (postsToDelete.category === 'qna') {
+    const { error } = await supabase.from('qna_comment_likes').delete().in('id', postsToDelete.id);
+    if (error) throw new Error('댓글 좋아요 삭제 실패 (qna)');
+  } else {
+    throw new Error('유효하지 않은 카테고리');
+  }
+
+  return NextResponse.json({ success: true });
+}
