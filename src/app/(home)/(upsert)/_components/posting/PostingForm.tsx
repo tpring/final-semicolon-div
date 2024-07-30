@@ -45,7 +45,7 @@ const PostingForm = () => {
       category === 'forum' &&
       !FORUM_SUB_CATEGORY_LIST.find((FORUM_SUB_CATEGORY) => subCategory === FORUM_SUB_CATEGORY)
     ) {
-      toast.error('포럼 서브 카테고리를 선택해 주세요!', { autoClose: 1500 });
+      toast.error('포럼 서브 카테고리를 선택해 주세요!', { autoClose: 1500, hideProgressBar: true });
       return;
     }
 
