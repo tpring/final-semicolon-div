@@ -16,8 +16,8 @@ export const CATEGORY_LIST_EN = ['forum', 'qna', 'archive'];
 export const CATEGORY_LIST_KR = ['포럼', 'Q&A', '아카이브'];
 
 //폼 유효성 검사 시퀀스
-export const VALIDATION_SEQUENCE = ['category', 'forum_category', 'title', 'content'];
-export const VALIDATION_SEQUENCE_KR = ['카테고리', '포럼 카테고리', '제목', '본문'];
+export const VALIDATION_SEQUENCE = ['category', 'title', 'content'];
+export const VALIDATION_SEQUENCE_KR = ['카테고리', '제목', '본문'];
 
 //로그인 경고문
 export const LOGIN_ALERT = '로그인이 필요한 기능입니다! 로그인 페이지로 이동합니다';
