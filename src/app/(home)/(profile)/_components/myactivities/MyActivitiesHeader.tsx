@@ -6,7 +6,7 @@ type MyActivitiesHeaderProps = {
 const MyActivitiesHeader = ({ setActiveTab, activeTab }: MyActivitiesHeaderProps) => {
   return (
     <header>
-      <nav className="w-full bg-[#E3E3E3] p-5 overflow-y-hidden">
+      <nav className=" w-full bg-[#E3E3E3] p-5 overflow-y-hidden">
         <ul className="flex justify-between mx-[50px]">
           <li
             className={`${activeTab === 'posts' ? 'text-black  ' : 'text-gray-500'}`}
