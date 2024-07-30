@@ -10,7 +10,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'User ID가 없습니다.' }, { status: 400 });
   }
 
-  // 사용자 ID로 북마크를 가져옵니다.
   const { data: archiveBookmarks, error: archiveError } = await supabase
     .from('archive_bookmarks')
     .select('post_id')
@@ -26,19 +25,16 @@ export async function GET(request: NextRequest) {
     .select('post_id')
     .eq('user_id', userId);
 
-  // 북마크를 가져오는 데 실패한 경우, 오류 응답을 반환합니다.
   if (archiveError || forumError || qnaError) {
     return NextResponse.json({ error: '북마크 가져오기 실패' }, { status: 500 });
   }
 
-  // 북마크에서 게시물 ID를 추출합니다.
   const bookmarksPostIds = [
     ...archiveBookmarks.map((b) => b.post_id),
     ...forumBookmarks.map((b) => b.post_id),
     ...qnaBookmarks.map((b) => b.post_id)
   ];
 
-  // 게시물 ID로 각 게시물 테이블에서 게시물을 가져옵니다.
   const postFetches = [
     supabase
       .from('archive_posts')
@@ -89,23 +85,60 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: '댓글 유저 정보 가져오기 실패' }, { status: 500 });
   }
 
-  // 게시물 데이터를 통합합니다.
+  const likeAndCommentCountFetches = [
+    supabase.from('archive_likes').select('post_id', { count: 'exact' }).in('post_id', bookmarksPostIds),
+    supabase.from('forum_likes').select('post_id', { count: 'exact' }).in('post_id', bookmarksPostIds),
+    supabase.from('qna_likes').select('post_id', { count: 'exact' }).in('post_id', bookmarksPostIds),
+
+    supabase.from('archive_comments').select('post_id', { count: 'exact' }).in('post_id', bookmarksPostIds),
+    supabase.from('forum_comments').select('post_id', { count: 'exact' }).in('post_id', bookmarksPostIds),
+    supabase.from('qna_comments').select('post_id', { count: 'exact' }).in('post_id', bookmarksPostIds)
+  ];
+
+  const [
+    archiveLikesCountResponse,
+    forumLikesCountResponse,
+    qnaLikesCountResponse,
+    archiveCommentCountResponse,
+    forumCommentCountResponse,
+    qnaCommentCountResponse
+  ] = await Promise.all(likeAndCommentCountFetches);
+
+  if (
+    archiveLikesCountResponse.error ||
+    forumLikesCountResponse.error ||
+    qnaLikesCountResponse.error ||
+    archiveCommentCountResponse.error ||
+    forumCommentCountResponse.error ||
+    qnaCommentCountResponse.error
+  ) {
+    return NextResponse.json({ error: '좋아요 수 또는 댓글 수 가져오기 실패' }, { status: 500 });
+  }
+
+  const countOrDefault = (response: any, postId: string) =>
+    response.data?.find((item: any) => item.post_id === postId)?.count || 0;
 
   const postData = {
     archivePosts: archivePosts.data.map((post) => ({
       ...post,
       user: commentUsers.find((user) => user.id === post.user_id),
-      tags: archiveTags.data.filter((tag) => tag.post_id === post.id).map((tag) => tag.tag)
+      tags: archiveTags.data.filter((tag) => tag.post_id === post.id).map((tag) => tag.tag),
+      likesCount: countOrDefault(archiveLikesCountResponse, post.id),
+      commentsCount: countOrDefault(archiveCommentCountResponse, post.id)
     })),
     forumPosts: forumPosts.data.map((post) => ({
       ...post,
       user: commentUsers.find((user) => user.id === post.user_id),
-      tags: forumTags.data.filter((tag) => tag.post_id === post.id).map((tag) => tag.tag)
+      tags: forumTags.data.filter((tag) => tag.post_id === post.id).map((tag) => tag.tag),
+      likesCount: countOrDefault(forumLikesCountResponse, post.id),
+      commentsCount: countOrDefault(forumCommentCountResponse, post.id)
     })),
     qnaPosts: qnaPosts.data.map((post) => ({
       ...post,
       user: commentUsers.find((user) => user.id === post.user_id),
-      tags: qnaTags.data.filter((tag) => tag.post_id === post.id).map((tag) => tag.tag)
+      tags: qnaTags.data.filter((tag) => tag.post_id === post.id).map((tag) => tag.tag),
+      likesCount: countOrDefault(qnaLikesCountResponse, post.id),
+      commentsCount: countOrDefault(qnaCommentCountResponse, post.id)
     }))
   };
 

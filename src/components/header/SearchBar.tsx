@@ -1,4 +1,4 @@
-import SearchButton from '@/assets/images/SearchButton';
+import SearchButton from '@/assets/images/header/SearchButton';
 
 const SearchBar = () => {
   return (
