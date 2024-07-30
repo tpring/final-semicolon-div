@@ -136,7 +136,7 @@ export async function GET(request: NextRequest) {
       tags: qnaTags.data.filter((tag) => tag.post_id === post.id).map((tag) => tag.tag)
     }))
   };
-  console.log(':');
+
   // 댓글과 게시물 데이터를 통합합니다.
   const bookmarksCombinedData = {
     archive: {
