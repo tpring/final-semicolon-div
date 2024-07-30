@@ -13,6 +13,8 @@ export type Post = {
   created_at: string;
   category: string;
   forum_category: string;
+  likesCount: string;
+  commentsCount: string;
   user: {
     id: string;
     nickname: string;
@@ -49,6 +51,8 @@ export type MyPost = {
   created_at: string;
   category: string;
   forum_category: string;
+  likesCount: string;
+  commentsCount: string;
 };
 
 export type MyComment = {

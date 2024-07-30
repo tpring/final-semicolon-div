@@ -7,6 +7,7 @@ import PostCard from './common/PostCard';
 import CommentCard from './common/CommentCard';
 import MyActivitiesPagination from './common/MyActivitiesPagination';
 import ConfirmModal from '@/components/modal/ConfirmModal';
+import { toast, ToastContainer } from 'react-toastify';
 
 const LikesList = () => {
   const forumCategories = ['일상', '커리어', '자기개발', '토론', '코드 리뷰'];
@@ -16,6 +17,7 @@ const LikesList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedItems, setSelectedItems] = useState<Map<string, { category: string; type: string }>>(new Map());
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [combinedItems, setCombinedItems] = useState<CombinedItem[]>([]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -27,7 +29,6 @@ const LikesList = () => {
     error: postError,
     isLoading: postLoading
   } = useLikesPosts();
-
   const {
     data: comments = {
       archive: { posts: [], comments: [] },
@@ -38,12 +39,16 @@ const LikesList = () => {
     isLoading: commentLoading
   } = useLikesComments();
 
+  useEffect(() => {
+    if (!postLoading && !commentLoading && posts && comments) {
+      const combined = combineItems(posts, comments);
+      combined.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      setCombinedItems(combined);
+    }
+  }, [postLoading, commentLoading, posts, comments]);
+
   if (postLoading || commentLoading) return <div>Loading...</div>;
   if (postError || commentError) return <div>Error: {postError?.message || commentError?.message}</div>;
-
-  const combinedItems: CombinedItem[] = combineItems(posts, comments);
-
-  combinedItems.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
   const categoryFilteredItems =
     selectedCategory === 'all'
@@ -112,7 +117,14 @@ const LikesList = () => {
         if (!response.ok) throw new Error('댓글 삭제 요청 실패');
       }
 
+      // 업데이트된 combinedItems 생성
+      const updatedCombinedItems = combinedItems.filter((item) => !selectedItems.has(item.id));
+
+      // 상태 업데이트
+      setCombinedItems(updatedCombinedItems);
       setSelectedItems(new Map());
+
+      toast.success('삭제가 완료 되었습니다.');
     } catch (error) {
       console.error('삭제 처리 중 오류 발생:', error);
     }
@@ -120,6 +132,7 @@ const LikesList = () => {
 
   return (
     <div className="relative min-h-screen">
+      <ToastContainer />
       <h2>좋아요 목록</h2>
       <button onClick={() => setConfirmModalOpen(true)} className="border bg-sub-200 text-white rounded">
         선택한 항목 삭제
