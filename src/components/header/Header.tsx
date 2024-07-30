@@ -1,7 +1,7 @@
 'use client';
 
-import Logo from '@/assets/images/Logo';
-import SearchButton from '@/assets/images/SearchButton';
+import Logo from '@/assets/images/header/Logo';
+import SearchButton from '@/assets/images/header/SearchButton';
 import { useAuth } from '@/context/auth.context';
 import Image from 'next/image';
 import Link from 'next/link';

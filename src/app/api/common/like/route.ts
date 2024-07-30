@@ -1,5 +1,5 @@
 import { createClient } from '@/supabase/server';
-import { BookmarkType, TABLES } from '@/types/buttons/bookmark';
+import { LikeType, TABLES } from '@/types/buttons/like';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const GET = async (request: NextRequest) => {
@@ -8,32 +8,26 @@ export const GET = async (request: NextRequest) => {
   const supabase = createClient();
 
   if (!user_id) {
-    return NextResponse.json({ bookmarks: {} });
+    return NextResponse.json({ likes: {} });
   }
 
-  const [
-    forumBookmarks,
-    forumCommentBookmarks,
-    qnaBookmarks,
-    qnaCommentBookmarks,
-    archiveBookmarks,
-    archiveCommentBookmarks
-  ] = await Promise.all([
-    supabase.from(TABLES.forum).select('post_id').eq('user_id', user_id),
-    supabase.from(TABLES.forumComment).select('comment_id').eq('user_id', user_id),
-    supabase.from(TABLES.qna).select('post_id').eq('user_id', user_id),
-    supabase.from(TABLES.qnaComment).select('comment_id').eq('user_id', user_id),
-    supabase.from(TABLES.archive).select('post_id').eq('user_id', user_id),
-    supabase.from(TABLES.archiveComment).select('comment_id').eq('user_id', user_id)
-  ]);
+  const [forumLikes, forumCommentLikes, qnaLikes, qnaCommentLikes, archiveLikes, archiveCommentLikes] =
+    await Promise.all([
+      supabase.from(TABLES.forum).select('post_id').eq('user_id', user_id),
+      supabase.from(TABLES.forumComment).select('comment_id').eq('user_id', user_id),
+      supabase.from(TABLES.qna).select('post_id').eq('user_id', user_id),
+      supabase.from(TABLES.qnaComment).select('comment_id').eq('user_id', user_id),
+      supabase.from(TABLES.archive).select('post_id').eq('user_id', user_id),
+      supabase.from(TABLES.archiveComment).select('comment_id').eq('user_id', user_id)
+    ]);
 
   return NextResponse.json({
-    forumBookmarks: forumBookmarks.data || [],
-    forumCommentBookmarks: forumCommentBookmarks.data || [],
-    qnaBookmarks: qnaBookmarks.data || [],
-    qnaCommentBookmarks: qnaCommentBookmarks.data || [],
-    archiveBookmarks: archiveBookmarks.data || [],
-    archiveCommentBookmarks: archiveCommentBookmarks.data || []
+    forumLikes: forumLikes.data || [],
+    forumCommentLikes: forumCommentLikes.data || [],
+    qnaLikes: qnaLikes.data || [],
+    qnaCommentLikes: qnaCommentLikes.data || [],
+    archiveLikes: archiveLikes.data || [],
+    archiveCommentLikes: archiveCommentLikes.data || []
   });
 };
 
@@ -43,12 +37,19 @@ export const POST = async (request: NextRequest) => {
     user_id: string;
     post_id?: string;
     comment_id?: string;
-    type: BookmarkType;
+    type: LikeType;
   };
   const supabase = createClient();
-  let table: (typeof TABLES)[keyof typeof TABLES];
-  let record: { [key: string]: string | undefined };
+
   try {
+    if (!user_id || (!post_id && !comment_id)) {
+      return NextResponse.json({ error: 'user_id and either post_id or comment_id are required' }, { status: 400 });
+    }
+
+    let record: { post_id: string; user_id: string } | { comment_id: string; user_id: string };
+
+    let table: (typeof TABLES)[keyof typeof TABLES];
+
     switch (type) {
       case 'forum':
       case 'qna':
@@ -69,18 +70,18 @@ export const POST = async (request: NextRequest) => {
         table = TABLES[type];
         break;
       default:
-        return NextResponse.json({ error: 'Invalid bookmark type' }, { status: 400 });
+        return NextResponse.json({ error: 'Invalid like type' }, { status: 400 });
     }
 
-    const { data: bookmark, error } = await supabase.from(table).insert(record).select();
+    const { data: like, error } = await supabase.from(table).insert(record).select();
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json(bookmark);
+    return NextResponse.json(like);
   } catch (error) {
-    console.error('bookmarkRoute12', error);
+    console.error('likeRoute', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 };
@@ -91,7 +92,7 @@ export const DELETE = async (request: NextRequest) => {
     user_id: string;
     post_id?: string;
     comment_id?: string;
-    type: BookmarkType;
+    type: LikeType;
   };
   const supabase = createClient();
   let table: (typeof TABLES)[keyof typeof TABLES];
