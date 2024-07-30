@@ -115,23 +115,27 @@ export async function GET(request: NextRequest) {
   );
 }
 
+// 좋아요 포스트 배열 삭제로직
 export async function DELETE(req: NextRequest) {
   const supabase = createClient();
-
   const { postsToDelete } = await req.json();
 
-  // 댓글 좋아요 삭제
-  if (postsToDelete.category === 'archive') {
-    const { error } = await supabase.from('archive_comment_likes').delete().in('id', postsToDelete.id);
-    if (error) throw new Error('댓글 좋아요 삭제 실패 (archive)');
-  } else if (postsToDelete.category === 'forum') {
-    const { error } = await supabase.from('forum_comment_likes').delete().in('id', postsToDelete.id);
-    if (error) throw new Error('댓글 좋아요 삭제 실패 (forum)');
-  } else if (postsToDelete.category === 'qna') {
-    const { error } = await supabase.from('qna_comment_likes').delete().in('id', postsToDelete.id);
-    if (error) throw new Error('댓글 좋아요 삭제 실패 (qna)');
-  } else {
-    throw new Error('유효하지 않은 카테고리');
+  for (const post of postsToDelete) {
+    const { category, id } = post;
+
+    // 포스트 삭제
+    if (category === 'archive') {
+      const { error } = await supabase.from('archive_likes').delete().eq('post_id', id);
+      if (error) throw new Error(`포스트 삭제 실패 (archive): ${error.message}`);
+    } else if (category === 'forum') {
+      const { error } = await supabase.from('forum_likes').delete().eq('post_id', id);
+      if (error) throw new Error(`포스트 삭제 실패 (forum): ${error.message}`);
+    } else if (category === 'qna') {
+      const { error } = await supabase.from('qna_likes').delete().eq('post_id', id);
+      if (error) throw new Error(`포스트 삭제 실패 (qna): ${error.message}`);
+    } else {
+      throw new Error('유효하지 않은 카테고리');
+    }
   }
 
   return NextResponse.json({ success: true });

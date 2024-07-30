@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { MyCombinedItem } from '@/types/profile/profileType';
 import { myCombineItems } from '@/utils/combineItems';
@@ -8,6 +8,7 @@ import CommentCard from './common/CommentCard';
 import MyActivitiesPagination from './common/MyActivitiesPagination';
 import { useMyComments, useMyPosts } from '@/hooks/myactivities/useMyPosts';
 import { useAuth } from '@/context/auth.context';
+import ConfirmModal from '@/components/modal/ConfirmModal';
 
 const MyPostsList = () => {
   const { userData } = useAuth();
@@ -17,6 +18,11 @@ const MyPostsList = () => {
   const [selectedType, setSelectedType] = useState<'all' | 'post' | 'comment'>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedItems, setSelectedItems] = useState<Map<string, { category: string; type: string }>>(new Map());
+  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory, selectedForumCategory, selectedType]);
 
   const {
     data: posts = { archivePosts: [], forumPosts: [], qnaPosts: [] },
@@ -112,7 +118,6 @@ const MyPostsList = () => {
         if (!response.ok) throw new Error('댓글 삭제 요청 실패');
       }
 
-      // 선택된 항목 초기화
       setSelectedItems(new Map());
     } catch (error) {
       console.error('삭제 처리 중 오류 발생:', error);
@@ -122,7 +127,7 @@ const MyPostsList = () => {
   return (
     <div className="relative min-h-screen">
       <h2>내가 쓴 글 목록</h2>
-      <button onClick={handleDelete} className="border bg-sub-200 text-white rounded">
+      <button onClick={() => setConfirmModalOpen(true)} className="border bg-sub-200 text-white rounded">
         선택한 항목 삭제
       </button>
       <FilterControls
@@ -172,7 +177,15 @@ const MyPostsList = () => {
           </div>
         ))
       )}
-      <MyActivitiesPagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+      <div className="flex justify-between items-center">
+        <MyActivitiesPagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+      </div>
+      <ConfirmModal
+        message={'삭제 할까요?'}
+        isOpen={isConfirmModalOpen}
+        onClose={() => setConfirmModalOpen(false)}
+        onConfirm={handleDelete}
+      />
     </div>
   );
 };

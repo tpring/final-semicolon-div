@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import PostCard from './common/PostCard';
 import CommentCard from './common/CommentCard';
 import { useBookmarksComments, useBookmarksPosts } from '@/hooks/useBookmarks';
@@ -6,6 +6,7 @@ import { CombinedItem } from '@/types/profile/profileType';
 import { combineItems } from '@/utils/combineItems';
 import FilterControls from './common/FilterControls';
 import MyActivitiesPagination from './common/MyActivitiesPagination';
+import ConfirmModal from '@/components/modal/ConfirmModal';
 
 const BookmarksList = () => {
   const forumCategories = ['일상', '커리어', '자기개발', '토론', '코드 리뷰'];
@@ -14,6 +15,11 @@ const BookmarksList = () => {
   const [selectedType, setSelectedType] = useState<'all' | 'post' | 'comment'>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
+  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory, selectedForumCategory, selectedType]);
 
   const {
     data: posts = { archivePosts: [], forumPosts: [], qnaPosts: [] },
@@ -90,7 +96,7 @@ const BookmarksList = () => {
   return (
     <div className="relative min-h-screen">
       <h2>북마크 목록</h2>
-      <button onClick={handleDelete} className="border bg-sub-200 text-white rounded">
+      <button onClick={() => setConfirmModalOpen(true)} className="border bg-sub-200 text-white rounded">
         선택한 항목 삭제
       </button>
       <FilterControls
@@ -142,6 +148,12 @@ const BookmarksList = () => {
       <div className="flex justify-between items-center">
         <MyActivitiesPagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
       </div>
+      <ConfirmModal
+        message={'삭제 할까요?'}
+        isOpen={isConfirmModalOpen}
+        onClose={() => setConfirmModalOpen(false)}
+        onConfirm={handleDelete}
+      />
     </div>
   );
 };

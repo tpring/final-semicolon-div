@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLikesComments, useLikesPosts } from '@/hooks/useLikes';
 import { CombinedItem } from '@/types/profile/profileType';
 import { combineItems } from '@/utils/combineItems';
@@ -6,6 +6,7 @@ import FilterControls from './common/FilterControls';
 import PostCard from './common/PostCard';
 import CommentCard from './common/CommentCard';
 import MyActivitiesPagination from './common/MyActivitiesPagination';
+import ConfirmModal from '@/components/modal/ConfirmModal';
 
 const LikesList = () => {
   const forumCategories = ['일상', '커리어', '자기개발', '토론', '코드 리뷰'];
@@ -14,7 +15,13 @@ const LikesList = () => {
   const [selectedType, setSelectedType] = useState<'all' | 'post' | 'comment'>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedItems, setSelectedItems] = useState<Map<string, { category: string; type: string }>>(new Map());
+  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory, selectedForumCategory, selectedType]);
+
+  // 데이터 훅
   const {
     data: posts = { archivePosts: [], forumPosts: [], qnaPosts: [] },
     error: postError,
@@ -72,11 +79,9 @@ const LikesList = () => {
 
   const handleDelete = async () => {
     try {
-      // 카테고리별로 삭제할 항목들을 분리
       const postsToDelete: { id: string; category: string }[] = [];
       const commentsToDelete: { id: string; category: string }[] = [];
 
-      // 선택된 항목을 기반으로 posts와 comments를 카테고리별로 분류
       selectedItems.forEach((value, key) => {
         if (value.type === 'post') {
           postsToDelete.push({ id: key, category: value.category });
@@ -85,7 +90,6 @@ const LikesList = () => {
         }
       });
 
-      // 포스트 삭제 요청
       if (postsToDelete.length > 0) {
         const response = await fetch('/api/profile/likesposts', {
           method: 'DELETE',
@@ -97,7 +101,6 @@ const LikesList = () => {
         if (!response.ok) throw new Error('포스트 삭제 요청 실패');
       }
 
-      // 댓글 삭제 요청
       if (commentsToDelete.length > 0) {
         const response = await fetch('/api/profile/likescomments', {
           method: 'DELETE',
@@ -109,7 +112,6 @@ const LikesList = () => {
         if (!response.ok) throw new Error('댓글 삭제 요청 실패');
       }
 
-      // 선택된 항목 초기화
       setSelectedItems(new Map());
     } catch (error) {
       console.error('삭제 처리 중 오류 발생:', error);
@@ -119,7 +121,7 @@ const LikesList = () => {
   return (
     <div className="relative min-h-screen">
       <h2>좋아요 목록</h2>
-      <button onClick={handleDelete} className="border bg-sub-200 text-white rounded">
+      <button onClick={() => setConfirmModalOpen(true)} className="border bg-sub-200 text-white rounded">
         선택한 항목 삭제
       </button>
       <FilterControls
@@ -170,6 +172,13 @@ const LikesList = () => {
         ))
       )}
       <MyActivitiesPagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+
+      <ConfirmModal
+        message={'삭제 할까요?'}
+        isOpen={isConfirmModalOpen}
+        onClose={() => setConfirmModalOpen(false)}
+        onConfirm={handleDelete}
+      />
     </div>
   );
 };
