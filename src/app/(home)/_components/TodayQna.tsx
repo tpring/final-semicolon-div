@@ -1,10 +1,4 @@
 'use client';
-<<<<<<< HEAD
-import { Database, Tables } from '@/types/supabase';
-import { useQuery } from '@tanstack/react-query';
-
-const TodayQna = () => {
-=======
 import { Tables } from '@/types/supabase';
 import { useQuery } from '@tanstack/react-query';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -19,7 +13,6 @@ import Image from 'next/image';
 const TodayQna = () => {
   const iconList = [qnaIcon1, qnaIcon2, qnaIcon3, qnaIcon4, qnaIcon1, qnaIcon2, qnaIcon3, qnaIcon4];
   //실시간 Q&A가져오기
->>>>>>> 48d452041d997f4df3543820bc9346ed7936e1dd
   const { data: todayQna } = useQuery<Tables<'qna_posts'>[]>({
     queryKey: ['todayQna'],
     queryFn: async () => {
@@ -30,14 +23,6 @@ const TodayQna = () => {
       } catch (error) {}
     }
   });
-<<<<<<< HEAD
-  console.log(todayQna);
-
-  return (
-    <div>
-      <h1>방금 올라온 질문이에요! 지식을 공유하러 가볼까요?</h1>
-      <div className="flex flex-nowrap gap-5">{todayQna?.map((post) => <h1 key={post.id}>{[post.title]}</h1>)}</div>
-=======
 
   return (
     <div>
@@ -60,7 +45,6 @@ const TodayQna = () => {
           </SwiperSlide>
         ))}
       </Swiper>
->>>>>>> 48d452041d997f4df3543820bc9346ed7936e1dd
     </div>
   );
 };

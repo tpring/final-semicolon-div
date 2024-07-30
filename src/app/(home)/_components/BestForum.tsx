@@ -1,11 +1,4 @@
 'use client';
-<<<<<<< HEAD
-import { Database, Tables } from '@/types/supabase';
-import { useQuery } from '@tanstack/react-query';
-
-const BestForum = () => {
-  const { data: forumList } = useQuery<Tables<'forum_posts'>[]>({
-=======
 
 import { useQuery } from '@tanstack/react-query';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -19,7 +12,6 @@ import { handleRinkCopy } from '@/components/handleRinkCopy';
 
 const BestForum = () => {
   const { data: forumList } = useQuery<BestForumType[]>({
->>>>>>> 48d452041d997f4df3543820bc9346ed7936e1dd
     queryKey: ['bestForum'],
     queryFn: async () => {
       try {
@@ -32,23 +24,6 @@ const BestForum = () => {
 
   return (
     <div>
-<<<<<<< HEAD
-      <h1>베스트 포럼</h1>
-      {forumList?.map((forum) => (
-        <div key={forum.id} className=" border rounded-xl ">
-          <div className="flex justify-start items-center">
-            {/* <img src={forum.users.profile_image} /> */}
-            <h2>{forum.users.nickname}</h2>
-            <p>{forum.forum_category}</p>
-            <p>{forum.created_at}</p>
-          </div>
-          <div className=" flex flex-col h-60 ">
-            <h1>{forum.title}</h1>
-            <p>{forum.content}</p>
-          </div>
-        </div>
-      ))}
-=======
       <ToastContainer />
       <h1 className="text-xl font-semibold mb-7 ">오늘의 인기 포럼이에요🌟</h1>
       <Swiper navigation={true} modules={[Navigation]} slidesPerView={3} spaceBetween={10} className="mySwiper">
@@ -91,7 +66,6 @@ const BestForum = () => {
           </SwiperSlide>
         ))}
       </Swiper>
->>>>>>> 48d452041d997f4df3543820bc9346ed7936e1dd
     </div>
   );
 };

@@ -42,7 +42,7 @@ const ForumDetailPost = ({ params }: { params: { id: string } }) => {
           <p>{post.created_at.slice(0, 16).replace(/-/g, '.').replace(/T/g, ' ')}</p>
         </div>
       ))}
-      <InputComments />
+      <InputComments params={params} />
       <ForumComments params={params} />
     </div>
   );
