@@ -1,7 +1,21 @@
 import Image from 'next/image';
-import { ChangeEventHandler, DragEventHandler, MouseEventHandler, useRef, useState } from 'react';
+import {
+  ChangeEventHandler,
+  Dispatch,
+  DragEventHandler,
+  MouseEventHandler,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState
+} from 'react';
 
-const ThumbNailBox = () => {
+type ThumbNailBoxProps = {
+  prevUrl?: string | null;
+  setisThumbnailUrlDeleted?: Dispatch<SetStateAction<boolean>>;
+};
+
+const ThumbNailBox = ({ prevUrl, setisThumbnailUrlDeleted }: ThumbNailBoxProps) => {
   const thumbnailInput = useRef<HTMLInputElement>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<any>();
   const [thumbnailName, setThumbnailName] = useState<any>();
@@ -10,6 +24,7 @@ const ThumbNailBox = () => {
     if (event.target.files?.length === 0) return;
     else if (event.target.files) {
       setThumbnailName(event.target.files[0].name);
+      setisThumbnailUrlDeleted ? setisThumbnailUrlDeleted(true) : null;
       const reader = new FileReader();
       reader.readAsDataURL(event.target.files[0]);
       reader.onloadend = () => {
@@ -33,6 +48,7 @@ const ThumbNailBox = () => {
     }
     if (event.dataTransfer.files.length > 0) {
       thumbnailInput.current ? (thumbnailInput.current.files = event.dataTransfer.files) : null;
+      setisThumbnailUrlDeleted ? setisThumbnailUrlDeleted(true) : null;
       setThumbnailName(event.dataTransfer.files[0].name);
       const reader = new FileReader();
       reader.readAsDataURL(event.dataTransfer.files[0]);
@@ -41,6 +57,20 @@ const ThumbNailBox = () => {
       };
     }
   };
+
+  const handleButtonClick: MouseEventHandler = () => {
+    if (thumbnailInput.current) {
+      thumbnailInput.current.value = '';
+      setThumbnailPreview('');
+      setThumbnailName('');
+      setisThumbnailUrlDeleted ? setisThumbnailUrlDeleted(true) : null;
+    }
+  };
+
+  useEffect(() => {
+    setThumbnailPreview(prevUrl);
+    setThumbnailName(prevUrl?.slice(-36));
+  }, [prevUrl]);
 
   return (
     <div className="flex flex-col">
@@ -61,19 +91,13 @@ const ThumbNailBox = () => {
               height={332}
               onClick={handleInputClick}
             />
-            <div className="w-[700px] h-[56px] border flex justify-between items-center px-5 py-2">
+            <div className="w-[700px] h-[56px] border flex justify-between items-center px-5 py-2 rounded">
               <div className="h-[38px] rounded-lg text-neutral-700 text-subtitle2 text-center content-center bg-neutral-50 px-2 py-1 ">
                 {thumbnailName}
                 <button
                   type="button"
                   className=" w-5 h-5 rounded-full content-center bg-neutral-200"
-                  onClick={() => {
-                    if (thumbnailInput.current) {
-                      thumbnailInput.current.value = '';
-                      setThumbnailPreview('');
-                      setThumbnailName('');
-                    }
-                  }}
+                  onClick={handleButtonClick}
                 >
                   x
                 </button>
