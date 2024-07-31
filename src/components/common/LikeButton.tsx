@@ -27,7 +27,7 @@ const LikeButton = ({ id, type }: LikeButtonProps) => {
 
   useEffect(() => {
     const fetchLikeCount = async () => {
-      const response = await fetch(`/api/common/like/count?type=${type}&id=${id}`);
+      const response = await fetch(`/api/common/like/like-count?type=${type}&id=${id}`);
       const result = await response.json();
       setLikeCount(result.count);
     };
@@ -50,13 +50,7 @@ const LikeButton = ({ id, type }: LikeButtonProps) => {
     setLikeCount((prev) => (isLiked ? prev - 1 : prev + 1));
 
     try {
-      console.log('Sending request:', {
-        user_id: me.id,
-        post_id: type.includes('Comment') ? undefined : id,
-        comment_id: type.includes('Comment') ? id : undefined,
-        type
-      });
-      const response = await fetch('api/common/like', {
+      const response = await fetch('/api/common/like/like?user_id=${id}', {
         method: isLiked ? 'DELETE' : 'POST',
         headers: {
           'Content-Type': 'application/json'
