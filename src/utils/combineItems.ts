@@ -26,6 +26,8 @@ export const combineItems = (posts: PostsData, comments: CommentsData): Combined
       created_at: post.created_at,
       category: post.category,
       forum_category: post.forum_category || '',
+      likesCount: post.likesCount,
+      commentsCount: post.commentsCount,
       user: {
         id: post.user.id,
         nickname: post.user.nickname,
@@ -60,16 +62,11 @@ export const myCombineItems = (posts: PostsData, comments: CommentsData): MyComb
   const commentPostArray = [...comments.archive.posts, ...comments.forum.posts, ...comments.qna.posts];
   const commentArray = [...comments.archive.comments, ...comments.forum.comments, ...comments.qna.comments];
 
-  const postMap = new Map<string, MyPost>();
+  const postMap = new Map<string, { title: string; tags: string[]; category: string; forum_category: string }>();
   commentPostArray.forEach((post) => {
     postMap.set(post.id, {
-      type: 'post',
-      id: post.id,
       title: post.title,
-      content: post.content,
-      thumbnail: post.thumbnail || '',
       tags: post.tags || [],
-      created_at: post.created_at,
       category: post.category,
       forum_category: post.forum_category || ''
     });
@@ -85,7 +82,9 @@ export const myCombineItems = (posts: PostsData, comments: CommentsData): MyComb
       tags: post.tags || [],
       created_at: post.created_at,
       category: post.category,
-      forum_category: post.forum_category || ''
+      forum_category: post.forum_category || '',
+      likesCount: post.likesCount,
+      commentsCount: post.commentsCount
     })),
     ...commentArray.map((comment) => {
       const postInfo = postMap.get(comment.post_id) || {

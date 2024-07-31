@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-
 import { MyCombinedItem } from '@/types/profile/profileType';
 import { myCombineItems } from '@/utils/combineItems';
 import FilterControls from './common/FilterControls';
@@ -9,6 +8,7 @@ import MyActivitiesPagination from './common/MyActivitiesPagination';
 import { useMyComments, useMyPosts } from '@/hooks/myactivities/useMyPosts';
 import { useAuth } from '@/context/auth.context';
 import ConfirmModal from '@/components/modal/ConfirmModal';
+import { toast, ToastContainer } from 'react-toastify';
 
 const MyPostsList = () => {
   const { userData } = useAuth();
@@ -19,6 +19,7 @@ const MyPostsList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedItems, setSelectedItems] = useState<Map<string, { category: string; type: string }>>(new Map());
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [combinedItems, setCombinedItems] = useState<MyCombinedItem[]>([]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -40,12 +41,16 @@ const MyPostsList = () => {
     isLoading: commentLoading
   } = useMyComments();
 
+  useEffect(() => {
+    if (!postLoading && !commentLoading && posts && comments) {
+      const combined = myCombineItems(posts, comments);
+      combined.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      setCombinedItems(combined);
+    }
+  }, [postLoading, commentLoading, posts, comments]);
+
   if (postLoading || commentLoading) return <div>Loading...</div>;
   if (postError || commentError) return <div>Error: {postError?.message || commentError?.message}</div>;
-
-  const combinedItems: MyCombinedItem[] = myCombineItems(posts, comments);
-
-  combinedItems.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
   const categoryFilteredItems =
     selectedCategory === 'all'
@@ -81,11 +86,9 @@ const MyPostsList = () => {
 
   const handleDelete = async () => {
     try {
-      // 카테고리별로 삭제할 항목들을 분리
       const postsToDelete: { id: string; category: string }[] = [];
       const commentsToDelete: { id: string; category: string }[] = [];
 
-      // 선택된 항목을 기반으로 posts와 comments를 카테고리별로 분류
       selectedItems.forEach((value, key) => {
         if (value.type === 'post') {
           postsToDelete.push({ id: key, category: value.category });
@@ -94,21 +97,19 @@ const MyPostsList = () => {
         }
       });
 
-      // 포스트 삭제 요청
       if (postsToDelete.length > 0) {
-        const response = await fetch('/api/profile/likesposts', {
+        const response = await fetch('/api/profile/myposts', {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({ postsToDelete })
         });
-        if (!response.ok) throw new Error('포스트 삭제 요청 실패');
+        if (!response.ok) throw new Error('게시글 삭제 요청 실패');
       }
 
-      // 댓글 삭제 요청
       if (commentsToDelete.length > 0) {
-        const response = await fetch('/api/profile/likescomments', {
+        const response = await fetch('/api/profile/mycomments', {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json'
@@ -118,7 +119,14 @@ const MyPostsList = () => {
         if (!response.ok) throw new Error('댓글 삭제 요청 실패');
       }
 
+      // 업데이트된 combinedItems 생성
+      const updatedCombinedItems = combinedItems.filter((item) => !selectedItems.has(item.id));
+
+      // 상태 업데이트
+      setCombinedItems(updatedCombinedItems);
       setSelectedItems(new Map());
+
+      toast.success('삭제가 완료 되었습니다.');
     } catch (error) {
       console.error('삭제 처리 중 오류 발생:', error);
     }
@@ -126,6 +134,7 @@ const MyPostsList = () => {
 
   return (
     <div className="relative min-h-screen">
+      <ToastContainer />
       <h2>내가 쓴 글 목록</h2>
       <button onClick={() => setConfirmModalOpen(true)} className="border bg-sub-200 text-white rounded">
         선택한 항목 삭제

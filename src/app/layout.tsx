@@ -4,6 +4,8 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider } from '@/context/auth.context';
 import TanstackQueryProvider from '@/providers/TanstackQueryProvider';
+import { BookmarkProvider } from '@/providers/BookmarkProvider';
+import LikeProvider from '@/providers/LikeProvider';
 
 export const metadata: Metadata = {
   title: '<div>',
@@ -20,9 +22,12 @@ export default function RootLayout({
       <body>
         <TanstackQueryProvider>
           <AuthProvider>
-            {' '}
-            {children}
-            <ReactQueryDevtools initialIsOpen={false} />
+            <BookmarkProvider>
+              <LikeProvider>
+                {children}
+                <ReactQueryDevtools initialIsOpen={false} />
+              </LikeProvider>
+            </BookmarkProvider>
           </AuthProvider>
         </TanstackQueryProvider>
       </body>

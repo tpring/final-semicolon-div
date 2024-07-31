@@ -6,6 +6,7 @@ import Notice from './_components/Notice';
 import PostsLink from './_components/PostsLink';
 import TodayQna from './_components/TodayQna';
 import TopButton from '../../components/TopButton';
+import Bookmark from '@/components/Bookmark';
 
 const HomePage = () => {
   return (

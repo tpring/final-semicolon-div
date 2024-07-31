@@ -164,13 +164,13 @@ export async function DELETE(req: NextRequest) {
 
     // 댓글 삭제
     if (category === 'archive') {
-      const { error } = await supabase.from('archive_comment_likes').delete().eq('post_id', id);
+      const { error } = await supabase.from('archive_comment_likes').delete().eq('comment_id', id);
       if (error) throw new Error(`댓글 삭제 실패 (archive): ${error.message}`);
     } else if (category === 'forum') {
-      const { error } = await supabase.from('forum_comment_likes').delete().eq('post_id', id);
+      const { error } = await supabase.from('forum_comment_likes').delete().eq('comment_id', id);
       if (error) throw new Error(`댓글 삭제 실패 (forum): ${error.message}`);
     } else if (category === 'qna') {
-      const { error } = await supabase.from('qna_comment_likes').delete().eq('post_id', id);
+      const { error } = await supabase.from('qna_comment_likes').delete().eq('comment_id', id);
       if (error) throw new Error(`댓글 삭제 실패 (qna): ${error.message}`);
     } else {
       throw new Error('유효하지 않은 카테고리');

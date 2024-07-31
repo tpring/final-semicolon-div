@@ -7,6 +7,7 @@ import { combineItems } from '@/utils/combineItems';
 import FilterControls from './common/FilterControls';
 import MyActivitiesPagination from './common/MyActivitiesPagination';
 import ConfirmModal from '@/components/modal/ConfirmModal';
+import { toast, ToastContainer } from 'react-toastify';
 
 const BookmarksList = () => {
   const forumCategories = ['일상', '커리어', '자기개발', '토론', '코드 리뷰'];
@@ -14,8 +15,9 @@ const BookmarksList = () => {
   const [selectedForumCategory, setSelectedForumCategory] = useState<string | null>(null);
   const [selectedType, setSelectedType] = useState<'all' | 'post' | 'comment'>('all');
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
+  const [selectedItems, setSelectedItems] = useState<Map<string, { category: string; type: string }>>(new Map());
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [combinedItems, setCombinedItems] = useState<CombinedItem[]>([]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -37,12 +39,16 @@ const BookmarksList = () => {
     isLoading: commentLoading
   } = useBookmarksComments();
 
+  useEffect(() => {
+    if (!postLoading && !commentLoading && posts && comments) {
+      const combined = combineItems(posts, comments);
+      combined.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      setCombinedItems(combined);
+    }
+  }, [postLoading, commentLoading, posts, comments]);
+
   if (postLoading || commentLoading) return <div>Loading...</div>;
   if (postError || commentError) return <div>Error: {postError?.message || commentError?.message}</div>;
-
-  const combinedItems: CombinedItem[] = combineItems(posts, comments);
-
-  combinedItems.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
   const categoryFilteredItems =
     selectedCategory === 'all'
@@ -64,37 +70,67 @@ const BookmarksList = () => {
   const totalPages = Math.ceil(typeFilteredItems.length / itemsPerPage);
   const paginatedItems = typeFilteredItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-  const handleCheckboxChange = (id: string) => {
+  const handleCheckboxChange = (id: string, category: string, type: string) => {
     setSelectedItems((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(id)) {
-        newSet.delete(id);
+      const newMap = new Map(prev);
+      if (newMap.has(id)) {
+        newMap.delete(id);
       } else {
-        newSet.add(id);
+        newMap.set(id, { category, type });
       }
-      return newSet;
+      return newMap;
     });
   };
-
   const handleDelete = async () => {
     try {
-      const idsToDelete = Array.from(selectedItems);
-      const response = await fetch('/api/bookmarks/delete', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ ids: idsToDelete })
+      const postsToDelete: { id: string; category: string }[] = [];
+      const commentsToDelete: { id: string; category: string }[] = [];
+
+      selectedItems.forEach((value, key) => {
+        if (value.type === 'post') {
+          postsToDelete.push({ id: key, category: value.category });
+        } else if (value.type === 'comment') {
+          commentsToDelete.push({ id: key, category: value.category });
+        }
       });
 
-      if (!response.ok) throw new Error('삭제 실패');
+      if (postsToDelete.length > 0) {
+        const response = await fetch('/api/profile/bookmarksposts', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ postsToDelete })
+        });
+        if (!response.ok) throw new Error('포스트 삭제 요청 실패');
+      }
+
+      if (commentsToDelete.length > 0) {
+        const response = await fetch('/api/profile/bookmarkscomments', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ commentsToDelete })
+        });
+        if (!response.ok) throw new Error('댓글 삭제 요청 실패');
+      }
+      // 업데이트된 combinedItems 생성
+      const updatedCombinedItems = combinedItems.filter((item) => !selectedItems.has(item.id));
+
+      // 상태 업데이트
+      setCombinedItems(updatedCombinedItems);
+      setSelectedItems(new Map());
+
+      toast.success('삭제가 완료 되었습니다.');
     } catch (error) {
-      console.error('Error deleting bookmarks:', error);
+      console.error('삭제 처리 중 오류 발생:', error);
     }
   };
 
   return (
     <div className="relative min-h-screen">
+      <ToastContainer />
       <h2>북마크 목록</h2>
       <button onClick={() => setConfirmModalOpen(true)} className="border bg-sub-200 text-white rounded">
         선택한 항목 삭제
@@ -126,7 +162,7 @@ const BookmarksList = () => {
                 nickname={item.user.nickname}
                 profile_image={item.user.profile_image}
                 isSelected={selectedItems.has(item.id)}
-                onCheckboxChange={handleCheckboxChange}
+                onCheckboxChange={(id) => handleCheckboxChange(id, item.category, 'post')}
               />
             ) : (
               <CommentCard
@@ -139,15 +175,13 @@ const BookmarksList = () => {
                 nickname={item.user.nickname}
                 profile_image={item.user.profile_image}
                 isSelected={selectedItems.has(item.id)}
-                onCheckboxChange={handleCheckboxChange}
+                onCheckboxChange={(id) => handleCheckboxChange(id, item.category, 'comment')}
               />
             )}
           </div>
         ))
       )}
-      <div className="flex justify-between items-center">
-        <MyActivitiesPagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
-      </div>
+      <MyActivitiesPagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
       <ConfirmModal
         message={'삭제 할까요?'}
         isOpen={isConfirmModalOpen}
