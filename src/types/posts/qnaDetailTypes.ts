@@ -33,6 +33,8 @@ export type TqnaPostReply = {
   updated_at: string;
 };
 
+export type Tcount = { count: number };
+
 export type qnaData = TqnaPosts & {
   qna_comments: TallComments[];
   qna_bookmarks: TqnaBookMarks[];
@@ -47,3 +49,16 @@ export type TallComments = TqnaComments & {
   users: TqnaUser;
   qna_reply: TqnaReplyWithUser[];
 };
+
+export type TqnaData = TqnaPosts & {
+  qna_comments: Tcount[];
+  qna_post_reply: Tcount[];
+  users: TqnaUser;
+};
+export type TqnaCommentsWithReplyCount = TqnaComments & {
+  users: TqnaUser;
+  qna_reply: Tcount[];
+};
+
+export type Treply = TqnaReply & { users: TqnaUser };
+export type TpostReply = TqnaPostReply & { users: TqnaUser };

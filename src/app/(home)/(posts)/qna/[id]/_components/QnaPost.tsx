@@ -6,24 +6,26 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import QnaQuestion from './qnapost/QnaQuestion';
 import PostingQnaAnswer from './qnapost/PostingQnaAnswer';
-import { qnaData } from '@/types/posts/qnaDetailTypes';
+import { TqnaData } from '@/types/posts/qnaDetailTypes';
 import QnaAnswers from './qnapost/QnaAnswers';
 import GoToTop from '@/assets/images/common/GoToTop';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import NotFound from '@/app/not-found';
 
 type QnaPostProps = {
-  data: [qnaData];
+  data: TqnaData;
+  postId: string;
 };
 
-const QnaPost = ({ data }: QnaPostProps) => {
+const QnaPost = ({ data, postId }: QnaPostProps) => {
   const { me } = useAuth();
-  const [questionData] = data;
-  const qnaAnswers = questionData.qna_comments;
   const [content, setContent] = useState<string>('');
+  const qnaCommentsCount = data.qna_comments[0].count;
 
   const handleTopBtnClick = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-  useEffect(() => {}, [data]);
+
   return (
     <div>
       <div className="mb-8">
@@ -31,9 +33,9 @@ const QnaPost = ({ data }: QnaPostProps) => {
           <BackArrowIcon />
         </Link>
       </div>
-      <QnaQuestion questionData={questionData} />
+      <QnaQuestion questionData={data} />
       {me?.id ? <PostingQnaAnswer content={content} setContent={setContent} /> : null}
-      <QnaAnswers qnaAnswers={qnaAnswers} />
+      <QnaAnswers postId={postId} qnaCommentsCount={qnaCommentsCount} />
       <button className=" fixed right-[168px] bottom-[62px]" onClick={handleTopBtnClick}>
         <GoToTop />
       </button>

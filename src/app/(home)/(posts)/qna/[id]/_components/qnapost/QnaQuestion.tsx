@@ -1,17 +1,17 @@
 import { timeForToday } from '@/components/timeForToday';
 import MDEditor from '@uiw/react-md-editor';
 import { useState } from 'react';
-import QuestionComments from '../qnacomments/QuestionComments';
-import { qnaData } from '@/types/posts/qnaDetailTypes';
+import { TqnaData } from '@/types/posts/qnaDetailTypes';
 import Image from 'next/image';
 import Share from '@/assets/images/common/Share';
-import UnfilledLike from '@/assets/images/like/UnfilledLike';
 import UnfilledBookmark from '@/assets/images/bookmark/UnfilledBookmark';
 import CommentBubble from '@/assets/images/common/CommentBubble';
 import CommentHide from '@/assets/images/common/CommentHide';
+import LikeButton from '@/components/common/LikeButton';
+import QuestionReplies from '../qnacomments/QuestionReplies';
 
 type QnaQuestionProps = {
-  questionData: qnaData;
+  questionData: TqnaData;
 };
 
 const QnaQuestion = ({ questionData }: QnaQuestionProps) => {
@@ -44,12 +44,12 @@ const QnaQuestion = ({ questionData }: QnaQuestionProps) => {
         <span>{questionData.updated_at?.slice(0, 10)}</span>
         <div className="flex gap-6 items-center">
           <button className="flex gap-1">
-            <UnfilledLike />
-            {questionData.qna_likes.length}
+            <LikeButton id={questionData.id} type={'qna'} />
+            {/* {questionData.qna_likes.length} */}
           </button>
           <button className="flex gap-1">
             <UnfilledBookmark />
-            {questionData.qna_bookmarks.length}
+            {/* {questionData.qna_bookmarks.length} */}
           </button>
           <button>
             <Share />
@@ -61,14 +61,16 @@ const QnaQuestion = ({ questionData }: QnaQuestionProps) => {
               ) : (
                 <>
                   <CommentBubble />
-                  {questionData.qna_post_reply.length}
+                  {questionData.qna_post_reply[0].count}
                 </>
               )}
             </button>
           </div>
         </div>
       </div>
-      {openQuestionReply ? <QuestionComments questionReplies={questionData.qna_post_reply} /> : null}
+      {openQuestionReply ? (
+        <QuestionReplies questionId={questionData.id} postReplyCount={questionData.qna_post_reply[0].count} />
+      ) : null}
     </div>
   );
 };

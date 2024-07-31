@@ -6,12 +6,12 @@ type QnaDetailPageProps = {
 };
 
 const QnaDetailPage = async ({ params }: QnaDetailPageProps) => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/posts/qnadetail/${params.id}?category=qna`);
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/posts/qna-detail/${params.id}?category=qna`);
   const { data, message } = await response.json();
   if (message) {
     return <NotFound />;
   }
-  return <QnaPost data={data} />;
+  return <QnaPost data={data} postId={params.id} />;
 };
 
 export default QnaDetailPage;
