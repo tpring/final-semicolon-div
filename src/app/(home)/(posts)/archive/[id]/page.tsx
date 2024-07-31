@@ -1,5 +1,5 @@
-const ArchivingDetailPage = () => {
+const ArchiveDetailPage = () => {
   return <div></div>;
 };
 
-export default ArchivingDetailPage;
+export default ArchiveDetailPage;

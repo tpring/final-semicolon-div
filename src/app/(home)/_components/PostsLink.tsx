@@ -27,7 +27,7 @@ const PostsLink = () => {
         </div>
       </Link>
       <Link
-        href={'/archiving'}
+        href={'/archive'}
         className="bg-slate-200 w-1/3 h-[234px] flex flex-col justify-end p-5 rounded-2xl gap-1 text-white "
         style={{ backgroundImage: `url(${mainPageArchiving.src})` }}
       >
