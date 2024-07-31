@@ -1,5 +1,6 @@
 'use client';
 
+import BookmarkButton from '@/components/common/BookmarkButton';
 import { useArchivePosts } from '@/hooks/archive/useFetchArchivePosts';
 import { Post, SortOption } from '@/types/posts/archiveTypes';
 import MDEditor from '@uiw/react-md-editor';
@@ -48,11 +49,10 @@ const ArchivePosts = () => {
       <h1>Archive Posts</h1>
       <div>
         <label>
-          Sort By:
           <select value={sortMethod} onChange={(e) => setSortMethod(e.target.value as SortOption)}>
-            <option value="latest">Latest</option>
-            <option value="mostComments">Most Comments</option>
-            <option value="mostLikes">Most Likes</option>
+            <option value="latest">최신순</option>
+            <option value="mostComments">답변순</option>
+            <option value="mostLikes">좋아요순</option>
           </select>
         </label>
       </div>
@@ -60,19 +60,18 @@ const ArchivePosts = () => {
         <ul>
           {sortedPosts.map((post) => (
             <li key={post.id}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Image
-                  src={post.user.profile_image}
-                  alt={post.user.nickname || 'Unknown User'}
-                  width={50}
-                  height={50}
-                />
+              <div className="post-image">
+                {post.thumbnail && (
+                  <Image src={post.thumbnail} alt="Post Thumbnail" width={300} height={300} objectFit="cover" />
+                )}
                 <div>
-                  <strong>{post.user.nickname}</strong>
-                  <p>{dayjs(post.updated_at).format('YYYY-MM-DD HH:mm')}</p>
+                  <BookmarkButton id={post.id} type="archive" />
                 </div>
               </div>
               <h2>{post.title}</h2>
+              <div>
+                <strong>{post.user.nickname}</strong>
+              </div>
               <MDEditor.Markdown source={post.content} />
               <div>
                 <p>Tags: </p>
@@ -81,10 +80,6 @@ const ArchivePosts = () => {
                 ) : (
                   <span>No tags</span>
                 )}
-              </div>
-              <div>
-                <span>Likes: {post.archive_like[0]?.count || 0}</span> |
-                <span>Comments: {post.archive_comment[0]?.count || 0}</span>
               </div>
             </li>
           ))}
