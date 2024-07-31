@@ -1,3 +1,4 @@
+'use client';
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 
@@ -21,7 +22,7 @@ type NicknameModalProps = {
   isOpen: boolean;
   currentNickname: string;
   onNicknameUpdate: (newNickname: string) => void;
-  userId: string; // Add userId prop
+  userId: string;
 };
 
 const OAuthNicknameModal = ({ isOpen, currentNickname, onNicknameUpdate, userId }: NicknameModalProps) => {

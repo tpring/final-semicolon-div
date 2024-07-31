@@ -23,7 +23,7 @@ const OAuthNicknameModalWrapper = () => {
       isOpen={isNicknameModalOpen}
       currentNickname={userData?.nickname || ''}
       onNicknameUpdate={handleNicknameUpdate}
-      userId={me?.id || ''} // me에서 userId prop 추가
+      userId={me?.id || ''}
     />
   );
 };
