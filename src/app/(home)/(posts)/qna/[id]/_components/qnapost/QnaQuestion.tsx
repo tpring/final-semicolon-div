@@ -4,6 +4,11 @@ import { useState } from 'react';
 import QuestionComments from '../qnacomments/QuestionComments';
 import { qnaData } from '@/types/posts/qnaDetailTypes';
 import Image from 'next/image';
+import Share from '@/assets/images/common/Share';
+import UnfilledLike from '@/assets/images/like/UnfilledLike';
+import UnfilledBookmark from '@/assets/images/bookmark/UnfilledBookmark';
+import CommentBubble from '@/assets/images/common/CommentBubble';
+import CommentHide from '@/assets/images/common/CommentHide';
 
 type QnaQuestionProps = {
   questionData: qnaData;
@@ -11,6 +16,9 @@ type QnaQuestionProps = {
 
 const QnaQuestion = ({ questionData }: QnaQuestionProps) => {
   const [openQuestionReply, setOpenQuestionReply] = useState<boolean>(false);
+  const handleReplyClick = () => {
+    setOpenQuestionReply((prev) => !prev);
+  };
   return (
     <div className="w-[1204px]  mb-6 px-6 py-12 border rounded-2xl overflow-auto">
       <div className="mb-6">
@@ -34,18 +42,29 @@ const QnaQuestion = ({ questionData }: QnaQuestionProps) => {
       </div>
       <div className="flex justify-between">
         <span>{questionData.updated_at?.slice(0, 10)}</span>
-        <div className="flex gap-2">
-          <span>좋아요{questionData.qna_likes.length}</span>
-          <span>북마크{questionData.qna_bookmarks.length}</span>
-          <span>공유</span>
-          <div className="flex flex-col">
-            <span
-              onClick={() => {
-                setOpenQuestionReply((prev) => !prev);
-              }}
-            >
-              댓글{questionData.qna_post_reply.length}
-            </span>
+        <div className="flex gap-6 items-center">
+          <button className="flex gap-1">
+            <UnfilledLike />
+            {questionData.qna_likes.length}
+          </button>
+          <button className="flex gap-1">
+            <UnfilledBookmark />
+            {questionData.qna_bookmarks.length}
+          </button>
+          <button>
+            <Share />
+          </button>
+          <div className="flex ">
+            <button className="flex gap-1" onClick={handleReplyClick}>
+              {openQuestionReply ? (
+                <CommentHide />
+              ) : (
+                <>
+                  <CommentBubble />
+                  {questionData.qna_post_reply.length}
+                </>
+              )}
+            </button>
           </div>
         </div>
       </div>
