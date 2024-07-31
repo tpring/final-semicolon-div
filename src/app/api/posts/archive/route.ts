@@ -9,7 +9,9 @@ const getArchivePosts = async (page: number, limit: number) => {
 
   const { data: posts, error } = await supabase
     .from('archive_posts')
-    .select(`*,archive_like:archive_likes(count), archive_comment:archive_comments(count),archive_tags, user:users(*)`)
+    .select(
+      `*,archive_like:archive_likes(count), archive_comment:archive_comments(count),archive_tags(*), user:users(*)`
+    )
     .order('updated_at', { ascending: false })
     .range(page * limit, (page + 1) * limit - 1);
 
@@ -34,7 +36,9 @@ const getPopularArchivePosts = async () => {
 
   const { data: posts, error } = await supabase
     .from('archive_posts')
-    .select(`*,archive_like:archive_likes(count), archive_comment:archive_comments(count), user:users(*)`)
+    .select(
+      `*,archive_like:archive_likes(count), archive_comment:archive_comments(count), archive_tags(*), user:users(*)`
+    )
     .gte('created_at', oneYearAgo)
     .order('created_at', { ascending: false });
 
@@ -43,7 +47,9 @@ const getPopularArchivePosts = async () => {
     return { data: [], error: error.message };
   }
 
-  const sortedPosts = posts.sort((a, b) => (b.archive_like[0]?.count || 0) - (a.archive_like[0]?.count || 0));
+  const sortedPosts = posts
+    .sort((a, b) => (b.archive_like[0]?.count || 0) - (a.archive_like[0]?.count || 0))
+    .slice(0, 15);
 
   return { data: sortedPosts, error: null };
 };
