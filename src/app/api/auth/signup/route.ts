@@ -15,6 +15,7 @@ export async function POST(request: NextRequest) {
   const { email, password, nickname, recaptchaToken } = data;
   const supabase = createClient();
 
+  // reCAPTCHA 검증
   const recaptchaResponse = await fetch(`https://www.google.com/recaptcha/api/siteverify`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -26,6 +27,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'recaptcha 인증 실패' });
   }
 
+  // 회원가입 처리
   const {
     data: { user }
   } = await supabase.auth.signUp({

@@ -928,6 +928,50 @@ export type Database = {
           }
         ];
       };
+
+      qna_post_reply: {
+        Row: {
+          created_at: string;
+          id: string;
+          post_id: string | null;
+          post_reply_content: string;
+          updated_at: string | null;
+          user_id: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          post_id?: string | null;
+          post_reply_content: string;
+          updated_at?: string | null;
+          user_id?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          post_id?: string | null;
+          post_reply_content?: string;
+          updated_at?: string | null;
+          user_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'qna_post_reply_post_id_fkey';
+            columns: ['post_id'];
+            isOneToOne: false;
+            referencedRelation: 'qna_posts';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'qna_post_reply_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          }
+        ];
+      };
+
       qna_posts: {
         Row: {
           category: string;
