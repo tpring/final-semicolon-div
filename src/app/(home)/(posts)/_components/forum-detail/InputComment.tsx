@@ -57,7 +57,7 @@ const InputComments = () => {
   };
 
   return (
-    <div className="flex justify-start items-center border p-4 ">
+    <div className="flex justify-start items-center border rounded-xl p-4 ">
       <form className=" flex flex-col justify-end items-end w-full gap-2" onSubmit={handleSubmit}>
         <MDEditor
           value={comment}

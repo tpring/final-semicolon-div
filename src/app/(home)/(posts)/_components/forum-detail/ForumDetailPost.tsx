@@ -19,11 +19,11 @@ const ForumDetailPost = ({ params }: { params: { id: string } }) => {
   });
 
   return (
-    <div>
+    <div className="flex flex-col gap-4">
       {forumDetail?.map((post) => (
-        <div key={post.id} className="w-full">
-          <div className="flex  justify-start items-center gap-4 ">
-            <img src={post.user.profile_image} className="rounded-full" />
+        <div key={post.id} className="w-full flex flex-col gap-2 p-4 border-b-[1px] ">
+          <div className="flex  justify-start items-center gap-2  ">
+            <img src={post.user.profile_image} className="rounded-full w-10 h-10 " />
             <div>
               <h3>{post.user.nickname}</h3>
               <div className=" flex justify-start items-center gap-3">
