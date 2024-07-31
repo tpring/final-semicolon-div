@@ -1,25 +1,20 @@
 import { createClient } from '@/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
 
-type RequestData = {
+type UpdateNicknameRequest = {
   userId: string;
-  nickname: string;
+  newNickname: string;
 };
 
 export async function POST(request: NextRequest) {
-  const data: RequestData = await request.json();
-  const { userId, nickname } = data;
+  const { userId, newNickname }: UpdateNicknameRequest = await request.json();
   const supabase = createClient();
 
-  // Update nickname in users table
-  const { error: updateError } = await supabase.from('users').update({
-    id: userId,
-    nickname
-  });
+  const { data, error } = await supabase.from('users').update({ nickname: newNickname }).eq('id', userId);
 
-  if (updateError) {
-    return NextResponse.json({ error: 'Failed to update nickname' }, { status: 500 });
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ success: true });
+  return NextResponse.json({ message: '닉네임이 성공적으로 업데이트되었습니다.', data });
 }
