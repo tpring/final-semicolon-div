@@ -46,7 +46,7 @@ const BookmarkButton = ({ id, type }: BookmarkButtonProps) => {
         comment_id: type.includes('Comment') ? id : undefined,
         type
       });
-      const response = await fetch('api/common/bookmark', {
+      const response = await fetch('/api/common/bookmark', {
         method: isBookmarked ? 'DELETE' : 'POST',
         headers: {
           'Context-Type': 'application/json'

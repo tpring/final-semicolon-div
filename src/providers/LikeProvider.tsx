@@ -21,7 +21,7 @@ const LikeProvider = ({ children }: { children: ReactNode }) => {
     const fetchLikes = async () => {
       if (!me) return;
       try {
-        const response = await fetch(`api/common/like?user_id=${me.id}`);
+        const response = await fetch(`/api/common/like/like?user_id=${me.id}`);
         if (response.ok) {
           const result = await response.json();
           setLikes({

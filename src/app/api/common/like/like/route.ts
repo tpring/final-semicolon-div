@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export const GET = async (request: NextRequest) => {
   const { searchParams } = new URL(request.url);
+  const type = searchParams.get('type') as LikeType;
   const user_id = searchParams.get('user_id');
   const supabase = createClient();
 
