@@ -6,7 +6,9 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAuth } from '@/context/auth.context';
 import OAuthButtons from './OAuthButtons';
+import useOAuthLogin from '@/hooks/useOAuthLogin';
 import { createClient } from '@/supabase/client';
+import NicknameModal from '../../(profile)/_components/setting/NicknameModal';
 
 function LoginForm() {
   const router = useRouter();
@@ -14,6 +16,7 @@ function LoginForm() {
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const { logIn } = useAuth();
+  const { handleOAuthLogin, error: oAuthError, showNicknameModal, setShowNicknameModal } = useOAuthLogin();
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
@@ -36,27 +39,27 @@ function LoginForm() {
     }
   };
 
-  const handleOAuthLogin = async (provider: 'google' | 'kakao' | 'github') => {
-    setError(null);
-    try {
-      const supabase = createClient();
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: provider,
-        options: {
-          redirectTo: 'http://localhost:3000'
-        }
-      });
+  const handleNicknameUpdate = async (newNickname: string) => {
+    const supabase = createClient();
+    const {
+      data: { user },
+      error
+    } = await supabase.auth.getUser();
 
-      if (error) {
-        console.error(`${provider} 로그인 오류:`, error);
-        setError(`Failed to log in with ${provider}. ${error.message}`);
-        toast.error(`Failed to log in with ${provider}.`);
-      }
-    } catch (err) {
-      console.error('OAuth 로그인 중 에러가 발생했습니다:', err);
-      setError('OAuth 로그인 실패');
-      toast.error('OAuth 로그인 중 에러가 발생했습니다.');
+    if (error || !user) {
+      console.error('사용자 정보를 불러오는 중 오류가 발생했습니다:', error);
+      return;
     }
+
+    const { error: updateError } = await supabase.from('users').update({ nickname: newNickname }).eq('id', user.id);
+
+    if (updateError) {
+      console.error('닉네임 업데이트 중 오류가 발생했습니다:', updateError);
+      return;
+    }
+
+    setShowNicknameModal(false);
+    router.replace('/'); // 닉네임 변경 후 메인 페이지로 이동
   };
 
   return (
@@ -98,6 +101,12 @@ function LoginForm() {
         </div>
         <OAuthButtons handleLogin={handleOAuthLogin} />
       </div>
+      <NicknameModal
+        isOpen={showNicknameModal}
+        onClose={() => setShowNicknameModal(false)}
+        currentNickname=""
+        onNicknameUpdate={handleNicknameUpdate}
+      />
     </div>
   );
 }

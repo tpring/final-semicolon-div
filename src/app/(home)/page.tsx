@@ -1,4 +1,3 @@
-import Header from '@/components/header/Header';
 import BestForum from './_components/BestForum';
 import LandingPage from './_components/LandingPage';
 import MainPageTag from './_components/MainPageTag';
@@ -6,7 +5,6 @@ import Notice from './_components/Notice';
 import PostsLink from './_components/PostsLink';
 import TodayQna from './_components/TodayQna';
 import TopButton from '../../components/TopButton';
-import Bookmark from '@/components/Bookmark';
 
 const HomePage = () => {
   return (

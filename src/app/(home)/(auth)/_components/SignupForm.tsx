@@ -13,6 +13,8 @@ import { useAuth } from '@/context/auth.context';
 import OAuthButtons from './OAuthButtons';
 import useOAuthLogin from '@/hooks/useOAuthLogin';
 import NicknameCheck from './NicknameCheck ';
+import NicknameModal from '../../(profile)/_components/setting/NicknameModal';
+import { createClient } from '@/supabase/client';
 
 const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY as string;
 
@@ -41,7 +43,7 @@ const SignupForm = () => {
 
   const router = useRouter();
   const { signUp } = useAuth();
-  const { handleOAuthLogin } = useOAuthLogin();
+  const { handleOAuthLogin, showNicknameModal, setShowNicknameModal } = useOAuthLogin();
 
   useEffect(() => {
     const validateEmail = (email: string) => {
@@ -133,6 +135,29 @@ const SignupForm = () => {
     setRecaptchaToken(token);
   };
 
+  const handleNicknameUpdate = async (newNickname: string) => {
+    const supabase = createClient();
+    const {
+      data: { user },
+      error
+    } = await supabase.auth.getUser();
+
+    if (error || !user) {
+      console.error('사용자 정보를 불러오는 중 오류가 발생했습니다:', error);
+      return;
+    }
+
+    const { error: updateError } = await supabase.from('users').update({ nickname: newNickname }).eq('id', user.id);
+
+    if (updateError) {
+      console.error('닉네임 업데이트 중 오류가 발생했습니다:', updateError);
+      return;
+    }
+
+    setShowNicknameModal(false);
+    router.replace('/'); // 닉네임 변경 후 메인 페이지로 이동
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <ToastContainer />
@@ -189,6 +214,12 @@ const SignupForm = () => {
           </p>
         </form>
       </div>
+      <NicknameModal
+        isOpen={showNicknameModal}
+        onClose={() => setShowNicknameModal(false)}
+        currentNickname=""
+        onNicknameUpdate={handleNicknameUpdate}
+      />
     </div>
   );
 };

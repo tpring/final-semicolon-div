@@ -15,8 +15,8 @@ const NavLinks = ({ getLinkClasses }: NavLinksProps) => {
       <Link href={'/qna'}>
         <h1 className={`border-0 rounded-md p-2 font-bold ${getLinkClasses('/qna')}`}>Q&A</h1>
       </Link>
-      <Link href={'/archiving'}>
-        <h1 className={`border-0 rounded-md p-2 font-bold ${getLinkClasses('/archiving')}`}>아카이브</h1>
+      <Link href={'/archive'}>
+        <h1 className={`border-0 rounded-md p-2 font-bold ${getLinkClasses('/archive')}`}>아카이브</h1>
       </Link>
     </div>
   );
