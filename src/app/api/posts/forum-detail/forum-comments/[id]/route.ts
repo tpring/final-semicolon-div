@@ -9,11 +9,11 @@ export const GET = async (request: Request, { params }: { params: { id: string }
 };
 
 export const POST = async (request: Request) => {
+  const supabase = createClient();
   const data = await request.json();
   const comment = data.userComment.comment as string;
   const user_id = data.userComment.user_id as string;
   const post_id = data.userComment.post_id as string;
-  const supabase = createClient();
 
   const { data: comments } = await supabase.from('forum_comments').insert({ comment, user_id, post_id });
 

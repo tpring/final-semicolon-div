@@ -81,8 +81,9 @@ const ForumComments = () => {
   };
 
   //수정 작업중 취소버튼
-  const toggleEditing = (id: string) => {
+  const toggleEditing = (id: string, comment) => {
     setEditingState({ [id]: !editingState[id] });
+    setMdEditorChange(comment);
     setEditingToggleState({ [id]: false[id] });
   };
   //댓글 수정&삭제 케밥
@@ -111,7 +112,7 @@ const ForumComments = () => {
                     )}
                     {editingToggleState[comment.id] && (
                       <div className="w-[105px] right-0 absolute flex flex-col justify-center items-center bg-white shadow-lg border rounded-lg">
-                        <button className="h-[44px]" onClick={() => toggleEditing(comment.id)}>
+                        <button className="h-[44px]" onClick={() => toggleEditing(comment.id, comment.comment)}>
                           댓글 수정
                         </button>
                         <button className="h-[44px]" onClick={() => handleDelete(comment.id, comment.user_id)}>
@@ -127,7 +128,8 @@ const ForumComments = () => {
           {editingState[comment.id] ? (
             <div>
               <MDEditor
-                value={comment.comment}
+                value={mdEditorChange}
+                onChange={setMdEditorChange}
                 ref={commentRetouchRef}
                 preview="edit"
                 extraCommands={commands.getCommands().filter(() => false)}
