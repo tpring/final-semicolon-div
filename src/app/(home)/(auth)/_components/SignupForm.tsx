@@ -10,6 +10,8 @@ import { useRouter } from 'next/navigation';
 import PasswordFields from './PasswordFields';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { useAuth } from '@/context/auth.context';
+import OAuthButtons from './OAuthButtons';
+import useOAuthLogin from '@/hooks/useOAuthLogin';
 import NicknameCheck from './NicknameCheck ';
 
 const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY as string;
@@ -39,6 +41,7 @@ const SignupForm = () => {
 
   const router = useRouter();
   const { signUp } = useAuth();
+  const { handleOAuthLogin } = useOAuthLogin();
 
   useEffect(() => {
     const validateEmail = (email: string) => {
@@ -135,7 +138,8 @@ const SignupForm = () => {
       <ToastContainer />
       <div className="bg-white p-8 rounded shadow-md w-full max-w-lg">
         <h1 className="text-2xl font-bold mb-6 text-center">회원가입</h1>
-        <form onSubmit={handleSignup}>
+        <OAuthButtons handleLogin={handleOAuthLogin} />
+        <form onSubmit={handleSignup} className="mt-4">
           <InputField
             type="email"
             value={email}

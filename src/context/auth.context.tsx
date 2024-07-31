@@ -24,6 +24,8 @@ type AuthContextValue = {
     nickname: string,
     recaptchaToken: string | null
   ) => Promise<{ status: number; message?: string }>;
+  updateUserData: (updates: Partial<UserData>) => void;
+  setUser: (user: User | null) => void;
 };
 
 const initialValue: AuthContextValue = {
@@ -33,7 +35,9 @@ const initialValue: AuthContextValue = {
   userData: null,
   logIn: async () => ({ status: 0 }),
   logOut: async () => ({ status: 0 }),
-  signUp: async () => ({ status: 0 })
+  signUp: async () => ({ status: 0 }),
+  updateUserData: () => {},
+  setUser: () => {}
 };
 
 const AuthContext = createContext<AuthContextValue>(initialValue);
@@ -65,7 +69,15 @@ export function AuthProvider({ children }: PropsWithChildren) {
       setUserData(null);
     }
   };
-
+  // 유저 정보 업데이트 함수
+  const updateUserData: AuthContextValue['updateUserData'] = (updates) => {
+    setUserData((prevData) => {
+      if (prevData === null) {
+        return { ...updates } as UserData;
+      }
+      return { ...prevData, ...updates };
+    });
+  };
   // 로그인 함수
   const logIn: AuthContextValue['logIn'] = async (email, password) => {
     if (!email || !password) {
@@ -127,12 +139,24 @@ export function AuthProvider({ children }: PropsWithChildren) {
     return { status: 200 };
   };
 
+  const setUser = (user: User | null) => {
+    setMe(user);
+    if (user) {
+      fetchUserData(user.id);
+    } else {
+      setUserData(null);
+    }
+  };
+
   useEffect(() => {
     const initializeAuth = async () => {
+      console.log('initializeAuth');
       try {
         const response = await fetch('/api/auth/me');
         if (response.status === 200) {
           const user = await response.json();
+          if (!user) return;
+
           setMe(user);
           await fetchUserData(user.id);
         }
@@ -146,6 +170,19 @@ export function AuthProvider({ children }: PropsWithChildren) {
     initializeAuth();
   }, []);
 
+  useEffect(() => {
+    const checkSession = async () => {
+      const {
+        data: { user }
+      } = await supabase.auth.getUser();
+      if (user) {
+        setUser(user);
+      }
+      setIsInitialized(true);
+    };
+    checkSession();
+  }, []);
+
   const value: AuthContextValue = {
     isInitialized,
     isLoggedIn,
@@ -153,7 +190,9 @@ export function AuthProvider({ children }: PropsWithChildren) {
     userData,
     logIn,
     logOut,
-    signUp
+    signUp,
+    updateUserData,
+    setUser
   };
 
   if (!isInitialized) return null;
