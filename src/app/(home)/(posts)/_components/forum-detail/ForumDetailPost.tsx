@@ -2,11 +2,12 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { forumDetailType } from '@/types/posts/forumDetailTypes';
-import InputComments from './InputComment';
-import ForumComments from './ForumComments';
 import { timeForToday } from '@/utils/timeForToday';
+import { useParams } from 'next/navigation';
+import MDEditor from '@uiw/react-md-editor';
 
-const ForumDetailPost = ({ params }: { params: { id: string } }) => {
+const ForumDetailPost = () => {
+  const params = useParams();
   const { data: forumDetail, error } = useQuery<forumDetailType[]>({
     queryKey: ['forumDetail'],
     queryFn: async () => {
@@ -37,13 +38,11 @@ const ForumDetailPost = ({ params }: { params: { id: string } }) => {
           </div>
           <div>
             <h2>{post.title}</h2>
-            <p>{post.content}</p>
+            <MDEditor.Markdown source={post.content} />
           </div>
           <p>{post.created_at.slice(0, 16).replace(/-/g, '.').replace(/T/g, ' ')}</p>
         </div>
       ))}
-      <InputComments />
-      <ForumComments />
     </div>
   );
 };

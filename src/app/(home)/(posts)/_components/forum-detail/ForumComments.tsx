@@ -1,5 +1,5 @@
 'use client';
-import Kebab from '@/assets/images/common/kebab';
+
 import { useAuth } from '@/context/auth.context';
 import { forumCommentsType } from '@/types/posts/forumDetailTypes';
 import { timeForToday } from '@/utils/timeForToday';
@@ -9,6 +9,8 @@ import dayjs from 'dayjs';
 import { useParams } from 'next/navigation';
 import { useRef, useState } from 'react';
 import ForumReply from './ForumReply';
+import Kebab from '@/assets/images/common/Kebab';
+import ForumReplyInput from './ForumReplyInput';
 
 const ForumComments = () => {
   const { me } = useAuth();
@@ -145,6 +147,7 @@ const ForumComments = () => {
               <p>{comment.comment}</p>
             </div>
           )}
+          <ForumReplyInput comment_id={comment.id} />
           <ForumReply comment_id={comment.id} />
         </div>
       ))}

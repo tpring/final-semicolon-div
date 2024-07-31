@@ -8,10 +8,10 @@ import { useState } from 'react';
 import { toast } from 'react-toastify';
 
 const InputComments = () => {
-  const [comment, setComment] = useState<string>('');
-  const params = useParams<{ id: string }>();
   const { me } = useAuth();
+  const params = useParams<{ id: string }>();
   const queryClient = useQueryClient();
+  const [comment, setComment] = useState<string>('');
 
   const handleCommentChange = (value?: string) => {
     setComment(value!);

@@ -12,20 +12,26 @@ const ForumReply = ({ comment_id }: { comment_id: string }) => {
   const COMMENT_REPLY_PAGE = 5;
 
   const { data: reply } = useQuery({
-    queryKey: ['commentReply', page],
+    queryKey: ['commentReply'],
     queryFn: async () => {
       try {
         const response = await fetch(`/api/posts/forum-detail/forum-reply/${params_id.id}`, {
           params: { _page: page, _limit: COMMENT_REPLY_PAGE }
         });
-        const data = await response.json();
+        const data = response.json();
         return data;
       } catch (error) {}
     }
   });
-  console.log(reply);
+
+  const replyPages = Math.ceil(reply?.count / COMMENT_REPLY_PAGE);
+
   return (
-    <div>{reply?.map((reply: any) => reply.comment_id === comment_id && <div key={reply.id}>{reply.reply}</div>)}</div>
+    <div>
+      {/* {reply.reply.map((reply) => (
+        <div key={reply.id}>{reply.comment_id === comment_id && <p>{reply}</p>}</div>
+      ))} */}
+    </div>
   );
 };
 
