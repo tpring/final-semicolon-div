@@ -1,5 +1,6 @@
 'use client';
 
+import UpButton from '@/assets/images/common/UpButton';
 import { useEffect, useState } from 'react';
 
 const TopButton = () => {
@@ -24,11 +25,11 @@ const TopButton = () => {
   };
   return (
     <div className=" fixed right-16 bottom-5">
-      {topScroll ? (
-        <button type="button" onClick={MoveTop} className=" border py-2 px-4 rounded-xl  ">
-          TOP
+      {topScroll && (
+        <button type="button" onClick={MoveTop} className=" py-2 px-4  ">
+          <UpButton />
         </button>
-      ) : null}
+      )}
     </div>
   );
 };
