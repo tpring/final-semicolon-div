@@ -1,5 +1,4 @@
 import { createClient } from '@/supabase/server';
-import exp from 'constants';
 import { NextResponse } from 'next/server';
 
 export const GET = async (request: Request) => {
