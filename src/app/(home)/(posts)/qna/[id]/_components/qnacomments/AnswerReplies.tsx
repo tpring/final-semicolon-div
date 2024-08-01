@@ -1,8 +1,6 @@
-import { timeForToday } from '@/components/timeForToday';
 import { Treply } from '@/types/posts/qnaDetailTypes';
 import MDEditor from '@uiw/react-md-editor';
 import Image from 'next/image';
-
 import NotFound from '@/app/not-found';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import Loading from '@/app/(home)/loading';
@@ -10,6 +8,7 @@ import { useState } from 'react';
 import AnswerReplyForm from './AnswerReplyForm';
 import Kebob from '../qnapost/Kebob';
 import { useAuth } from '@/context/auth.context';
+import { timeForToday } from '@/utils/timeForToday';
 
 type AnswerCommentsProps = {
   commentId: string;

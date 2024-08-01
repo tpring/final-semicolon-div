@@ -1,4 +1,3 @@
-import { timeForToday } from '@/components/timeForToday';
 import MDEditor from '@uiw/react-md-editor';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -9,6 +8,7 @@ import { TpostReply } from '@/types/posts/qnaDetailTypes';
 import QuestionReplyForm from './QuestionReplyForm';
 import Kebob from '../qnapost/Kebob';
 import { useAuth } from '@/context/auth.context';
+import { timeForToday } from '@/utils/timeForToday';
 
 type AnswerCommentsProps = {
   questionId: string;
