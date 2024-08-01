@@ -1,7 +1,12 @@
 'use client';
 
+import CommentBubble from '@/assets/images/common/CommentBubble';
+import Dot from '@/assets/images/common/Dot';
+import { cutText, removeImageAndCodeBlocks } from '@/components/common/MarkdownCut';
+import SortDropdown from '@/components/common/SortDropdownGrey';
 import useFetchQnaPosts from '@/hooks/qna/useFetchQnaPosts';
 import { Post, SortOption } from '@/types/posts/qnaTypes';
+import { timeForToday } from '@/utils/timeForToday';
 import MDEditor from '@uiw/react-md-editor';
 import dayjs from 'dayjs';
 import Image from 'next/image';
@@ -62,6 +67,12 @@ const ResentQnaPosts = () => {
     }
   };
 
+  const sortOptions: { value: SortOption; label: string }[] = [
+    { value: 'latest', label: '최신순' },
+    { value: 'mostComments', label: '댓글순' },
+    { value: 'mostLikes', label: '좋아요순' }
+  ];
+
   if (status === 'waiting' && isPendingWaiting) {
     return <div>Loading...</div>;
   }
@@ -84,53 +95,84 @@ const ResentQnaPosts = () => {
 
   const sortedPosts = posts ? filterAndSortPosts(posts, sortMethod) : [];
 
+  const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSortMethod(event.target.value as SortOption);
+  };
+
   return (
     <div>
-      <h1>최신 Q&A 게시판</h1>
-      <div>
-        <button onClick={() => setStatus('waiting')}>채택을 기다리는 질문글</button>
-        <button onClick={() => setStatus('selected')}>채택된 질문글</button>
+      <div className="flex flex-col justify-center items-start w-full">
+        <div className="flex justify-center items-center w-full">
+          <button
+            onClick={() => setStatus('waiting')}
+            className={`flex justify-center items-center flex-grow py-6 ${
+              status === 'waiting' ? 'bg-sub-50 text-neutral-800' : 'bg-white text-neutral-300'
+            } rounded-tl-3xl rounded-tr-3xl transition-colors duration-300`}
+          >
+            <p className="text-body1 font-bold"> 채택을 기다리는 질문글</p>
+          </button>
+          <button
+            onClick={() => setStatus('selected')}
+            className={`flex justify-center items-center flex-grow py-6 ${
+              status === 'selected' ? 'bg-sub-50 text-neutral-800' : 'bg-white text-neutral-300'
+            } rounded-tr-3xl rounded-tl-3xl transition-colors duration-300`}
+          >
+            <p className="text-body1 font-bold"> 채택된 질문글</p>
+          </button>
+        </div>
+        <div
+          className={`w-full h-[88px] bg-sub-50 border-t-0 border-r-0 border-b border-l-0 border-[#c7dcf5] flex justify-end items-center pr-6`}
+        >
+          <label>
+            <SortDropdown sortBy={sortMethod} handleSortChange={handleSortChange} sortOptions={sortOptions} />
+          </label>
+        </div>
       </div>
-      <div>
-        <label>
-          정렬 기준:
-          <select value={sortMethod} onChange={(e) => setSortMethod(e.target.value as SortOption)}>
-            <option value="latest">최신순</option>
-            <option value="mostComments">댓글 많은순</option>
-            <option value="mostLikes">좋아요 많은순</option>
-          </select>
-        </label>
-      </div>
+
       {sortedPosts && sortedPosts.length > 0 ? (
         <ul>
-          {sortedPosts.map((post) => (
-            <li key={post.id}>
-              <Link href={`/qna/${post.id}`}>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Image
-                    src={post.user.profile_image}
-                    alt={post.user.nickname || 'Unknown User'}
-                    width={50}
-                    height={50}
-                  />
-                  <div>
-                    <strong>{post.user.nickname}</strong>
-                    <p>{dayjs(post.updated_at).format('YYYY-MM-DD HH:mm')}</p>
+          {sortedPosts.map((post: Post) => (
+            <li key={post.id} className="border-b border-neutral-100 p-4">
+              <Link href={`/qna/${post.id}`} className="block">
+                <div className="flex items-center mb-2">
+                  <div className="relative w-10 h-10">
+                    <Image
+                      src={post.user.profile_image}
+                      alt={post.user.nickname || 'Unknown User'}
+                      layout="fill"
+                      objectFit="cover"
+                      className="rounded-full"
+                    />
+                  </div>
+                  <div className="ml-2 flex items-center">
+                    <p className="text-body1 font-medium text-neutral-900 mr-1">{post.user.nickname}</p>
+                    <Dot />
+                    <p className="text-body1 font-regular text-neutral-500 ml-1"> {timeForToday(post.created_at)}</p>
                   </div>
                 </div>
-                <h2>{post.title}</h2>
-                <MDEditor.Markdown source={post.content} />
-                <div>
-                  <p>태그: </p>
-                  {post.qna_tags.length > 0 ? (
-                    post.qna_tags.map((tag) => <span key={tag.id}>{tag.tag}</span>)
-                  ) : (
-                    <span>null</span>
-                  )}
+                <h2 className="text-h5 font-bold text-neutral-900">{post.title}</h2>
+                <div className="mt-2 text-neutral-700 mb-4" data-color-mode="light">
+                  <MDEditor.Markdown source={cutText(removeImageAndCodeBlocks(post.content), 300)} />
                 </div>
-                <div>
-                  <span>좋아요: {post.qna_like[0]?.count || 0}</span> |
-                  <span>답변:{post.qna_comment[0]?.count || 0}</span>
+                <div className="flex flex-wrap gap-1.5 mb-4">
+                  {post.qna_tags.map((tag) => (
+                    <span
+                      key={tag.id}
+                      className="bg-neutral-50 px-3 py-1 rounded text-base font-medium text-neutral-700"
+                    >
+                      #{tag.tag}
+                    </span>
+                  ))}
+                </div>
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-2">
+                    <p className="text-body1 font-regular text-main-500">좋아요 {post.qna_like[0]?.count || 0}</p>
+                    <div className="w-0.5 h-[18px] bg-neutral-200" />
+                    <p className="text-body1 font-regular next-neutral-500">답변 {post.qna_comment[0]?.count || 0}</p>
+                  </div>
+                </div>
+                <div className="post-date mt-1 text-sm text-neutral-300">
+                  {dayjs(post.created_at).format('YYYY-MM-DD HH:mm')}
                 </div>
               </Link>
             </li>
@@ -139,10 +181,25 @@ const ResentQnaPosts = () => {
       ) : (
         <div>게시물이 없습니다.</div>
       )}
-      <div>
+      <div className="flex justify-center items-center gap-4 mt-4">
         {Array.from({ length: totalPages }, (_, index) => (
-          <button key={index} onClick={() => setPage(index)}>
-            {index + 1}
+          <button
+            key={index}
+            onClick={() => setPage(index)}
+            disabled={index === (status === 'waiting' ? waitingPage : selectedPage)}
+            className={`w-[33px] h-[32px] flex justify-center items-center flex-grow-0 flex-shrink-0 relative gap-2 px-2 py-1 rounded-md ${
+              index === (status === 'waiting' ? waitingPage : selectedPage)
+                ? 'bg-main-50'
+                : 'bg-neutral-100 border border-neutral-100'
+            }`}
+          >
+            <p
+              className={`flex-grow-0 flex-shrink-0 text-body1 font-medium text-center ${
+                index === (status === 'waiting' ? waitingPage : selectedPage) ? 'text-main-500' : 'text-neutral-500'
+              }`}
+            >
+              {index + 1}
+            </p>
           </button>
         ))}
       </div>
