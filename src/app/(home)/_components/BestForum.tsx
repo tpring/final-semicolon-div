@@ -8,7 +8,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { BestForumType } from '@/types/mainpage';
 import { timeForToday } from '@/components/timeForToday';
-import { handleRinkCopy } from '@/components/handleRinkCopy';
+import { handleLinkCopy } from '@/components/handleLinkCopy';
 
 const BestForum = () => {
   const { data: forumList } = useQuery<BestForumType[]>({
@@ -56,7 +56,7 @@ const BestForum = () => {
                   <p>
                     좋아요<span className="pl-1">{forum.like.length}</span>
                   </p>
-                  <button onClick={() => handleRinkCopy(`${process.env.NEXT_PUBLIC_BASE_URL}/forum/${forum.id}`)}>
+                  <button onClick={() => handleLinkCopy(`${process.env.NEXT_PUBLIC_BASE_URL}/forum/${forum.id}`)}>
                     공유
                   </button>
                 </div>
