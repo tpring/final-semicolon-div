@@ -19,3 +19,17 @@ export const GET = async (request: NextRequest, { params }: Tparams) => {
 
   return loadError ? Response.json(POSTING_ERROR_MASSAGE) : Response.json({ data });
 };
+
+export const POST = async (request: Request, { params }: Tparams) => {
+  const supabase = createClient();
+  const comment_id = params.id;
+
+  const qnaReplyData = await request.json();
+
+  const { data, error: postError } = await supabase
+    .from('qna_reply')
+    .insert({ ...qnaReplyData, comment_id })
+    .select();
+
+  return postError ? Response.json(POSTING_ERROR_MASSAGE) : Response.json({ data });
+};

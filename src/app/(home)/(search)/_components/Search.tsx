@@ -1,46 +1,96 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import SearchPostCard from './SearchPostCard';
-import { ToastContainer } from 'react-toastify';
+import SearchFilter from './SearchFilter';
+
+type Post = {
+  id: string;
+  title: string;
+  content: string;
+  thumbnail?: string;
+  created_at: string;
+  category: 'archive' | 'forum' | 'qna';
+  forum_category?: string;
+  user: {
+    id: string;
+    nickname: string;
+    profile_image?: string;
+  };
+  tag?: { tag: string }[];
+  likecount: { count: string }[];
+  commentsCount: string;
+};
+
+type SearchData = {
+  archive: Post[];
+  forum: Post[];
+  qna: Post[];
+};
 
 const Search = () => {
-  /* 
-  url 에서 검색어 가져오기
+  const [data, setData] = useState<SearchData | null>(null);
 
-  (archive_posts, forum_posts, qna_posts)정보를 가져오기
-  부과적인 정보 (좋아요수, 댓글수, 작성자 유저 정보, 테그)와 연결
+  const forumCategories = ['일상', '커리어', '자기개발', '토론', '코드 리뷰'];
+  const [selectedCategory, setSelectedCategory] = useState<'all' | 'qna' | 'forum' | 'archive'>('all');
+  const [selectedForumCategory, setSelectedForumCategory] = useState<string | null>(null);
 
-  api 합친 배열에서 검색어로 필터링 
+  const searchParams = new URLSearchParams(window.location.search);
+  const searchType = searchParams.get('searchType');
+  const keyword = searchParams.get('keyword');
 
-   */
+  useEffect(() => {
+    if (searchType && keyword) {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(`/api/search?searchType=${searchType}&keyword=${keyword}`);
+          const data = await response.json();
+          setData(data);
+        } catch (error) {
+          console.error('Error fetching search data:', error);
+        }
+      };
+      fetchData();
+    }
+  }, [searchType, keyword]);
 
-  /* 
-  import { useRouter, useSearchParams } from 'next/navigation';
+  if (!data) return <div>Loading...</div>;
 
-    const router = useRouter();
+  const combined: Post[] = [...data.archive, ...data.forum, ...data.qna];
 
-  const searchParams = useSearchParams();
-  
-  const searchedKeyword = searchParams.get('keyword');
 
-    const handleSearch = (keyword: string) => {
-    router.push(`/search?keyword=${keyword}`);
-  };
-   */
+  combined.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+  const categoryFilteredItems = combined.filter((item) => {
+    if (selectedCategory === 'all') return true;
+    if (item.category !== selectedCategory) return false;
+    if (selectedCategory === 'forum' && selectedForumCategory !== '전체' && selectedForumCategory !== null) {
+      return item.forum_category === selectedForumCategory;
+    }
+    return true;
+  });
 
   return (
     <div>
-      <ToastContainer />
+      <div className="flex flex-col">
+        <p>{keyword} 검색 결과</p>
+        <p>전체 {combined.length}</p>
+        <SearchFilter
+          selectedForumCategory={selectedForumCategory}
+          onCategoryChange={setSelectedCategory}
+          onForumCategoryChange={setSelectedForumCategory}
+          forumCategories={forumCategories}
+        />
+        {categoryFilteredItems.length === 0 ? (
+          <div>검색 결과가 없습니다.</div>
+        ) : (
+          <div>
+            {categoryFilteredItems.map((post) => (
+              <SearchPostCard key={post.id} post={post} />
+            ))}
+          </div>
+        )}
 
-      <div className="flex ">
-        <div>검색 결과가 없습니다.</div>
-
-        <div className="flex flex-col ">
-          <p>(검색어) 검색 결과</p>
-          {/* paginatedItems.length */}
-          <p>전체 ()</p>
-          <p>필터 (최신순)</p>
-
-          <SearchPostCard />
-        </div>
       </div>
     </div>
   );

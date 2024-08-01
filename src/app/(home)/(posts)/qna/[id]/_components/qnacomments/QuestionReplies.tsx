@@ -2,11 +2,13 @@ import { timeForToday } from '@/components/timeForToday';
 import MDEditor from '@uiw/react-md-editor';
 import Image from 'next/image';
 import { useState } from 'react';
-import ReplyForm from './ReplyForm';
 import NotFound from '@/app/not-found';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import Loading from '@/app/(home)/loading';
 import { TpostReply } from '@/types/posts/qnaDetailTypes';
+import QuestionReplyForm from './QuestionReplyForm';
+import Kebob from '../qnapost/Kebob';
+import { useAuth } from '@/context/auth.context';
 
 type AnswerCommentsProps = {
   questionId: string;
@@ -14,6 +16,7 @@ type AnswerCommentsProps = {
 };
 
 const QuestionReplies = ({ questionId, postReplyCount }: AnswerCommentsProps) => {
+  const { me } = useAuth();
   const pageParamList = [];
   for (let i = 0; postReplyCount - i * 5 > 0; i++) {
     pageParamList.push(i + 1);
@@ -50,6 +53,9 @@ const QuestionReplies = ({ questionId, postReplyCount }: AnswerCommentsProps) =>
   if (isPending) {
     return <Loading />;
   }
+  if (isError) {
+    return <NotFound />;
+  }
   //배열 5개씩 자르기
   const handleBtnClick = async (pageParam: number) => {
     if (page < pageParam && !qnaReplyList?.pageParams.includes(pageParam)) {
@@ -62,18 +68,31 @@ const QuestionReplies = ({ questionId, postReplyCount }: AnswerCommentsProps) =>
 
   return (
     <div>
-      <ReplyForm />
+      <QuestionReplyForm questionId={questionId} />
       {qnaReplyList?.pages[page].map((reply: TpostReply) => {
         return (
           <div key={reply.id} className={`relative left-0 border-b`}>
             <div className="flex h-[86px] mt-6 mx-5 items-center gap-[16px] ">
-              <span className="py-6">
-                <Image src={reply.users.profile_image} alt="profile" width={48} height={48} />
-              </span>
+              <div className="relative w-12 h-12">
+                <Image
+                  src={reply.users?.profile_image ?? ''}
+                  alt="Profile"
+                  layout="fill"
+                  objectFit="cover"
+                  className="rounded-full"
+                />
+              </div>
               <div>
                 <div>{reply.users.nickname}</div>
                 <div>{timeForToday(reply.updated_at!)}</div>
               </div>
+              {me?.id === reply.user_id ? (
+                <div className="flex ml-auto ">
+                  <Kebob />
+                </div>
+              ) : (
+                ''
+              )}
             </div>
             <div className="flex flex-col h-[86px] mb-6 mx-5  gap-[16px]">
               <MDEditor.Markdown source={reply.post_reply_content} />

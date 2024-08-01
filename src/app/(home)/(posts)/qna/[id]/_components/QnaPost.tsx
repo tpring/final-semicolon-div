@@ -3,14 +3,12 @@
 import BackArrowIcon from '@/assets/images/upsert_image/BackArrowIcon';
 import { useAuth } from '@/context/auth.context';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import QnaQuestion from './qnapost/QnaQuestion';
 import PostingQnaAnswer from './qnapost/PostingQnaAnswer';
 import { TqnaData } from '@/types/posts/qnaDetailTypes';
 import QnaAnswers from './qnapost/QnaAnswers';
 import GoToTop from '@/assets/images/common/GoToTop';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import NotFound from '@/app/not-found';
 
 type QnaPostProps = {
   data: TqnaData;
@@ -34,7 +32,9 @@ const QnaPost = ({ data, postId }: QnaPostProps) => {
         </Link>
       </div>
       <QnaQuestion questionData={data} />
-      {me?.id ? <PostingQnaAnswer content={content} setContent={setContent} /> : null}
+      {me && me.id !== data.user_id ? (
+        <PostingQnaAnswer content={content} setContent={setContent} postId={postId} />
+      ) : null}
       <QnaAnswers postId={postId} qnaCommentsCount={qnaCommentsCount} />
       <button className=" fixed right-[168px] bottom-[62px]" onClick={handleTopBtnClick}>
         <GoToTop />
