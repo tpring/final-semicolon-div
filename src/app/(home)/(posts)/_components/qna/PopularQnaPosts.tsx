@@ -2,6 +2,7 @@
 
 import useFetchQnaPosts from '@/hooks/qna/useFetchQnaPosts';
 import MDEditor from '@uiw/react-md-editor';
+import Link from 'next/link';
 
 const PopularQnaPosts = () => {
   const {
@@ -27,16 +28,18 @@ const PopularQnaPosts = () => {
       {popularPosts && popularPosts.length > 0 ? (
         <ul>
           {popularPosts.map((post) => (
-            <li key={post.id}>
-              <div>
-                <h2>{post.title}</h2>
-                <MDEditor.Markdown source={post.content} />
-              </div>
-              <div>
-                <span>좋아요: {post.qna_like?.[0]?.count || 0}</span> |
-                <span>답변: {post.qna_comment?.[0]?.count || 0}</span>
-              </div>
-            </li>
+            <Link key={post.id} href={`/qna/${post.id}`}>
+              <li key={post.id}>
+                <div>
+                  <h2>{post.title}</h2>
+                  <MDEditor.Markdown source={post.content} />
+                </div>
+                <div>
+                  <span>좋아요: {post.qna_like?.[0]?.count || 0}</span> |
+                  <span>답변: {post.qna_comment?.[0]?.count || 0}</span>
+                </div>
+              </li>
+            </Link>
           ))}
         </ul>
       ) : (
