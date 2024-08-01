@@ -1,4 +1,3 @@
-import { timeForToday } from '@/components/timeForToday';
 import MDEditor from '@uiw/react-md-editor';
 import { useState } from 'react';
 import { TqnaData } from '@/types/posts/qnaDetailTypes';
@@ -11,6 +10,7 @@ import LikeButton from '@/components/common/LikeButton';
 import QuestionReplies from '../qnacomments/QuestionReplies';
 import { useAuth } from '@/context/auth.context';
 import QuestionKebobBtn from './QuestionKebobBtn';
+import { timeForToday } from '@/utils/timeForToday';
 
 type QnaQuestionProps = {
   questionData: TqnaData;

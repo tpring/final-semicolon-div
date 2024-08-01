@@ -1,78 +1,63 @@
 'use client';
-import Github from '@/assets/images/auth/Github';
-import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+
+import { useQuery } from '@tanstack/react-query';
+import { timeForToday } from '@/utils/timeForToday';
+import { useParams, useRouter } from 'next/navigation';
+import MDEditor from '@uiw/react-md-editor';
+import Image from 'next/image';
+import { archiveDetailType } from '@/types/posts/archiveDetailTypes';
+import Left from '@/assets/images/common/Left';
 
 const ArchiveDetailPost = () => {
+  const params = useParams();
+  const { data: archiveDetail, error } = useQuery<archiveDetailType[]>({
+    queryKey: ['archiveDetail'],
+    queryFn: async () => {
+      try {
+        const response = await fetch(`/api/posts/archive-detail/${params.id}`);
+        const data = await response.json();
+        return data;
+      } catch (error) {}
+    }
+  });
   const router = useRouter();
-  const [comments, setComments] = useState<string[]>([]);
-  const [newComment, setNewComment] = useState<string>('');
 
   const handleBackClick = () => {
     router.back();
   };
 
-  const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewComment(e.target.value);
-  };
-
-  const handleCommentSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (newComment.trim() !== '') {
-      setComments([...comments, newComment]);
-      setNewComment('');
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="container mx-auto p-4">
-        <button onClick={handleBackClick} className="mb-4 px-4 py-2 bg-blue-500 text-white rounded-md">
-          뒤로가기
-        </button>
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <div className="flex items-center mb-4">
-            <Github />
-            <div className="ml-4">
-              <p className="text-lg font-semibold">봉구스박보검</p>
-              <p className="text-gray-500">코드리뷰 · 방금 전</p>
+    <div className="flex flex-col gap-4">
+      <button onClick={handleBackClick} className="mb-4 px-4 py-2 text-white rounded-md w-16">
+        <Left />
+      </button>
+      {archiveDetail?.map((post) => (
+        <div key={post.id} className="w-full flex flex-col gap-2 p-4 border-b-[1px] ">
+          <div className="flex  justify-start items-center gap-2  ">
+            <Image
+              src={post.user.profile_image}
+              alt="archiveUserImage"
+              width={100}
+              height={100}
+              className="rounded-full  h w-10 h-10 "
+            />
+            <div>
+              <h3>{post.user.nickname}</h3>
+              <div className=" flex justify-start items-center gap-3">
+                <p>
+                  {timeForToday(post.updated_at ? post.updated_at : post.created_at)}
+                  <span className="text-xs">{post.updated_at && '(수정됨)'}</span>
+                </p>
+              </div>
             </div>
           </div>
-          <h1 className="text-2xl font-bold mb-4">포스팅 제목</h1>
-          <p className="text-gray-700 mb-4">여기에는 포스팅 내용.</p>
-          <div className="flex justify-between items-center mb-4"></div>
-          <div className="flex justify-between items-center mb-4">
-            <span className="text-gray-500">2024.07.24</span>
-            <div className="flex space-x-4">
-              <button className="text-blue-500">좋아요 12</button>
-              <button className="text-blue-500">공유하기</button>
-              <button className="text-blue-500">북마크</button>
-              <div className="text-gray-500 text-sm">댓글 수: {comments.length}</div>
-            </div>
+          <div>
+            <h2>{post.title}</h2>
+            <MDEditor.Markdown source={post.content} />
           </div>
-          <div className="mt-6">
-            <form onSubmit={handleCommentSubmit} className="flex items-center mb-4">
-              <input
-                type="text"
-                value={newComment}
-                onChange={handleCommentChange}
-                placeholder="댓글을 입력하세요..."
-                className="flex-1 px-4 py-2 border rounded-md"
-              />
-              <button type="submit" className="ml-4 px-4 py-2 bg-blue-500 text-white rounded-md">
-                댓글 달기
-              </button>
-            </form>
-            <div className="space-y-4">
-              {comments.map((comment, index) => (
-                <div key={index} className="bg-gray-100 p-4 rounded-md">
-                  {comment}
-                </div>
-              ))}
-            </div>
-          </div>
+          <p>{post.created_at.slice(0, 16).replace(/-/g, '.').replace(/T/g, ' ')}</p>
         </div>
-      </div>
+      ))}
     </div>
   );
 };
