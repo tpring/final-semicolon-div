@@ -17,7 +17,7 @@ const ForumComments = () => {
   const { me } = useAuth();
   const param = useParams();
   const queryClient = useQueryClient();
-  const [mdEditorChange, setMdEditorChange] = useState('');
+  const [mdEditorChange, setMdEditorChange] = useState<string>('');
   const [editingState, setEditingState] = useState<{ [key: string]: boolean }>({});
   const [editingToggleState, setEditingToggleState] = useState<{ [key: string]: boolean }>({});
   const [inputCommentToggle, setInputCommentToggle] = useState<{ [key: string]: boolean }>({});
@@ -87,7 +87,7 @@ const ForumComments = () => {
     setMdEditorChange(value!);
   };
 
-  const ClickInputCommentToggle = (id) => {
+  const ClickInputCommentToggle = (id: string) => {
     setInputCommentToggle({ [id]: !inputCommentToggle[id] });
   };
 
@@ -111,7 +111,7 @@ const ForumComments = () => {
     },
     getNextPageParam: (lastPage, allPages, lastPageParam) => {
       const nextPage = lastPageParam + 1;
-      return nextPage <= Math.ceil(commands[0]?.count / COMMENT_PAGE) ? nextPage : undefined;
+      return nextPage <= Math.ceil(comments[0]?.count / COMMENT_PAGE) ? nextPage : undefined;
     },
     select: ({ pages }) => pages.flat()
   });

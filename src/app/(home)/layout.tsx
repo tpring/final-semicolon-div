@@ -9,11 +9,11 @@ type HomeLayoutProps = {
 const HomeLayout = ({ children }: HomeLayoutProps) => {
   return (
     <div className="min-h-screen flex flex-col justify-center">
-      {/* <Header /> */}
+      <Header />
       <div className="flex justify-center flex-1 w-full">
         <main className="w-[1200px] p-10">{children}</main>
       </div>
-      {/* <OAuthNicknameModalWrapper /> */}
+      <OAuthNicknameModalWrapper />
     </div>
   );
 };

@@ -6,7 +6,7 @@ import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 
-const ForumReplyInput = ({ comment_id, toggle }: { comment_id: string }) => {
+const ForumReplyInput = ({ comment_id, toggle }: { comment_id: string; toggle }) => {
   const { me } = useAuth();
   const params = useParams();
   const queryClient = useQueryClient();
