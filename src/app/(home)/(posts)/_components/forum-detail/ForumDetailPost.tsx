@@ -5,6 +5,7 @@ import { forumDetailType } from '@/types/posts/forumDetailTypes';
 import { timeForToday } from '@/utils/timeForToday';
 import { useParams } from 'next/navigation';
 import MDEditor from '@uiw/react-md-editor';
+import Image from 'next/image';
 
 const ForumDetailPost = () => {
   const params = useParams();
@@ -24,7 +25,13 @@ const ForumDetailPost = () => {
       {forumDetail?.map((post) => (
         <div key={post.id} className="w-full flex flex-col gap-2 p-4 border-b-[1px] ">
           <div className="flex  justify-start items-center gap-2  ">
-            <img src={post.user.profile_image} className="rounded-full w-10 h-10 " />
+            <Image
+              src={post.user.profile_image}
+              alt="forumUserImage"
+              width={100}
+              height={100}
+              className="rounded-full  h w-10 h-10 "
+            />
             <div>
               <h3>{post.user.nickname}</h3>
               <div className=" flex justify-start items-center gap-3">

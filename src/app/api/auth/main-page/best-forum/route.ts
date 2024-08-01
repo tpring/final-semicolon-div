@@ -6,7 +6,9 @@ export const GET = async () => {
 
   const { data, error } = await supabase
     .from('forum_posts')
-    .select('*,users: user_id(*), like: forum_likes(*), comments: forum_comments(*), like_count:forum_likes(count)');
+    .select(
+      '*,users: user_id(*), like: forum_likes(*), comments: forum_comments(count), like_count:forum_likes(count)  '
+    );
   // .order('created_at', {
   //   ascending: false
   // })

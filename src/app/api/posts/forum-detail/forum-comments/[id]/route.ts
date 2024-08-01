@@ -4,8 +4,9 @@ import { NextResponse } from 'next/server';
 export const GET = async (request: Request, { params }: { params: { id: string } }) => {
   const supabase = createClient();
   const { data } = await supabase.from('forum_comments').select('*, user: users(*)').eq('post_id', params.id);
+  const { count, error } = await supabase.from('forum_comments').select('*', { count: 'exact', head: true });
 
-  return NextResponse.json(data);
+  return NextResponse.json({ data, count });
 };
 
 export const POST = async (request: Request) => {
@@ -23,7 +24,7 @@ export const POST = async (request: Request) => {
 export const PATCH = async (request: Request) => {
   const supabase = createClient();
   const data = await request.json();
-  const comment = data.retouchComment as string;
+  const comment = data.mdEditorChange as string;
   const user_id = data.user_id as string;
   const id = data.id as string;
 

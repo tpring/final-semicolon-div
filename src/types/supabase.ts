@@ -928,7 +928,6 @@ export type Database = {
           }
         ];
       };
-
       qna_post_reply: {
         Row: {
           created_at: string;
@@ -971,7 +970,6 @@ export type Database = {
           }
         ];
       };
-
       qna_posts: {
         Row: {
           category: string;
@@ -1141,7 +1139,21 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      search_posts_with_comments: {
+        Args: {
+          keyword: string;
+        };
+        Returns: {
+          id: string;
+          user_id: string;
+          title: string;
+          content: string;
+          created_at: string;
+          updated_at: string;
+          comment_count: number;
+          like_count: number;
+        }[];
+      };
     };
     Enums: {
       [_ in never]: never;
