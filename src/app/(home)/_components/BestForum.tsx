@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { BestForumType } from '@/types/mainpage';
+
 import { timeForToday } from '@/utils/timeForToday';
 import { handleRinkCopy } from '@/utils/handleRinkCopy';
 import Image from 'next/image';
@@ -14,6 +15,7 @@ import Share from '@/assets/images/common/Share';
 import CommentBubble from '@/assets/images/common/CommentBubble';
 import FilledLike from '@/assets/images/like/FilledLike';
 import Star from '@/assets/images/main-page_image/Star';
+
 
 const BestForum = () => {
   const { data: forumList } = useQuery<BestForumType[]>({
@@ -77,6 +79,7 @@ const BestForum = () => {
                 </p>
               </Link>
               <div className="flex justify-between items-center py-2 text-sm">
+
                 <div className="flex justify-start items-center gap-4">
                   <div className=" flex justify-start items-center gap-1">
                     <FilledLike />
@@ -84,6 +87,7 @@ const BestForum = () => {
                   </div>
                   <button onClick={() => handleRinkCopy(`${process.env.NEXT_PUBLIC_BASE_URL}/forum/${forum.id}`)}>
                     <Share />
+
                   </button>
                 </div>
                 <div className=" flex justify-start items-center gap-1">

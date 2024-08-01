@@ -25,3 +25,9 @@ export type FetchResult = {
   data: Post[];
   nextPage: number | null;
 };
+
+export type CategoryTabsProps = {
+  categories: ForumCategory[];
+  activeCategory: ForumCategory;
+  handleCategoryClick: (category: ForumCategory) => void;
+};

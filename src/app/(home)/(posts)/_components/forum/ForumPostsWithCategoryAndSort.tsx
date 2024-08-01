@@ -7,6 +7,10 @@ import { ForumCategory, Post, SortOption } from '@/types/posts/forumTypes';
 import PostCard from './PostCard';
 import Link from 'next/link';
 import { useInView } from 'react-intersection-observer';
+import Down from '@/assets/images/common/Down';
+import SortDropdown from '@/components/common/SortDropdownGrey';
+import CategoryTabs from './CategoryTabs';
+import WriteButton from '@/assets/images/forum/WriteButton';
 
 const ForumPostsWithCategoryAndSort = () => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isPending, error } = useFetchForumPosts();
@@ -51,40 +55,30 @@ const ForumPostsWithCategoryAndSort = () => {
   };
 
   const allPosts = data?.pages.flatMap((page) => page.data) || [];
-  const fillteredAndSortedPost = filterAndSortPosts(allPosts, activeCategory, sortBy);
+  const filteredAndSortedPost = filterAndSortPosts(allPosts, activeCategory, sortBy);
 
   return (
     <div>
-      <div className="category-and-sort">
-        <div className="category-tabs">
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => handleCategoryClick(category)}
-              className={activeCategory === category ? 'active' : ''}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
-        <div className="sort-dropdown">
-          <select value={sortBy} onChange={handleSortChange}>
-            {sortOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
+      <div className="category-and-sort flex items-center justify-between max-w-[844px] mx-auto">
+        <CategoryTabs
+          categories={categories}
+          activeCategory={activeCategory}
+          handleCategoryClick={handleCategoryClick}
+        />
+        <SortDropdown sortBy={sortBy} handleSortChange={handleSortChange} sortOptions={sortOptions} />
       </div>
-      <Link href="/posting"> 글쓰기</Link>
-      <div className="category-items">
+      <div className="mt-8 mb-8 max-w-[844px] mx-auto border-b-2 border-b-neutral-50">
+        <Link href="/posting">
+          <WriteButton />
+        </Link>
+      </div>
+      <div className="category-items max-w-[844px] mx-auto">
         {isPending && <div>로딩중...</div>}
         {error && <div>에러 발생</div>}
-        {!isPending && !error && fillteredAndSortedPost.length === 0 && <div>게시글이 없습니다.</div>}
-        {!isPending && !error && fillteredAndSortedPost.length > 0 && (
+        {!isPending && !error && filteredAndSortedPost.length === 0 && <div>게시글이 없습니다.</div>}
+        {!isPending && !error && filteredAndSortedPost.length > 0 && (
           <div className="posts-card">
-            {fillteredAndSortedPost.map((post) => (
+            {filteredAndSortedPost.map((post) => (
               <PostCard key={post.id} post={post} />
             ))}
           </div>
