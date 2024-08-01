@@ -56,3 +56,9 @@
 .w-md-editor-text-input {
   min-height: 512px !important;
 }
+
+@layer utilities {
+  .container {
+    @apply flex flex-col justify-center items-center text-subtitle1 font-medium cursor-pointer p-[0px_25px_0px_25px];
+  }
+}
