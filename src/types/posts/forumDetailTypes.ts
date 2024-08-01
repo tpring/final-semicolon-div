@@ -7,3 +7,9 @@ export type forumDetailType = Tables<'forum_posts'> & {
 export type forumCommentsType = Tables<'forum_comments'> & {
   user: Tables<'users'>;
 };
+
+export type userComment = {
+  user_id: string | undefined;
+  post_id: string;
+  comment: string;
+};
