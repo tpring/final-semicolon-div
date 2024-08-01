@@ -6,7 +6,7 @@ import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 
-const ForumReplyInput = ({ comment_id, toggle }: { comment_id: string; toggle }) => {
+const ForumReplyInput = ({ comment_id, toggle }: { comment_id: string; toggle: (id: string) => void }) => {
   const { me } = useAuth();
   const params = useParams();
   const queryClient = useQueryClient();
@@ -28,7 +28,7 @@ const ForumReplyInput = ({ comment_id, toggle }: { comment_id: string; toggle })
     }
   });
 
-  const changReply = (value: string) => {
+  const changReply = (value?: string) => {
     setReply(value!);
   };
   const onClickReply = async (e: React.MouseEvent<HTMLButtonElement>) => {

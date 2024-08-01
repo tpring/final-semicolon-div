@@ -2,9 +2,11 @@
 
 import Kebab from '@/assets/images/common/Kebab';
 import { useAuth } from '@/context/auth.context';
+import { forumReplyType } from '@/types/posts/forumDetailTypes';
 import { timeForToday } from '@/utils/timeForToday';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import MDEditor, { commands } from '@uiw/react-md-editor';
+
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
@@ -12,10 +14,10 @@ import { toast } from 'react-toastify';
 
 const ForumReply = ({ comment_id }: { comment_id: string }) => {
   const { me } = useAuth();
-  const params_id = useParams();
+  const params_id = useParams<{ id: string }>();
   const [page, setPage] = useState(1);
   const queryClient = useQueryClient();
-  const [replyRetouch, setReplyRetouch] = useState('');
+  const [replyRetouch, setReplyRetouch] = useState<string>('');
   const [replyEditor, setReplyEditor] = useState<{ [key: string]: boolean }>({});
   const [replyEditorToggle, setReplyEditorToggle] = useState<{ [key: string]: boolean }>({});
 
@@ -35,7 +37,6 @@ const ForumReply = ({ comment_id }: { comment_id: string }) => {
         method: 'PATCH',
         body: JSON.stringify({ id, user_id, replyRetouch })
       });
-      console.log({ id, user_id, replyRetouch });
       const data = await response.json();
       return data;
     },
@@ -78,27 +79,23 @@ const ForumReply = ({ comment_id }: { comment_id: string }) => {
     data: reply,
     isPending,
     error
-  } = useQuery({
+  } = useQuery<forumReplyType>({
     queryKey: ['commentReply'],
     queryFn: async () => {
       try {
-        const response = await fetch(`/api/posts/forum-detail/forum-reply/${params_id.id}`, {
-          params: { _page: page, _limit: COMMENT_REPLY_PAGE }
-        });
+        const response = await fetch(`/api/posts/forum-detail/forum-reply/${params_id.id}`, {});
         const data = await response.json();
-
         return data;
       } catch (error) {}
     }
   });
-  const replyPages = Math.ceil(reply?.count / COMMENT_REPLY_PAGE);
 
   if (isPending) {
     return <div>loading...</div>;
   }
 
   //MDeditor
-  const changReplyRetouch = (value: string) => {
+  const changReplyRetouch = (value?: string) => {
     setReplyRetouch(value!);
   };
 
