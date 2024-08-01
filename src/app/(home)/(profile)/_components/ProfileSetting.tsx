@@ -10,6 +10,7 @@ import { upDateImage, uploadImage } from '@/utils/imageUpload';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import EditIcon from '@/assets/images/common/EditIcon';
+import Right from '@/assets/images/common/Right';
 
 const ProfileSetting = () => {
   const { userData, me, updateUserData } = useAuth();
@@ -116,81 +117,107 @@ const ProfileSetting = () => {
   if (!userData) return <p>Loading...</p>;
 
   return (
-    <div className=" flex flex-col justify-center items-center p-6 border border-sub-200 rounded-lg">
-      <ToastContainer />
-      <div className="w-[588px]">
-        <div className="mb-4 flex flex-col justify-center items-center">
-          <div
-            className="relative w-32 h-32 border border-[#ccc] rounded-full overflow-hidden bg-[#fdfbfb] flex items-center justify-center cursor-pointer"
-            onClick={handleImageClick}
-          >
-            {profileImage ? (
-              <Image
-                src={profileImage}
-                alt="Profile"
-                fill
-                priority
-                className="rounded-full object-cover"
-                sizes="120px"
-              />
-            ) : (
-              <div></div>
-            )}
-            <input type="file" className="hidden" ref={inputRef} onChange={handleImageUpload} accept=".png" />
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300 bg-black bg-opacity-30 rounded-full">
-              <span className="text-white text-title">+</span>
-            </div>
-          </div>
-          <div className="relative">
+    <div>
+      <p className="text-h5 font-bold text-neutral-900 mb-[8px]">프로필 관리</p>
+      <p className="text-body1 font-regular text-neutral-600 mb-[36px]">
+        서비스에서 사용하는 내 계정 정보를 관리할 수 있습니다.
+      </p>
+      <div className=" center-alignment p-[20px_80px] border border-neutral-50 rounded-lg shadow-custom-light">
+        <div className="w-[588px]">
+          <div className="mb-4 center-alignment">
             <div
+              className="relative w-32 h-32 border border-neutral-50 rounded-full overflow-hidden bg-white cursor-pointer"
               onClick={handleImageClick}
-              className="absolute cursor-pointer border border-sub-100 rounded-full right-[-75px] top-[-50px]"
             >
-              <EditIcon />
+              {profileImage ? (
+                <Image
+                  src={profileImage}
+                  alt="Profile"
+                  fill
+                  priority
+                  className="rounded-full object-cover"
+                  sizes="120px"
+                />
+              ) : (
+                <div></div>
+              )}
+              <input type="file" className="hidden" ref={inputRef} onChange={handleImageUpload} accept=".png" />
+              <div className="absolute inset-0 center-alignment opacity-0 hover:opacity-100 transition-opacity duration-300 bg-black bg-opacity-30 rounded-full">
+                <span className="text-white text-title">+</span>
+              </div>
+            </div>
+            <div className="relative">
+              <div
+                onClick={handleImageClick}
+                className="absolute cursor-pointer border border-sub-50 rounded-full right-[-75px] top-[-50px]"
+              >
+                <EditIcon />
+              </div>
+            </div>
+            <p className="text-neutral-900 text-h4 font-bold p-[24px_0_24px_0]">{nickname}님, 좋은 하루 보내세요!</p>
+          </div>
+          <div className="flex justify-between p-[16Px_0]">
+            <span className="text-neutral-900 text-subtitle1 font-medium">이메일</span>
+            <span className="text-neutral-700 text-body1 font-regular">{me?.email}</span>
+          </div>
+          <p className="border-b border-neutral-50 " />
+          <div className="flex justify-between p-[16Px_0]">
+            <span className="text-neutral-900 text-subtitle1 font-medium">닉네임</span>
+            <div className="flex">
+              <span className="text-neutral-800 text-body1 font-regular">{nickname}</span>
+              <div className="mt-[5px] ml-3 cursor-pointer" onClick={() => setNicknameModalOpen(true)}>
+                <Right width={10} height={18} />
+              </div>
             </div>
           </div>
-          <p className="text-neutral-900 text-h4 font-bold p-[24px_0_24px_0]">{nickname}님, 좋은 하루 보내세요!</p>
+          <p className="border-b border-neutral-50 " />
+          <div className="flex justify-between p-[16Px_0]">
+            <span className="text-neutral-900 text-subtitle1 font-medium">깃허브 링크</span>
+            {githubUrl ? (
+              <div className="flex">
+                <span className="text-neutral-800 text-body1 font-regular">{githubUrl}</span>
+                <div className="mt-[5px] ml-3 cursor-pointer" onClick={() => setGithubUrlModalOpen(true)}>
+                  <Right width={10} height={18} />
+                </div>
+              </div>
+            ) : (
+              <div className="flex">
+                <span className="text-neutral-800 text-body1 font-regular ">추가하기</span>
+                <div className="mt-[5px] ml-3 cursor-pointer" onClick={() => setGithubUrlModalOpen(true)}>
+                  <Right width={10} height={18} />
+                </div>
+              </div>
+            )}
+          </div>
+          <p className="border-b border-neutral-50 " />
+          <div onClick={() => setInfoModalOpen(true)} className="flex justify-between p-[16Px_0]">
+            <span className="text-neutral-900 text-subtitle1 font-medium">자기소개</span>
+            <div className="mt-[5px] cursor-pointer">
+              <Right width={10} height={18} />
+            </div>
+          </div>
+          <p className="text-neutral-700 h-[143px] text-body1 font-regular line-clamp-5 whitespace-pre-wrap">{info}</p>
         </div>
-        <div className="flex justify-between p-[24px_0_24px_0]">
-          <span className="text-neutral-900 text-subtitle1 font-medium">이메일</span>
-          <span className="text-neutral-700 text-body1 font-regular">{me?.email}</span>
-        </div>
-        <div className="flex justify-between p-[24px_0_24px_0]">
-          <span className="text-neutral-900 text-subtitle1 font-medium">닉네임</span>
-          <span className="text-neutral-700 text-body1 font-regular" onClick={() => setNicknameModalOpen(true)}>
-            {nickname} ›
-          </span>
-          <NicknameModal
-            isOpen={isNicknameModalOpen}
-            onClose={() => setNicknameModalOpen(false)}
-            currentNickname={nickname}
-            onNicknameUpdate={handleNicknameUpdate}
-          />
-        </div>
-        <div className="flex justify-between p-[24px_0_24px_0]">
-          <span className="text-neutral-900 text-subtitle1 font-medium">깃허브 링크 주소</span>
-          <span className="text-neutral-700 text-body1 font-regular" onClick={() => setGithubUrlModalOpen(true)}>
-            {githubUrl} ›
-          </span>
-          <GithubUrlModal
-            isOpen={isGithubUrlModalOpen}
-            onClose={() => setGithubUrlModalOpen(false)}
-            currentGithubUrl={githubUrl}
-            onGithubUrlUpdate={handleGithubUrlUpdate}
-          />
-        </div>
-        <div onClick={() => setInfoModalOpen(true)} className="flex justify-between p-[24px_0_24px_0]">
-          <span className="text-neutral-900 text-subtitle1 font-medium">자기소개</span>
-          <span>›</span>
-        </div>
-        <p className="text-neutral-700 text-body1 font-regular line-clamp-5 whitespace-pre-wrap">{info}</p>
-        <InfoModal
-          isOpen={isInfoModalOpen}
-          onClose={() => setInfoModalOpen(false)}
-          currentInfo={info}
-          onInfoUpdate={handleInfoUpdate}
-        />
       </div>
+      <NicknameModal
+        isOpen={isNicknameModalOpen}
+        onClose={() => setNicknameModalOpen(false)}
+        currentNickname={nickname}
+        onNicknameUpdate={handleNicknameUpdate}
+      />
+      <GithubUrlModal
+        isOpen={isGithubUrlModalOpen}
+        onClose={() => setGithubUrlModalOpen(false)}
+        currentGithubUrl={githubUrl}
+        onGithubUrlUpdate={handleGithubUrlUpdate}
+      />
+      <InfoModal
+        isOpen={isInfoModalOpen}
+        onClose={() => setInfoModalOpen(false)}
+        currentInfo={info}
+        onInfoUpdate={handleInfoUpdate}
+      />
+      <ToastContainer />
     </div>
   );
 };

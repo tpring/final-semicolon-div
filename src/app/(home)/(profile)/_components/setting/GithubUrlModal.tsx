@@ -41,6 +41,11 @@ const GithubUrlModal = ({ isOpen, onClose, currentGithubUrl, onGithubUrlUpdate }
     }
   };
 
+  const handleDelete = () => {
+    onGithubUrlUpdate(null!);
+    onClose();
+  };
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className="h-[206px]">
@@ -54,7 +59,10 @@ const GithubUrlModal = ({ isOpen, onClose, currentGithubUrl, onGithubUrlUpdate }
         />
         <p className={`text-sm ${urlValid ? 'text-green-500' : 'text-red-500'}`}>{urlMessage}</p>
 
-        <div className="flex justify-end mt-4">
+        <div className="flex justify-end mt-4 space-x-2">
+          <button onClick={handleDelete} className="border bg-red text-white py-2 px-4 rounded hover:bg-red-600">
+            등록된 링크 삭제
+          </button>
           <button
             onClick={handleSave}
             disabled={!urlValid}

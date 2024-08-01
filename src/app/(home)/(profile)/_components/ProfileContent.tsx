@@ -58,7 +58,7 @@ const ProfileContent = () => {
   return (
     <div className=" flex items-center mb-4">
       <div className="w-[285px] h-[442px] border border-sub-200 rounded-lg bg-white mr-6">
-        <div className="h-[334px] flex flex-col justify-center items-center">
+        <div className="h-[334px] center-alignment">
           <div className=" w-[120px] h-[120px] border mb-[20px] border-sub-100 rounded-full overflow-hidden">
             <Image
               src={userData.profile_image!}
@@ -73,14 +73,14 @@ const ProfileContent = () => {
         </div>
         <div className=" bottom-0 left-0 right-0 flex justify-between  ">
           <Link href="/profile/activities">
-            <div className="container" onClick={handleBookmarkClick}>
+            <div className="profile-like-bookmark " onClick={handleBookmarkClick}>
               <UnfilledBookmark width={29} height={29} stroke="#0F0F0F" />
               <p className="text-gray-600">북마크 {bookmarkCount}</p>
             </div>
           </Link>
           <span className="w-[1px] h-100% bg-neutral-50" />
           <Link href="/profile/activities">
-            <div className="container" onClick={handleLikeClick}>
+            <div className="profile-like-bookmark " onClick={handleLikeClick}>
               <UnfilledLike width={29} height={29} stroke="#0F0F0F" />
               <p className="text-gray-600">좋아요 {likeCount}</p>
             </div>

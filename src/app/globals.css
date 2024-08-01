@@ -57,11 +57,14 @@
   min-height: 512px !important;
 }
 
-
 @layer utilities {
-  .container {
-    @apply flex flex-col justify-center items-center text-subtitle1 font-medium cursor-pointer p-[0px_25px_0px_25px];
+  .center-alignment {
+    @apply flex flex-col justify-center items-center;
   }
+  .profile-like-bookmark {
+    @apply text-subtitle1 font-medium cursor-pointer p-[0px_25px_0px_25px];
+  }
+}
 
 .custom-markdown {
   font-family: font-regular;
