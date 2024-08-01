@@ -1,4 +1,3 @@
-import { timeForToday } from '@/components/timeForToday';
 import MDEditor from '@uiw/react-md-editor';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -11,6 +10,7 @@ import AnswerReplies from '../qnacomments/AnswerReplies';
 import LikeButton from '@/components/common/LikeButton';
 import { useAuth } from '@/context/auth.context';
 import Kebob from './Kebob';
+import { timeForToday } from '@/utils/timeForToday';
 
 type QnaAnswerProps = {
   qnaComment: TqnaCommentsWithReplyCount;

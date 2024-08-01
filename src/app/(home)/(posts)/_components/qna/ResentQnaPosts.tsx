@@ -5,6 +5,7 @@ import { Post, SortOption } from '@/types/posts/qnaTypes';
 import MDEditor from '@uiw/react-md-editor';
 import dayjs from 'dayjs';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 const ResentQnaPosts = () => {
@@ -104,31 +105,34 @@ const ResentQnaPosts = () => {
         <ul>
           {sortedPosts.map((post) => (
             <li key={post.id}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Image
-                  src={post.user.profile_image}
-                  alt={post.user.nickname || 'Unknown User'}
-                  width={50}
-                  height={50}
-                />
-                <div>
-                  <strong>{post.user.nickname}</strong>
-                  <p>{dayjs(post.updated_at).format('YYYY-MM-DD HH:mm')}</p>
+              <Link href={`/qna/${post.id}`}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <Image
+                    src={post.user.profile_image}
+                    alt={post.user.nickname || 'Unknown User'}
+                    width={50}
+                    height={50}
+                  />
+                  <div>
+                    <strong>{post.user.nickname}</strong>
+                    <p>{dayjs(post.updated_at).format('YYYY-MM-DD HH:mm')}</p>
+                  </div>
                 </div>
-              </div>
-              <h2>{post.title}</h2>
-              <MDEditor.Markdown source={post.content} />
-              <div>
-                <p>태그: </p>
-                {post.qna_tags.length > 0 ? (
-                  post.qna_tags.map((tag) => <span key={tag.id}>{tag.tag}</span>)
-                ) : (
-                  <span>null</span>
-                )}
-              </div>
-              <div>
-                <span>좋아요: {post.qna_like[0]?.count || 0}</span> |<span>답변:{post.qna_comment[0]?.count || 0}</span>
-              </div>
+                <h2>{post.title}</h2>
+                <MDEditor.Markdown source={post.content} />
+                <div>
+                  <p>태그: </p>
+                  {post.qna_tags.length > 0 ? (
+                    post.qna_tags.map((tag) => <span key={tag.id}>{tag.tag}</span>)
+                  ) : (
+                    <span>null</span>
+                  )}
+                </div>
+                <div>
+                  <span>좋아요: {post.qna_like[0]?.count || 0}</span> |
+                  <span>답변:{post.qna_comment[0]?.count || 0}</span>
+                </div>
+              </Link>
             </li>
           ))}
         </ul>
