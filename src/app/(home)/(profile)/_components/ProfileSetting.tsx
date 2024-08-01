@@ -9,6 +9,7 @@ import Image from 'next/image';
 import { upDateImage, uploadImage } from '@/utils/imageUpload';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import EditIcon from '@/assets/images/common/EditIcon';
 
 const ProfileSetting = () => {
   const { userData, me, updateUserData } = useAuth();
@@ -115,7 +116,7 @@ const ProfileSetting = () => {
   if (!userData) return <p>Loading...</p>;
 
   return (
-    <div className="w-[850px] h-[831px] flex flex-col justify-center items-center p-6 border border-sub-200 rounded-lg">
+    <div className=" flex flex-col justify-center items-center p-6 border border-sub-200 rounded-lg">
       <ToastContainer />
       <div className="w-[588px]">
         <div className="mb-4 flex flex-col justify-center items-center">
@@ -140,15 +141,25 @@ const ProfileSetting = () => {
               <span className="text-white text-title">+</span>
             </div>
           </div>
-          <p className="p-[24px_0_24px_0]">{nickname}님, 좋은 하루 보내세요!</p>
+          <div className="relative">
+            <div
+              onClick={handleImageClick}
+              className="absolute cursor-pointer border border-sub-100 rounded-full right-[-75px] top-[-50px]"
+            >
+              <EditIcon />
+            </div>
+          </div>
+          <p className="text-neutral-900 text-h4 font-bold p-[24px_0_24px_0]">{nickname}님, 좋은 하루 보내세요!</p>
         </div>
         <div className="flex justify-between p-[24px_0_24px_0]">
-          <span>이메일</span>
-          <span>{me?.email}</span>
+          <span className="text-neutral-900 text-subtitle1 font-medium">이메일</span>
+          <span className="text-neutral-700 text-body1 font-regular">{me?.email}</span>
         </div>
         <div className="flex justify-between p-[24px_0_24px_0]">
-          <span>닉네임</span>
-          <span onClick={() => setNicknameModalOpen(true)}>{nickname} ›</span>
+          <span className="text-neutral-900 text-subtitle1 font-medium">닉네임</span>
+          <span className="text-neutral-700 text-body1 font-regular" onClick={() => setNicknameModalOpen(true)}>
+            {nickname} ›
+          </span>
           <NicknameModal
             isOpen={isNicknameModalOpen}
             onClose={() => setNicknameModalOpen(false)}
@@ -157,8 +168,10 @@ const ProfileSetting = () => {
           />
         </div>
         <div className="flex justify-between p-[24px_0_24px_0]">
-          <span>깃허브 링크</span>
-          <span onClick={() => setGithubUrlModalOpen(true)}>{githubUrl} ›</span>
+          <span className="text-neutral-900 text-subtitle1 font-medium">깃허브 링크 주소</span>
+          <span className="text-neutral-700 text-body1 font-regular" onClick={() => setGithubUrlModalOpen(true)}>
+            {githubUrl} ›
+          </span>
           <GithubUrlModal
             isOpen={isGithubUrlModalOpen}
             onClose={() => setGithubUrlModalOpen(false)}
@@ -167,10 +180,10 @@ const ProfileSetting = () => {
           />
         </div>
         <div onClick={() => setInfoModalOpen(true)} className="flex justify-between p-[24px_0_24px_0]">
-          <span>자기소개</span>
+          <span className="text-neutral-900 text-subtitle1 font-medium">자기소개</span>
           <span>›</span>
         </div>
-        <p>{info}</p>
+        <p className="text-neutral-700 text-body1 font-regular line-clamp-5 whitespace-pre-wrap">{info}</p>
         <InfoModal
           isOpen={isInfoModalOpen}
           onClose={() => setInfoModalOpen(false)}
