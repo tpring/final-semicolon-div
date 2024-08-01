@@ -1,5 +1,6 @@
 'use client';
 
+import BlueCheck from '@/assets/images/common/BlueCheck';
 import CommentBubble from '@/assets/images/common/CommentBubble';
 import Dot from '@/assets/images/common/Dot';
 import { cutText, removeImageAndCodeBlocks } from '@/components/common/MarkdownCut';
@@ -148,6 +149,7 @@ const ResentQnaPosts = () => {
                     <p className="text-body1 font-medium text-neutral-900 mr-1">{post.user.nickname}</p>
                     <Dot />
                     <p className="text-body1 font-regular text-neutral-500 ml-1"> {timeForToday(post.created_at)}</p>
+                    <div className="ml-2">{post.selected_comment !== null && <BlueCheck />}</div>
                   </div>
                 </div>
                 <h2 className="text-h5 font-bold text-neutral-900">{post.title}</h2>
