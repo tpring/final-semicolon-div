@@ -156,11 +156,12 @@ const ResentQnaPosts = () => {
                 <div className="mt-2 text-neutral-700 mb-4" data-color-mode="light">
                   <MDEditor.Markdown source={cutText(removeImageAndCodeBlocks(post.content), 300)} />
                 </div>
-                <div className="flex flex-wrap gap-1.5 mb-4">
+                <div className="flex flex-wrap gap-1.5 mb-4 max-h-[40px] overflow-hidden">
                   {post.qna_tags.map((tag) => (
                     <span
                       key={tag.id}
                       className="bg-neutral-50 px-3 py-1 rounded text-base font-medium text-neutral-700"
+                      style={{ maxWidth: '100%' }}
                     >
                       #{tag.tag}
                     </span>

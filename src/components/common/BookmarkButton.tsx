@@ -69,7 +69,11 @@ const BookmarkButton = ({ id, type }: BookmarkButtonProps) => {
       setBookmarks(previousBookmarks);
     }
   };
-  return <button onClick={handleBookmark}>{isBookmarked ? <FilledBookmark /> : <UnfilledBookmark />}</button>;
+  return (
+    <button onClick={handleBookmark}>
+      {isBookmarked ? <FilledBookmark /> : <UnfilledBookmark width={24} height={24} />}
+    </button>
+  );
 };
 
 export default BookmarkButton;
