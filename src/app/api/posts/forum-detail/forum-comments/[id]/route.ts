@@ -3,9 +3,9 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export const GET = async (request: NextRequest, { params }: { params: { id: string } }) => {
   const supabase = createClient();
-  console.log(params.id);
   const urlSearchParams = request.nextUrl.searchParams;
   const page = urlSearchParams.get('page') ? Number(urlSearchParams.get('page')) : 0;
+
   const { data } = await supabase
     .from('forum_comments')
     .select('*, user: users(*)')
@@ -13,7 +13,10 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
     .order('created_at', { ascending: false })
     .range(page * 5, (page + 1) * 5 - 1);
 
-  const { count, error } = await supabase.from('forum_comments').select('*', { count: 'exact', head: true });
+  const { count, error } = await supabase
+    .from('forum_comments')
+    .select('*', { count: 'exact', head: true })
+    .eq('post_id', params.id);
 
   if (error) {
     console.error('Error fetching data:', error.message);

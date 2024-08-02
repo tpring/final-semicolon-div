@@ -18,9 +18,7 @@ const ForumReplyInput = ({ comment_id, toggle }: { comment_id: string; toggle: (
         method: 'POST',
         body: JSON.stringify(userReply)
       });
-      console.log(userReply);
       const data = await response.json();
-      console.log(data);
       return data;
     },
     onSuccess: () => {
@@ -38,6 +36,12 @@ const ForumReplyInput = ({ comment_id, toggle }: { comment_id: string; toggle: (
 
     if (!me?.id) {
       toast.error('로그인 후 입력가능합니다.', {
+        autoClose: 2000
+      });
+      return;
+    }
+    if (!reply) {
+      toast.error('댓글을 입력해주세요..', {
         autoClose: 2000
       });
       return;

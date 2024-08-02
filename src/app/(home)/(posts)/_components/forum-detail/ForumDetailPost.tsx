@@ -6,6 +6,10 @@ import { timeForToday } from '@/utils/timeForToday';
 import { useParams } from 'next/navigation';
 import MDEditor from '@uiw/react-md-editor';
 import Image from 'next/image';
+import LikeButton from '@/components/common/LikeButton';
+import BookmarkButton from '@/components/common/BookmarkButton';
+import { handleRinkCopy } from '@/utils/handleRinkCopy';
+import Share from '@/assets/images/common/Share';
 
 const ForumDetailPost = () => {
   const params = useParams();
@@ -47,7 +51,19 @@ const ForumDetailPost = () => {
             <h2>{post.title}</h2>
             <MDEditor.Markdown source={post.content} />
           </div>
-          <p>{post.created_at.slice(0, 16).replace(/-/g, '.').replace(/T/g, ' ')}</p>
+          <div className="flex justify-between items-center">
+            <p>{post.created_at.slice(0, 16).replace(/-/g, '.').replace(/T/g, ' ')}</p>
+            <div className="flex gap-5">
+              <LikeButton id={post.id} type="forum" />
+              <BookmarkButton id={post.id} type="forum" />
+              <button
+                type="button"
+                onClick={() => handleRinkCopy(`${process.env.NEXT_PUBLIC_BASE_URL}/forum/${post.id}`)}
+              >
+                <Share />
+              </button>
+            </div>
+          </div>
         </div>
       ))}
     </div>

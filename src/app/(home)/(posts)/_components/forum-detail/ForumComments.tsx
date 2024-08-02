@@ -12,7 +12,7 @@ import ForumReplyInput from './ForumReplyInput';
 import { toast } from 'react-toastify';
 import Image from 'next/image';
 import { useInView } from 'react-intersection-observer';
-import { forumCommentsType } from '@/types/posts/forumDetailTypes';
+import { commentRetouch, forumCommentsType } from '@/types/posts/forumDetailTypes';
 
 const ForumComments = () => {
   const { me } = useAuth();
@@ -27,15 +27,7 @@ const ForumComments = () => {
   const COMMENT_PAGE = 5;
   //댓글 수정
   const commentRetouch = useMutation({
-    mutationFn: async ({
-      id,
-      user_id,
-      mdEditorChange
-    }: {
-      id: string;
-      user_id: string;
-      mdEditorChange: string | undefined;
-    }) => {
+    mutationFn: async ({ id, user_id, mdEditorChange }: commentRetouch) => {
       const response = await fetch(`/api/posts/forum-detail/forum-comments/${param.id}`, {
         method: 'PATCH',
         body: JSON.stringify({ id, user_id, mdEditorChange })
@@ -97,8 +89,6 @@ const ForumComments = () => {
   const {
     fetchNextPage,
     data: comments,
-    hasNextPage,
-    isFetchingNextPage,
     isPending,
     isError
   } = useInfiniteQuery({
@@ -107,7 +97,7 @@ const ForumComments = () => {
     queryFn: async ({ pageParam }) => {
       const response = await fetch(`/api/posts/forum-detail/forum-comments/${param.id}?page=${pageParam}`);
       const data = await response.json();
-      return data;
+      return data as Promise<forumCommentsType>;
     },
     getNextPageParam: (lastPage, allPages, lastPageParam) => {
       const nextPage = lastPageParam + 1;
@@ -115,7 +105,6 @@ const ForumComments = () => {
     },
     select: ({ pages }) => pages.flat()
   });
-  console.log(comments);
 
   useEffect(() => {
     if (inView) {
@@ -183,7 +172,7 @@ const ForumComments = () => {
                     className="w-full "
                   />
                   <div>
-                    <button onClick={() => toggleEditing(comment.id, comment.user)}>취소</button>
+                    <button onClick={() => toggleEditing(comment.id, comment.user_id)}>취소</button>
                     <button onClick={() => commentRetouchHandle(comment.id, comment.user_id)}>수정</button>
                   </div>
                 </div>

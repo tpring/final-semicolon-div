@@ -17,7 +17,7 @@ const InputComments = () => {
     setComment(value!);
   };
 
-  //댓글 입력 후 Query다시 가져오기
+  //댓글 입력
   const handleComment = useMutation({
     mutationFn: async (userComment: any) => {
       const response = await fetch(`/api/posts/forum-detail/forum-comments/${params.id}`, {
@@ -35,7 +35,6 @@ const InputComments = () => {
     }
   });
 
-  //submit 실행시 유효성 검사 & mutation으로 값을 전달
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const forumComment = { user_id: me?.id, post_id: params.id, comment };
