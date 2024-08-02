@@ -9,6 +9,7 @@ import CarouselLeftHover from '@/assets/images/common/CarouselLeftHover';
 import CarouselLeft from '@/assets/images/common/CarouselLeft';
 import CarouselRightHover from '@/assets/images/common/CarouselRightHover';
 import CarouselRight from '@/assets/images/common/CarouselRight';
+import SwiperCore from 'swiper';
 
 const QnaImageSwiper = () => {
   const [swiperInstance, setSwiperInstance] = useState<SwiperCore | null>(null);
