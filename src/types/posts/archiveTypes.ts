@@ -14,6 +14,10 @@ export type Post = ArchivePost & {
   user: User;
 };
 
+export type PostCardProps = {
+  post: Post;
+};
+
 export type FetchResult = {
   data: Post[];
   count: number;
