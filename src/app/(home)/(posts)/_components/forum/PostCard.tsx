@@ -62,8 +62,15 @@ const PostCard = ({ post }: PostCardProps) => {
         <div className="post-tags mt-2">
           {post.forum_tags &&
             post.forum_tags.map((tag) => (
-              <div key={tag.id} className="inline-block border bg-neutral-50 border-neutral-50 m-1">
-                <span key={tag.id} className="inline-block text-body2 text-neutral-700 px-1 whitespace-nowrap">
+              <div
+                key={tag.id}
+                className="inline-block border bg-neutral-50 border-neutral-50 m-1 flex-wrap max-h-[40px] overflow-hidden"
+              >
+                <span
+                  key={tag.id}
+                  className="inline-block text-body2 text-neutral-700 px-1 whitespace-nowrap "
+                  style={{ maxWidth: '100%' }}
+                >
                   #{tag.tag}
                 </span>
               </div>
