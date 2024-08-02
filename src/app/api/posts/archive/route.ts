@@ -7,10 +7,15 @@ const POSTS_PER_PAGE = 6;
 const getArchivePosts = async (page: number, limit: number) => {
   const supabase = createClient();
 
-  const { data: posts, error } = await supabase
+  const {
+    data: posts,
+    count,
+    error
+  } = await supabase
     .from('archive_posts')
     .select(
-      `*,archive_like:archive_likes(count), archive_comment:archive_comments(count),archive_tags(*), user:users(*)`
+      `*,archive_like:archive_likes(count), archive_comment:archive_comments(count),archive_tags(*), user:users(*)`,
+      { count: 'exact' }
     )
     .order('updated_at', { ascending: false })
     .range(page * limit, (page + 1) * limit - 1);
@@ -20,14 +25,12 @@ const getArchivePosts = async (page: number, limit: number) => {
     return { data: [], count: 0, error: error.message };
   }
 
-  const { count, error: countError } = await supabase.from('archive_posts').select('*', { count: 'exact', head: true });
-
-  if (countError) {
-    console.log('countError', countError);
-    return { data: [], count: 0, error: countError.message };
-  }
-
-  return { data: posts, count, nextPage: posts.length === limit ? page + 1 : null, error: null };
+  return {
+    data: posts,
+    count: count,
+    nextPage: posts.length === limit ? page + 1 : null,
+    error: null
+  };
 };
 
 const getPopularArchivePosts = async () => {
