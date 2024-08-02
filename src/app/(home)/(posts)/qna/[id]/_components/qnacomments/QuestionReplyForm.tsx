@@ -1,15 +1,18 @@
+import { revalidate } from '@/actions/revalidate';
 import { useAuth } from '@/context/auth.context';
+import { useQnaDetailStore } from '@/store/qnaDetailStore';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import MDEditor, { commands } from '@uiw/react-md-editor';
 import Image from 'next/image';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { toast } from 'react-toastify';
 
 type QuestionReplyFormProps = {
-  questionId: string;
+  setReplyCount: Dispatch<SetStateAction<number>>;
 };
 
-const QuestionReplyForm = ({ questionId }: QuestionReplyFormProps) => {
+const QuestionReplyForm = ({ setReplyCount }: QuestionReplyFormProps) => {
+  const { postId } = useQnaDetailStore();
   const { me, userData } = useAuth();
   const [content, setContent] = useState<string>('');
   const handleChangeContent = (value?: string) => {
@@ -25,13 +28,10 @@ const QuestionReplyForm = ({ questionId }: QuestionReplyFormProps) => {
     user_id: string;
     post_reply_content: string;
   }) => {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/posts/qna-detail/qna-post-reply/${questionId}`,
-      {
-        method: 'POST',
-        body: JSON.stringify({ user_id, post_reply_content })
-      }
-    );
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/posts/qna-detail/qna-post-reply/${postId}`, {
+      method: 'POST',
+      body: JSON.stringify({ user_id, post_reply_content })
+    });
     const { data, message } = await response.json();
     if (message) {
       return toast.error(message);
@@ -44,13 +44,15 @@ const QuestionReplyForm = ({ questionId }: QuestionReplyFormProps) => {
     const data = await addQuestionReply({ user_id: me?.id, post_reply_content: content });
     toast.success('댓글 작성 완료', { autoClose: 1500, hideProgressBar: true });
     setContent('');
+    setReplyCount((prev) => prev + 1);
+    await revalidate('/', 'layout');
     return;
   };
 
   const { mutate: addQuestionReply } = useMutation({
     mutationFn: postingQuestionReply,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['qnaReply', questionId] });
+      queryClient.invalidateQueries({ queryKey: ['qnaReply', postId] });
     }
   });
 

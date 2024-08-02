@@ -49,7 +49,7 @@ const PostingCategoryBox = () => {
         className={`w-[337px] h-[51px] text-body1 pl-6 pr-14 py-3 border  rounded-lg ${categoryOpen || categoryGroup.category === '' ? 'border-neutral-100' : 'border-main-400 text-main-400'}`}
         onClick={handleCategoryDivClick}
       >
-        {categoryGroup.category === '포럼' || categoryGroup.category === '' ? subCategory : categoryGroup.category}
+        {categoryGroup.category === '포럼' || categoryGroup.category === '' ? subCategory : categoryGroup.category}dddd
       </div>
       <div className="flex relative">
         <ul

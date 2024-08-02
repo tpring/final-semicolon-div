@@ -1,21 +1,33 @@
+import { revalidate } from '@/actions/revalidate';
 import { useAuth } from '@/context/auth.context';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import MDEditor, { commands } from '@uiw/react-md-editor';
 import Image from 'next/image';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { toast } from 'react-toastify';
 
 type AnswerRepliesFormProps = {
   commentId: string;
+  setReplyCount: Dispatch<SetStateAction<number>>;
 };
 
-const AnswerReplyForm = ({ commentId }: AnswerRepliesFormProps) => {
+const AnswerReplyForm = ({ commentId, setReplyCount }: AnswerRepliesFormProps) => {
   const { me, userData } = useAuth();
   const [content, setContent] = useState<string>('');
   const handleChangeContent = (value?: string) => {
     setContent(value!);
   };
   const queryClient = useQueryClient();
+
+  const handlePostingReply = async () => {
+    if (!me?.id) return;
+    const data = await addAnswerReply({ user_id: me?.id, reply: content });
+    toast.success('댓글 작성 완료', { autoClose: 1500, hideProgressBar: true });
+    setContent('');
+    setReplyCount((prev) => prev + 1);
+    await revalidate('/', 'layout');
+    return;
+  };
 
   const postingAnswerReply = async ({ user_id, reply }: { user_id: string; reply: string }) => {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/posts/qna-detail/qna-reply/${commentId}`, {
@@ -26,15 +38,8 @@ const AnswerReplyForm = ({ commentId }: AnswerRepliesFormProps) => {
     if (message) {
       return toast.error(message);
     }
-    return data;
-  };
 
-  const handlePostingReply = async () => {
-    if (!me?.id) return;
-    const data = await addAnswerReply({ user_id: me?.id, reply: content });
-    toast.success('댓글 작성 완료', { autoClose: 1500, hideProgressBar: true });
-    setContent('');
-    return;
+    return data;
   };
 
   const { mutate: addAnswerReply } = useMutation({
