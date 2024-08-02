@@ -8,7 +8,7 @@ export const GET = async (request: Request) => {
   const url = new URL(request.url);
   const page = parseInt(url.searchParams.get('page') || '1', 10);
   const limit = parseInt(url.searchParams.get('limit') || '5', 10);
-  const commentId = url.searchParams.get('comment_id'); // comment_id 추가
+  const commentId = url.searchParams.get('comment_id');
 
   if (!commentId) {
     return NextResponse.json({ error: 'comment_id is required' }, { status: 400 });
@@ -17,18 +17,18 @@ export const GET = async (request: Request) => {
   // 오프셋 계산
   const offset = (page - 1) * limit;
 
-  // 대댓글 가져오기 (페이지네이션 및 comment_id 필터링 적용)
+  // 대댓글 가져오기 (페이지네이션)
   const { data: getReply, error } = await supabase
     .from('archive_reply')
     .select('*, user:users(*)')
-    .eq('comment_id', commentId) // 특정 comment_id에 대한 필터링 추가
+    .eq('comment_id', commentId)
     .range(offset, offset + limit - 1);
 
   // 전체 대댓글 수 가져오기
   const { count, error: countError } = await supabase
     .from('archive_reply')
     .select('*', { count: 'exact', head: true })
-    .eq('comment_id', commentId); // 특정 comment_id에 대한 카운트 추가
+    .eq('comment_id', commentId);
 
   if (error || countError) {
     return NextResponse.json({ error: error?.message || countError?.message }, { status: 500 });
@@ -63,7 +63,7 @@ export const PATCH = async (request: Request) => {
   const reply = data.replyRetouch as string;
   const id = data.id as string;
   const user = data.user_id as string;
-  const comment_id = data.comment_id as string; // comment_id 추가
+  const comment_id = data.comment_id as string;
 
   if (!comment_id) {
     return NextResponse.json({ error: 'comment_id is required' }, { status: 400 });
@@ -74,7 +74,7 @@ export const PATCH = async (request: Request) => {
     .update({ reply })
     .eq('id', id)
     .eq('user_id', user)
-    .eq('comment_id', comment_id); // comment_id 확인
+    .eq('comment_id', comment_id);
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -88,18 +88,8 @@ export const DELETE = async (request: Request) => {
   const data = await request.json();
   const id = data.id as string;
   const user = data.user_id as string;
-  const comment_id = data.comment_id as string; // comment_id 추가
 
-  if (!comment_id) {
-    return NextResponse.json({ error: 'comment_id is required' }, { status: 400 });
-  }
-
-  const { data: replyDelete, error } = await supabase
-    .from('archive_reply')
-    .delete()
-    .eq('id', id)
-    .eq('user_id', user)
-    .eq('comment_id', comment_id); // comment_id 확인
+  const { data: replyDelete, error } = await supabase.from('archive_reply').delete().eq('id', id).eq('user_id', user);
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

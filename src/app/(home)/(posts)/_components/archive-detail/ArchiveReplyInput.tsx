@@ -6,7 +6,7 @@ import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 
-const ArchiveReplyInput = ({ comment_id, toggle }: { comment_id: string }) => {
+const ArchiveReplyInput = ({ comment_id, toggle }: { comment_id: string; toggle: (id: string) => void }) => {
   const { me } = useAuth();
   const params = useParams();
   const queryClient = useQueryClient();
@@ -28,9 +28,10 @@ const ArchiveReplyInput = ({ comment_id, toggle }: { comment_id: string }) => {
     }
   });
 
-  const changReply = (value: string) => {
-    setReply(value!);
+  const changReply = (value: string | undefined) => {
+    setReply(value ?? '');
   };
+
   const onClickReply = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
@@ -42,6 +43,7 @@ const ArchiveReplyInput = ({ comment_id, toggle }: { comment_id: string }) => {
       });
       return;
     }
+
     setReply('');
     handleReply.mutate(commentReply);
   };
@@ -57,7 +59,7 @@ const ArchiveReplyInput = ({ comment_id, toggle }: { comment_id: string }) => {
           return command.name !== 'image';
         })}
         textareaProps={{ maxLength: 1000 }}
-        className="w-full "
+        className="w-full"
       />
       <div className="flex justify-end items-end gap-4">
         <button onClick={() => toggle(comment_id)}>취소</button>

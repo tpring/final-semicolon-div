@@ -9,6 +9,7 @@ import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { useState, ChangeEvent } from 'react';
 import { toast } from 'react-toastify';
+import PaginationButtons from './PaginationButton';
 
 // Reply 타입 정의
 type Reply = {
@@ -23,7 +24,7 @@ type Reply = {
   updated_at: string;
 };
 
-const ArchiveReply = ({ comment_id }: { comment_id: string }) => {
+function ArchiveReply({ comment_id }: { comment_id: string }) {
   const { me } = useAuth();
   const params_id = useParams();
   const [page, setPage] = useState(1); // 현재 페이지 번호
@@ -31,10 +32,10 @@ const ArchiveReply = ({ comment_id }: { comment_id: string }) => {
   const [replyRetouch, setReplyRetouch] = useState('');
   const [replyEditor, setReplyEditor] = useState<{ [key: string]: boolean }>({});
   const [replyEditorToggle, setReplyEditorToggle] = useState<{ [key: string]: boolean }>({});
-  const [replyInputToggle, setReplyInputToggle] = useState<{ [key: string]: boolean }>({}); // 대댓글 입력창 토글 상태
-  const [replyListToggle, setReplyListToggle] = useState(false); // 대댓글 리스트 토글 상태
+  const [replyInputToggle, setReplyInputToggle] = useState<{ [key: string]: boolean }>({});
+  const [replyListToggle, setReplyListToggle] = useState(false);
 
-  const COMMENT_REPLY_PAGE = 5; // 페이지당 댓글 수
+  const COMMENT_REPLY_PAGE = 5;
 
   // 대댓글 추가
   const replyAddMutation = useMutation({
@@ -48,8 +49,8 @@ const ArchiveReply = ({ comment_id }: { comment_id: string }) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['commentReply', comment_id, page] });
-      setReplyRetouch(''); // 대댓글 추가 후 입력 창 비우기
-      setReplyInputToggle({ ...replyInputToggle, [comment_id]: false }); // 대댓글 입력창 닫기
+      setReplyRetouch('');
+      setReplyInputToggle({ ...replyInputToggle, [comment_id]: false });
     }
   });
 
@@ -62,7 +63,6 @@ const ArchiveReply = ({ comment_id }: { comment_id: string }) => {
     }
 
     if (me?.id) {
-      // me가 null이 아닌 경우에만 대댓글 추가
       replyAddMutation.mutate({ user_id: me.id, comment_id, reply: replyRetouch });
     } else {
       toast.error('로그인이 필요합니다.', {
@@ -112,7 +112,7 @@ const ArchiveReply = ({ comment_id }: { comment_id: string }) => {
     mutationFn: async ({ id, user_id }: { id: string; user_id: string }) => {
       const response = await fetch(`/api/posts/archive-detail/archive-reply/${params_id.id}`, {
         method: 'DELETE',
-        body: JSON.stringify({ id, user_id }) // 삭제 요청에 필요한 데이터
+        body: JSON.stringify({ id, user_id })
       });
 
       if (!response.ok) {
@@ -133,8 +133,6 @@ const ArchiveReply = ({ comment_id }: { comment_id: string }) => {
   });
 
   const handleReplyDelete = async (id: string, user_id: string) => {
-    // 삭제 요청 데이터 확인
-    console.log(`Deleting reply with ID: ${id}, User: ${user_id}`);
     commentDelete.mutate({ id, user_id });
   };
 
@@ -165,16 +163,15 @@ const ArchiveReply = ({ comment_id }: { comment_id: string }) => {
   const replyPages = replyCount > 0 ? Math.ceil(reply.count / COMMENT_REPLY_PAGE) : 0;
 
   if (isPending) {
-    return <div>Loading...</div>; // 로딩 중일 때 사용자에게 보여줄 메시지
+    return <div>Loading...</div>;
   }
 
-  // MDeditor의 onChange 이벤트 핸들러
   const changReplyRetouch = (
     value?: string | undefined,
     event?: ChangeEvent | undefined,
     state?: ContextStore | undefined
   ) => {
-    setReplyRetouch(value || ''); // value가 undefined인 경우 빈 문자열로 설정
+    setReplyRetouch(value || '');
   };
 
   // 댓글 수정 버튼
@@ -189,124 +186,93 @@ const ArchiveReply = ({ comment_id }: { comment_id: string }) => {
     setReplyEditorToggle({ [id]: !replyEditorToggle[id] });
   };
 
-  // 대댓글 입력창 토글
-  const toggleReplyInput = (commentId: string) => {
-    setReplyInputToggle({ ...replyInputToggle, [commentId]: !replyInputToggle[commentId] });
-  };
-
   // 대댓글 보기/숨기기 토글
   const toggleReplyList = () => {
     setReplyListToggle(!replyListToggle);
   };
 
-  // 페이지네이션 버튼 생성 (대댓글이 있는 경우에만 표시)
-  const paginationButtons =
-    replyPages > 1
-      ? Array.from({ length: replyPages }, (_, index) => (
-          <button
-            key={index}
-            className={`px-2 py-1 ${page === index + 1 ? 'bg-gray-300' : 'bg-gray-100'}`}
-            onClick={() => setPage(index + 1)}
-          >
-            {index + 1}
-          </button>
-        ))
-      : null;
-
   return (
     <>
-      {/* 대댓글 보기/숨기기 버튼 */}
       <div className="flex justify-end">
-        {' '}
-        {/* 오른쪽 정렬을 위해 flex 사용 */}
-        <button className="mb-4 px-4 py-2 bg-blue-500 text-white rounded-md" onClick={toggleReplyList}>
-          {replyListToggle ? '대댓글 숨기기' : '대댓글 보기'}
-        </button>
+        <button onClick={toggleReplyList}>{replyListToggle ? '대댓글 숨기기' : '대댓글 보기'}</button>
       </div>
 
-      {/* 대댓글 리스트 */}
       {replyListToggle && (
         <>
-          {filteredReplies.map(
-            (
-              currentReply: Reply // 명시적인 타입 지정
-            ) => (
-              <div key={currentReply.id} className="w-full border-b-[1px] p-5 flex flex-col gap-4">
-                <div className="flex justify-start items-center gap-4 ">
-                  <Image
-                    src={currentReply.user.profile_image}
-                    alt="replyUserImage"
-                    width={100}
-                    height={100}
-                    className="rounded-full w-10 h-10"
-                  />
-                  <div className="flex flex-col w-full">
-                    <h2>{currentReply.user.nickname}</h2>
-                    <p>{timeForToday(currentReply.updated_at)}</p>
-                  </div>
-                  <div className="relative">
-                    <div className="right-0">
-                      {me?.id === currentReply.user_id && ( // me가 null이 아닌 경우에만 접근
-                        <>
-                          {replyEditor[currentReply.id] ? null : (
-                            <div onClick={() => toggleEditingOptions(currentReply.id)} className="p-2">
-                              <Kebab />
-                            </div>
-                          )}
-                          {replyEditorToggle[currentReply.id] && (
-                            <div className="w-[105px] right-0 absolute flex flex-col justify-center items-center bg-white shadow-lg border rounded-lg">
-                              <button
-                                className="h-[44px]"
-                                onClick={() => toggleReplyEditing(currentReply.id, currentReply.reply)}
-                              >
-                                댓글 수정
-                              </button>
-                              <button
-                                className="h-[44px]"
-                                onClick={() => handleReplyDelete(currentReply.id, currentReply.user_id)}
-                              >
-                                댓글 삭제
-                              </button>
-                            </div>
-                          )}
-                        </>
-                      )}
-                    </div>
+          {filteredReplies.map((currentReply: Reply) => (
+            <div key={currentReply.id} className="w-full border-b-[1px] p-5 flex flex-col gap-4">
+              <div className="flex justify-start items-center gap-4 ">
+                <Image
+                  src={currentReply.user.profile_image}
+                  alt="replyUserImage"
+                  width={100}
+                  height={100}
+                  className="rounded-full w-10 h-10"
+                />
+                <div className="flex flex-col w-full">
+                  <h2>{currentReply.user.nickname}</h2>
+                  <p>{timeForToday(currentReply.updated_at)}</p>
+                </div>
+                <div className="relative">
+                  <div className="right-0">
+                    {me?.id === currentReply.user_id && (
+                      <>
+                        {replyEditor[currentReply.id] ? null : (
+                          <div onClick={() => toggleEditingOptions(currentReply.id)} className="p-2">
+                            <Kebab />
+                          </div>
+                        )}
+                        {replyEditorToggle[currentReply.id] && (
+                          <div className="w-[105px] right-0 absolute flex flex-col justify-center items-center bg-white shadow-lg border rounded-lg">
+                            <button
+                              className="h-[44px]"
+                              onClick={() => toggleReplyEditing(currentReply.id, currentReply.reply)}
+                            >
+                              댓글 수정
+                            </button>
+                            <button
+                              className="h-[44px]"
+                              onClick={() => handleReplyDelete(currentReply.id, currentReply.user_id)}
+                            >
+                              댓글 삭제
+                            </button>
+                          </div>
+                        )}
+                      </>
+                    )}
                   </div>
                 </div>
-                {replyEditor[currentReply.id] ? (
-                  <div>
-                    <MDEditor
-                      value={replyRetouch}
-                      onChange={changReplyRetouch} // 올바른 타입의 함수로 변경
-                      preview="edit"
-                      extraCommands={commands.getCommands().filter(() => false)}
-                      commands={commands.getCommands().filter((command) => {
-                        return command.name !== 'image';
-                      })}
-                      textareaProps={{ maxLength: 1000 }}
-                      className="w-full"
-                    />
-                    <div>
-                      <button onClick={() => setReplyEditor({ [currentReply.id]: false })}>취소</button>
-                      <button onClick={() => replyRetouchHandle(currentReply.id, currentReply.user_id)}>수정</button>
-                    </div>
-                  </div>
-                ) : (
-                  <div>
-                    <p>{currentReply.reply}</p>
-                  </div>
-                )}
               </div>
-            )
-          )}
-
-          {/* 대댓글 입력창 */}
+              {replyEditor[currentReply.id] ? (
+                <div>
+                  <MDEditor
+                    value={replyRetouch}
+                    onChange={changReplyRetouch}
+                    preview="edit"
+                    extraCommands={commands.getCommands().filter(() => false)}
+                    commands={commands.getCommands().filter((command) => {
+                      return command.name !== 'image';
+                    })}
+                    textareaProps={{ maxLength: 1000 }}
+                    className="w-full"
+                  />
+                  <div>
+                    <button onClick={() => setReplyEditor({ [currentReply.id]: false })}>취소</button>
+                    <button onClick={() => replyRetouchHandle(currentReply.id, currentReply.user_id)}>수정</button>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <p>{currentReply.reply}</p>
+                </div>
+              )}
+            </div>
+          ))}
           {replyInputToggle[comment_id] && (
             <div className="w-full p-5 flex flex-col gap-4">
               <MDEditor
                 value={replyRetouch}
-                onChange={changReplyRetouch} // 올바른 타입의 함수로 변경
+                onChange={changReplyRetouch}
                 preview="edit"
                 extraCommands={commands.getCommands().filter(() => false)}
                 commands={commands.getCommands().filter((command) => command.name !== 'image')}
@@ -316,13 +282,11 @@ const ArchiveReply = ({ comment_id }: { comment_id: string }) => {
               <button onClick={handleAddReply}>대댓글 작성</button>
             </div>
           )}
-
-          {/* 페이지네이션 버튼 */}
-          {replyPages > 1 && <div className="flex justify-center gap-2 py-4">{paginationButtons}</div>}
+          <PaginationButtons totalPages={replyPages} currentPage={page} onPageChange={setPage} />
         </>
       )}
     </>
   );
-};
+}
 
 export default ArchiveReply;

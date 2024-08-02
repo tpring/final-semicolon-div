@@ -4,9 +4,9 @@ import BookmarkButton from '@/components/common/BookmarkButton';
 import SortDropdown from '@/components/common/SortDropdownGrey';
 import { useArchivePosts } from '@/hooks/archive/useFetchArchivePosts';
 import { Post, SortOption } from '@/types/posts/archiveTypes';
-import MDEditor from '@uiw/react-md-editor';
 import dayjs from 'dayjs';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useState } from 'react';
 
 const ArchivePosts = () => {
@@ -70,45 +70,47 @@ const ArchivePosts = () => {
       {sortedPosts.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4">
           {sortedPosts.map((post) => (
-            <div key={post.id} className="flex flex-col justify-start items-start relative gap-4 rounded-xl">
-              <div className="post-image">
-                <div className="flex-grow-0 flex-shrink-0 relative rounded-xl">
-                  {post.thumbnail && (
-                    <Image src={post.thumbnail} alt="Post Thumbnail" width={388} height={280} objectFit="cover" />
-                  )}
-                  <div className="absolute top-4 right-4">
-                    <BookmarkButton id={post.id} type="archive" />
+            <Link key={post.id} href={`/archive/${post.id}`}>
+              <div key={post.id} className="flex flex-col justify-start items-start relative gap-4 rounded-xl">
+                <div className="post-image">
+                  <div className="flex-grow-0 flex-shrink-0 relative rounded-xl">
+                    {post.thumbnail && (
+                      <Image src={post.thumbnail} alt="Post Thumbnail" width={388} height={280} objectFit="cover" />
+                    )}
+                    <div className="absolute top-4 right-4">
+                      <BookmarkButton id={post.id} type="archive" />
+                    </div>
                   </div>
                 </div>
+                <div className="flex flex-col justify-center items-start self-stretch flex-grow-0 flex-shrink-0 relative gap-2 px-5 py-2">
+                  <h2 className="text-body1 font-bold text-neutral-900">
+                    {post.title.length > 20 ? `${post.title.slice(0, 20)}...` : post.title}
+                  </h2>
+                  <p className="text-base text-body2 font-regular text-neutral-700">
+                    {post.user.nickname
+                      ? post.user.nickname.length > 20
+                        ? `${post.user.nickname.slice(0, 20)}...`
+                        : post.user.nickname
+                      : 'unknown user'}
+                  </p>
+                </div>
+                <div className="tags flex justify-start items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 py-2 flex-wrap max-h-[40px] overflow-hidden">
+                  {post.archive_tags.length > 0 ? (
+                    post.archive_tags.map((tag) => (
+                      <span
+                        key={tag.id}
+                        className="bg-neutral-50 px-3 py-1 rounded text-base font-medium text-neutral-700"
+                        style={{ maxWidth: '100%' }}
+                      >
+                        #{tag.tag}
+                      </span>
+                    ))
+                  ) : (
+                    <span></span>
+                  )}
+                </div>
               </div>
-              <div className="flex flex-col justify-center items-start self-stretch flex-grow-0 flex-shrink-0 relative gap-2 px-5 py-2">
-                <h2 className="text-body1 font-bold text-neutral-900">
-                  {post.title.length > 20 ? `${post.title.slice(0, 20)}...` : post.title}
-                </h2>
-                <p className="text-base text-body2 font-regular text-neutral-700">
-                  {post.user.nickname
-                    ? post.user.nickname.length > 20
-                      ? `${post.user.nickname.slice(0, 20)}...`
-                      : post.user.nickname
-                    : 'unknown user'}
-                </p>
-              </div>
-              <div className="tags flex justify-start items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 py-2 flex-wrap max-h-[40px] overflow-hidden">
-                {post.archive_tags.length > 0 ? (
-                  post.archive_tags.map((tag) => (
-                    <span
-                      key={tag.id}
-                      className="bg-neutral-50 px-3 py-1 rounded text-base font-medium text-neutral-700"
-                      style={{ maxWidth: '100%' }}
-                    >
-                      #{tag.tag}
-                    </span>
-                  ))
-                ) : (
-                  <span></span>
-                )}
-              </div>
-            </div>
+            </Link>
           ))}
         </div>
       ) : (
