@@ -1,6 +1,6 @@
 import MDEditor from '@uiw/react-md-editor';
 import Image from 'next/image';
-import { MouseEventHandler, useState } from 'react';
+import { Dispatch, MouseEventHandler, SetStateAction, useState } from 'react';
 import { TqnaCommentsWithReplyCount } from '@/types/posts/qnaDetailTypes';
 import Share from '@/assets/images/common/Share';
 import AnswerReplies from '../qnacomments/AnswerReplies';
@@ -70,6 +70,7 @@ const QnaAnswer = ({ qnaComment, questioner, index, qnaCommentsCount }: QnaAnswe
     const data = await editMutate({ commentId: qnaComment.id, comment: content });
     toast.success('수정 완료!', { autoClose: 1500, hideProgressBar: true });
     setIsEdit(false);
+    await revalidate('/', 'layout');
   };
 
   const editComment = async ({ commentId, comment }: { commentId: string; comment: string }) => {
