@@ -50,29 +50,32 @@ const QnaAnswers = ({ qnaCommentsCount, questioner }: QnaAnswersProps) => {
 
   if (isPending) {
     return <Loading />;
-  } else if (!qnaCommentList) {
-    return;
   }
 
-  const selectedCommentIndex = qnaCommentList.findIndex((comment) => comment.id === seletedComment);
-  [qnaCommentList[0], qnaCommentList[selectedCommentIndex]] = [qnaCommentList[selectedCommentIndex], qnaCommentList[0]];
+  if (qnaCommentList && seletedComment) {
+    const selectedCommentIndex = qnaCommentList.findIndex((comment) => comment.id === seletedComment);
+    const selectedComment = qnaCommentList.filter((comment) => comment.id === seletedComment);
+    qnaCommentList.splice(selectedCommentIndex, 1);
+    qnaCommentList.unshift(...selectedComment);
+  }
 
   return (
     <div>
-      <div></div>
-      {(qnaCommentList as TqnaCommentsWithReplyCount[]).map((qnaComment, index) => {
-        return index === 0 ? (
-          <QnaAnswer
-            key={qnaComment.id}
-            qnaComment={qnaComment}
-            questioner={questioner}
-            index={index}
-            qnaCommentsCount={qnaCommentsCount}
-          />
-        ) : (
-          <QnaAnswer key={qnaComment.id} qnaComment={qnaComment} questioner={questioner} />
-        );
-      })}
+      {qnaCommentList
+        ? (qnaCommentList as TqnaCommentsWithReplyCount[]).map((qnaComment, index) => {
+            return index === 0 ? (
+              <QnaAnswer
+                key={qnaComment.id + 'first'}
+                qnaComment={qnaComment}
+                questioner={questioner}
+                index={index}
+                qnaCommentsCount={qnaCommentsCount}
+              />
+            ) : (
+              <QnaAnswer key={qnaComment.id} qnaComment={qnaComment} questioner={questioner} />
+            );
+          })
+        : null}
       <div className="h-[80px]" ref={ref}></div>
     </div>
   );

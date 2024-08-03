@@ -1,3 +1,5 @@
+import Down from '@/assets/images/common/Down';
+import Up from '@/assets/images/common/Up';
 import { BOARD_LIST, CATEGORY_LIST_KR, FORUM_SUB_CATEGORY_LIST } from '@/constants/upsert';
 import { usePostingCategoryStore } from '@/store/postingCategoryStore';
 import { MouseEventHandler } from 'react';
@@ -46,11 +48,13 @@ const PostingCategoryBox = () => {
   return (
     <div className="flex flex-col ">
       <div
-        className={`w-[337px] h-[51px] text-body1 pl-6 pr-14 py-3 border  rounded-lg ${categoryOpen || categoryGroup.category === '' ? 'border-neutral-100' : 'border-main-400 text-main-400'}`}
+        className={`w-[337px] h-[51px] flex items-center justify-between text-body1 px-6  py-3 border  rounded-lg ${categoryOpen || categoryGroup.category === '' ? 'border-neutral-100' : 'border-main-400 text-main-400'}`}
         onClick={handleCategoryDivClick}
       >
-        {categoryGroup.category === '포럼' || categoryGroup.category === '' ? subCategory : categoryGroup.category}dddd
+        {categoryGroup.category === '포럼' || categoryGroup.category === '' ? subCategory : categoryGroup.category}
+        <span>{categoryOpen ? <Up /> : <Down />}</span>
       </div>
+
       <div className="flex relative">
         <ul
           className={`${categoryOpen ? '' : 'hidden '} flex flex-col justify-center mt-2 w-[337px]  text-body1 z-10 absolute bg-white border rounded-lg border-neutral-100 `}

@@ -41,6 +41,9 @@ const QuestionReplyForm = ({ setReplyCount }: QuestionReplyFormProps) => {
 
   const handlePostingReply = async () => {
     if (!me?.id) return;
+    else if (content.length === 0) {
+      return toast.error('내용을 입력해주세요!');
+    }
     const data = await addQuestionReply({ user_id: me?.id, post_reply_content: content });
     toast.success('댓글 작성 완료', { autoClose: 1500, hideProgressBar: true });
     setContent('');

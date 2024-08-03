@@ -64,6 +64,9 @@ const QnaAnswer = ({ qnaComment, questioner, index, qnaCommentsCount }: QnaAnswe
   });
 
   const handleEditComment: MouseEventHandler<HTMLButtonElement> = async () => {
+    if (content.length === 0) {
+      return toast.error('내용을 입력해주세요!');
+    }
     const data = await editMutate({ commentId: qnaComment.id, comment: content });
     toast.success('수정 완료!', { autoClose: 1500, hideProgressBar: true });
     setIsEdit(false);
@@ -90,7 +93,6 @@ const QnaAnswer = ({ qnaComment, questioner, index, qnaCommentsCount }: QnaAnswe
 
   return (
     <div
-      key={qnaComment.id}
       className={`w-[1204px]  mb-6 px-6 py-12 border ${seletedComment === qnaComment.id ? 'border-main-400' : ''} rounded-2xl overflow-auto`}
     >
       <div className="mb-6">
