@@ -61,6 +61,10 @@ const config: Config = {
         regular: '400',
         medium: '500',
         bold: '700'
+      },
+      boxShadow: {
+        custom: '-2px 0px 1px 0px rgba(234, 234, 234, 0.25), 2px 0px 1px 0px rgba(234, 234, 234, 0.25)',
+        'custom-light': '0px 0px 4px 0px rgba(234, 234, 234, 0.25)'
       }
     }
   },

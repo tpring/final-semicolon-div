@@ -4,8 +4,8 @@ const Down = () => {
       <path
         d="M13 1L7.14142 6.85858C7.06332 6.93668 6.93668 6.93668 6.85858 6.85858L1 0.999999"
         stroke="#0F0F0F"
-        stroke-width="2"
-        stroke-linecap="round"
+        strokeWidth="2"
+        strokeLinecap="round"
       />
     </svg>
   );

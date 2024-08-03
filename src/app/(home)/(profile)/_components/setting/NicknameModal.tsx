@@ -1,5 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import Modal from '@/components/modal/Modal';
+import ConfirmModal from '@/components/modal/ConfirmModal';
+import { toast } from 'react-toastify';
+import X from '@/assets/images/common/X';
 
 type NicknameModalProps = {
   isOpen: boolean;
@@ -9,24 +12,18 @@ type NicknameModalProps = {
 };
 
 const NicknameModal = ({ isOpen, onClose, currentNickname, onNicknameUpdate }: NicknameModalProps) => {
-  const [nickname, setNickname] = useState<string>(currentNickname || '');
-  const [nicknameValid, setNicknameValid] = useState(true);
-  const [nicknameMessage, setNicknameMessage] = useState('');
-  const [isCheckedNickname, setIsCheckedNickname] = useState(false);
+  const [newNickname, setNewNickname] = useState<string>(currentNickname); // 새로운 정보 상태
+  const [nicknameCount, setNicknameCount] = useState(currentNickname.length); // 입력된 텍스트의 길이
+  const [nicknameMessage, setNicknameMessage] = useState(''); // 실시간 닉네임 검사
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false); // 확인 모달의 열림 여부
 
   useEffect(() => {
-    setNickname(currentNickname || '');
+    setNewNickname(currentNickname);
+    setNicknameCount(currentNickname.length);
   }, [currentNickname]);
 
   useEffect(() => {
     const handleValidateNickname = async (nickname: string) => {
-      if (nickname.length < 2) {
-        setNicknameValid(false);
-        setIsCheckedNickname(false);
-        setNicknameMessage('닉네임은 2자 이상 12자 이하여야 합니다.');
-        return;
-      }
-
       try {
         const response = await fetch('/api/auth/check-nickname', {
           method: 'POST',
@@ -40,12 +37,8 @@ const NicknameModal = ({ isOpen, onClose, currentNickname, onNicknameUpdate }: N
 
         if (response.status === 409) {
           setNicknameMessage('이미 사용중인 닉네임입니다.');
-          setIsCheckedNickname(false);
-          setNicknameValid(false);
         } else if (response.ok) {
           setNicknameMessage('사용 가능한 닉네임입니다.');
-          setIsCheckedNickname(true);
-          setNicknameValid(true);
         } else {
           setNicknameMessage(result.error || '닉네임 확인 중 오류가 발생했습니다.');
         }
@@ -54,41 +47,129 @@ const NicknameModal = ({ isOpen, onClose, currentNickname, onNicknameUpdate }: N
       }
     };
 
-    handleValidateNickname(nickname);
-  }, [nickname]);
+    handleValidateNickname(newNickname);
+  }, [newNickname]);
 
-  const handleSubmit = () => {
-    if (isCheckedNickname) {
-      onNicknameUpdate(nickname);
+  const onNicknameHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setNicknameCount(value.length);
+    setNewNickname(value);
+  };
+
+  // 모달을 닫으려고 할 때 호출되는 함수
+  const handleClose = () => {
+    if (newNickname !== currentNickname) {
+      setIsConfirmModalOpen(true);
+    } else {
       onClose();
     }
   };
 
-  return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="h-[406px]">
-        <h2 className="mb-4">닉네임 변경</h2>
-        <h2 className="mb-4">새로운 닉네임</h2>
-        <input
-          type="text"
-          value={nickname}
-          onChange={(e) => setNickname(e.target.value)}
-          className={`block w-full border rounded px-2 py-1 mb-4 ${nicknameValid ? '' : 'border-red-500'}`}
-          placeholder="변경할 닉네임을 입력하세요."
-        />
-        <p className={`text-sm ${nicknameValid ? 'text-green-500' : 'text-red-500'}`}>{nicknameMessage}</p>
+  // 확인 모달에서 확인을 클릭했을 때 호출되는 함수
+  const handleConfirmClose = () => {
+    setIsConfirmModalOpen(false);
+    onClose();
+    setNewNickname(currentNickname);
+  };
 
-        <div className="flex justify-end mt-4">
-          <button
-            onClick={handleSubmit}
-            disabled={!isCheckedNickname}
-            className="border bg-main-100 text-white py-2 px-4 rounded disabled:bg-gray-300"
+  // 확인 모달에서 취소를 클릭했을 때 호출되는 함수
+  const handleCancelClose = () => {
+    setIsConfirmModalOpen(false);
+  };
+
+  // 저장 버튼 클릭 시 호출되는 함수
+  const handleSave = () => {
+    if (currentNickname !== newNickname && nicknameCount > 1 && nicknameCount <= 12) {
+      onNicknameUpdate(newNickname);
+      onClose();
+    } else {
+      toast.error('저장할 수 없습니다. 글자 수를 확인해주세요.');
+    }
+  };
+
+  return (
+    <>
+      <Modal isOpen={isOpen} onClose={handleClose}>
+        <div className="w-[581px] h-[398px] p-[40px_80px]">
+          <div className="flex justify-between">
+            <h2 className="mb-10 text-h4 font-bold text-neutral-900">닉네임 변경</h2>
+            <div onClick={handleClose} className="mt-[5px] cursor-pointer">
+              <X width={20} height={20} />
+            </div>
+          </div>
+
+          <h2
+            className={`${
+              currentNickname !== newNickname
+                ? nicknameCount > 150
+                  ? 'text-red'
+                  : nicknameCount > 0
+                    ? 'text-main-400 '
+                    : 'text-neutral-300'
+                : 'text-neutral-900'
+            }`}
           >
-            변경하기
-          </button>
+            새로운 닉네임
+          </h2>
+          <input
+            type="text"
+            value={newNickname}
+            onChange={onNicknameHandler}
+            className={`block w-[421px] h-[56px] p-[16px] border rounded ${
+              currentNickname !== newNickname
+                ? nicknameCount > 13 || nicknameMessage === '이미 사용중인 닉네임입니다.'
+                  ? 'text-red outline-red border border-red'
+                  : nicknameCount > 1
+                    ? 'text-neutral-900 outline-main-400 border border-main-400'
+                    : 'text-neutral-300 outline-neutral-400 border border-neutral-300'
+                : 'text-neutral-700 outline-neutral-400 border border-neutral-300'
+            }`}
+            placeholder="변경할 닉네임을 입력하세요."
+          />
+
+          {currentNickname !== newNickname ? (
+            nicknameCount > 13 ? (
+              <span className="text-red">글자수를 초과했어요!</span>
+            ) : nicknameCount > 1 ? (
+              nicknameMessage === '이미 사용중인 닉네임입니다.' ? (
+                <span className="text-red">{nicknameMessage}</span>
+              ) : (
+                <span className="text-main-400">{nicknameMessage}</span>
+              )
+            ) : (
+              <span className="text-neutral-300">2~12자 이하</span>
+            )
+          ) : (
+            <span className="text-neutral-700">2~12자 이하</span>
+          )}
+
+          <div className="flex justify-end mt-4">
+            <button
+              onClick={handleSave}
+              className={`borde py-2 px-4 rounded
+    ${
+      currentNickname !== newNickname
+        ? nicknameCount > 13 || nicknameMessage === '이미 사용중인 닉네임입니다.'
+          ? 'bg-main-100 text-white'
+          : nicknameCount > 1
+            ? 'bg-main-400 text-white'
+            : 'bg-main-100 text-white'
+        : 'bg-main-100 text-white'
+    }
+  `}
+            >
+              변경하기
+            </button>
+          </div>
         </div>
-      </div>
-    </Modal>
+      </Modal>
+      <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        onClose={handleCancelClose}
+        onConfirm={handleConfirmClose}
+        message={`작성 중인 내용이 저장되지 않았습니다.\n정말 닫으시겠습니까?`}
+      />
+    </>
   );
 };
 

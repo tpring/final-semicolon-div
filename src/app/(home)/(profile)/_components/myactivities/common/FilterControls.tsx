@@ -1,3 +1,7 @@
+import Down from '@/assets/images/common/Down';
+import SortSetting from '@/assets/images/common/SortSetting';
+import { useState, useEffect, useRef } from 'react';
+
 type FilterControlsProps = {
   selectedCategory: 'all' | 'qna' | 'forum' | 'archive';
   selectedForumCategory: string | null;
@@ -14,68 +18,283 @@ const FilterControls = ({
   selectedType,
   onCategoryChange,
   onForumCategoryChange,
-  onTypeChange,
-  forumCategories
+  onTypeChange
 }: FilterControlsProps) => {
+  const [showForumMenu, setShowForumMenu] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
+
+  const forumMenuRef = useRef<HTMLDivElement | null>(null);
+  const menuButtonRef = useRef<HTMLButtonElement | null>(null);
+
+  const toggleForumMenu = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setShowForumMenu(!showForumMenu);
+    const value = (e.target as HTMLButtonElement).value;
+    if (value === '전체') {
+      onCategoryChange('forum');
+      onForumCategoryChange(null);
+    } else if (value) {
+      onCategoryChange('forum');
+      onForumCategoryChange(value);
+    } else {
+      onCategoryChange('forum');
+    }
+  };
+
+  const toggleMenu = () => {
+    setShowMenu(!showMenu);
+  };
+
+  useEffect(() => {
+    const handleMenuClickOutside = (event: MouseEvent) => {
+      if (menuButtonRef.current && !menuButtonRef.current.contains(event.target as Node)) {
+        setShowMenu(false);
+      }
+    };
+    const handleForumMenuClickOutside = (event: MouseEvent) => {
+      if (forumMenuRef.current && !forumMenuRef.current.contains(event.target as Node)) {
+        setShowForumMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleMenuClickOutside);
+    document.addEventListener('mousedown', handleForumMenuClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleMenuClickOutside);
+      document.removeEventListener('mousedown', handleForumMenuClickOutside);
+    };
+  }, []);
+
   return (
-    <div className="mb-4">
-      <button
-        onClick={() => {
-          onCategoryChange('all');
-          onForumCategoryChange(null);
-        }}
-        className="mr-2"
-      >
-        All
-      </button>
-      <button
-        onClick={() => {
-          onCategoryChange('qna');
-          onForumCategoryChange(null);
-        }}
-        className="mr-2"
-      >
-        Q&A
-      </button>
-      <select
-        onChange={(e) => {
-          const value = e.target.value;
-          if (value === '전체') {
-            onCategoryChange('forum');
-            onForumCategoryChange(null);
-          } else {
-            onCategoryChange('forum');
-            onForumCategoryChange(value);
-          }
-        }}
-        value={selectedForumCategory || '전체'}
-        className="top-full left-0 mt-2 bg-white border border-gray-300 rounded shadow-lg z-10"
-      >
-        {['전체', ...forumCategories].map((category) => (
-          <option key={category} value={category}>
-            {category}
-          </option>
-        ))}
-      </select>
-      <button
-        onClick={() => {
-          onCategoryChange('archive');
-          onForumCategoryChange(null);
-        }}
-        className="mr-2"
-      >
-        Archive
-      </button>
-      <div className="mb-4">
-        <select
-          onChange={(e) => onTypeChange(e.target.value as 'all' | 'post' | 'comment')}
-          value={selectedType}
-          className="bg-white border border-gray-300 rounded shadow-lg"
+    <div>
+      <div className="p-6 bg-sub-50 flex justify-between">
+        <div className="flex">
+          <button
+            onClick={() => {
+              onCategoryChange('all');
+              onForumCategoryChange(null);
+            }}
+            className={`w-[87px] h-[40px] mr-6 ${
+              selectedCategory === 'all'
+                ? 'text-subtitle1 font-medium text-main-400 border border-main-400 rounded-lg bg-sub-50'
+                : 'text-subtitle1 font-medium text-neutral-700 border border-neutral-100 rounded-lg bg-white'
+            }`}
+          >
+            전체
+          </button>
+          <button
+            onClick={() => {
+              onCategoryChange('qna');
+              onForumCategoryChange(null);
+            }}
+            className={`w-[87px] h-[40px] mr-6 ${
+              selectedCategory === 'qna'
+                ? 'text-subtitle1 font-medium text-main-400 border border-main-400 rounded-lg bg-sub-50'
+                : 'text-subtitle1 font-medium text-neutral-700 border border-neutral-100 rounded-lg bg-white'
+            }`}
+          >
+            Q&A
+          </button>
+          <div>
+            <button
+              onClick={toggleForumMenu}
+              className={`w-[118px] h-[40px] p-[8px_16px_8px_16px] mr-6 flex items-center justify-between ${
+                selectedCategory === 'forum'
+                  ? 'text-subtitle1 font-medium text-main-400 border border-main-400 rounded-lg bg-sub-50'
+                  : 'text-subtitle1 font-medium text-neutral-700 border border-neutral-100 rounded-lg bg-white'
+              }`}
+            >
+              {selectedForumCategory === '전체' ? (
+                <p className="w-[64px]">포럼</p>
+              ) : selectedForumCategory === '일상' ? (
+                <p className="w-[64px]">일상</p>
+              ) : selectedForumCategory === '커리어' ? (
+                <p className="w-[64px]"> 커리어</p>
+              ) : selectedForumCategory === '자기개발' ? (
+                <p className="w-[64px]"> 자기개발</p>
+              ) : selectedForumCategory === '토론' ? (
+                <p className="w-[64px]"> 토론</p>
+              ) : selectedForumCategory === '코드리뷰' ? (
+                <p className="w-[64px]"> 코드리뷰</p>
+              ) : (
+                <p className="w-[64px]">포럼</p>
+              )}
+              <Down />
+            </button>
+
+            {showForumMenu && (
+              <div
+                ref={forumMenuRef}
+                className="absolute z-[1000] left-[246px] top-[24px] w-[118px] border border-neutral-100 rounded-lg bg-white  hover:border hover:border-main-400"
+              >
+                <li
+                  className={`flex items-center justify-between p-[8px_16px_8px_32px] h-[40px] ${
+                    selectedForumCategory === '전체'
+                      ? 'text-subtitle1 font-medium text-main-400'
+                      : 'text-subtitle1 font-medium text-neutral-700'
+                  } cursor-pointer`}
+                >
+                  포럼
+                  <Down />
+                </li>
+                <li
+                  onClick={() => {
+                    onForumCategoryChange('전체');
+                    setShowForumMenu(false);
+                  }}
+                  className={`p-[8px_8px_8px_8px] h-[40px] center-alignment ${
+                    selectedForumCategory === '전체'
+                      ? 'text-subtitle1 font-medium text-main-400 bg-main-50'
+                      : 'text-subtitle1 font-medium text-neutral-700'
+                  } cursor-pointer`}
+                >
+                  전체
+                </li>
+                <li
+                  onClick={() => {
+                    onForumCategoryChange('일상');
+                    setShowForumMenu(false);
+                  }}
+                  className={`p-[8px_8px_8px_8px] h-[40px] center-alignment ${
+                    selectedForumCategory === '일상'
+                      ? 'text-subtitle1 font-medium text-main-400 bg-main-50'
+                      : 'text-subtitle1 font-medium text-neutral-700'
+                  } cursor-pointer`}
+                >
+                  일상
+                </li>
+                <li
+                  onClick={() => {
+                    onForumCategoryChange('커리어');
+                    setShowForumMenu(false);
+                  }}
+                  className={`p-[8px_8px_8px_8px] h-[40px] center-alignment ${
+                    selectedForumCategory === '커리어'
+                      ? 'text-subtitle1 font-medium text-main-400 bg-main-50 '
+                      : 'text-subtitle1 font-medium text-neutral-700'
+                  } cursor-pointer`}
+                >
+                  커리어
+                </li>
+                <li
+                  onClick={() => {
+                    onForumCategoryChange('자기개발');
+                    setShowForumMenu(false);
+                  }}
+                  className={`p-[8px_8px_8px_8px] h-[40px] center-alignment ${
+                    selectedForumCategory === '자기개발'
+                      ? 'text-subtitle1 font-medium text-main-400 bg-main-50 '
+                      : 'text-subtitle1 font-medium text-neutral-700'
+                  } cursor-pointer`}
+                >
+                  자기개발
+                </li>
+                <li
+                  onClick={() => {
+                    onForumCategoryChange('토론');
+                    setShowForumMenu(false);
+                  }}
+                  className={`p-[8px_8px_8px_8px] h-[40px] center-alignment ${
+                    selectedForumCategory === '토론'
+                      ? 'text-subtitle1 font-medium text-main-400 bg-main-50 '
+                      : 'text-subtitle1 font-medium text-neutral-700'
+                  } cursor-pointer`}
+                >
+                  토론
+                </li>
+                <li
+                  onClick={() => {
+                    onForumCategoryChange('코드리뷰');
+                    setShowForumMenu(false);
+                  }}
+                  className={`p-[8px_8px_8px_8px] h-[40px] center-alignment ${
+                    selectedForumCategory === '코드리뷰'
+                      ? 'text-subtitle1 font-medium text-main-400 bg-main-50 rounded-b-lg'
+                      : 'text-subtitle1 font-medium text-neutral-700'
+                  } cursor-pointer`}
+                >
+                  코드리뷰
+                </li>
+              </div>
+            )}
+          </div>
+          <button
+            onClick={() => {
+              onCategoryChange('archive');
+              onForumCategoryChange(null);
+            }}
+            className={`w-[118px] h-[40px] mr-6 ${
+              selectedCategory === 'archive'
+                ? 'text-subtitle1 font-medium text-main-400 border border-main-400 rounded-lg bg-sub-50'
+                : 'text-subtitle1 font-medium text-neutral-700 border border-neutral-100 rounded-lg bg-white'
+            }`}
+          >
+            라이브러리
+          </button>
+        </div>
+        <button
+          onClick={toggleMenu}
+          className={` flex items-center justify-between p-[8px_16px_8px_16px] w-[127px] h-[40px] mr-6 ${
+            selectedType !== 'all'
+              ? 'text-subtitle1 font-medium text-main-400 border border-main-400 rounded-lg bg-sub-50'
+              : 'text-subtitle1 font-medium text-neutral-700 border border-neutral-100 rounded-lg bg-white'
+          }`}
         >
-          <option value="all">전체</option>
-          <option value="post">게시글</option>
-          <option value="comment">댓글</option>
-        </select>
+          <SortSetting />
+          {selectedType === 'all' ? (
+            <p>필터</p>
+          ) : selectedType === 'post' ? (
+            <p>게시글</p>
+          ) : selectedType === 'comment' ? (
+            <p>댓글</p>
+          ) : (
+            <p>필터</p>
+          )}
+          <Down />
+        </button>
+        {showMenu && (
+          <div
+            ref={forumMenuRef}
+            className="absolute z-[1000] right-[48px] w-[127px] border border-neutral-100 rounded-lg bg-white hover:border hover:border-main-400 "
+          >
+            <li
+              className={`flex items-center justify-between p-[8px_16px_8px_16px] h-[40px] ${
+                selectedType === 'all'
+                  ? 'text-subtitle1 font-medium text-main-400'
+                  : 'text-subtitle1 font-medium text-neutral-700'
+              } cursor-pointer`}
+            >
+              <SortSetting />
+              필터
+              <Down />
+            </li>
+            <p
+              onClick={() => {
+                onTypeChange('post');
+                setShowMenu(false);
+              }}
+              className={`p-[8px_8px_8px_8px] h-[40px] center-alignment ${
+                selectedType === 'post'
+                  ? 'text-subtitle1 font-medium text-main-400 bg-main-50'
+                  : 'text-subtitle1 font-medium text-neutral-700'
+              } cursor-pointer`}
+            >
+              게시글
+            </p>
+            <p
+              onClick={() => {
+                onTypeChange('comment');
+                setShowMenu(false);
+              }}
+              className={`p-[8px_8px_8px_8px] h-[40px] center-alignment ${
+                selectedType === 'comment'
+                  ? 'text-subtitle1 font-medium text-main-400 bg-main-50 rounded-b-lg'
+                  : 'text-subtitle1 font-medium text-neutral-700'
+              } cursor-pointer`}
+            >
+              댓글
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
