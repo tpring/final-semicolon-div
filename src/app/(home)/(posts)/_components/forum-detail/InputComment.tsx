@@ -59,7 +59,7 @@ const InputComments = () => {
       <form className=" w-full" onSubmit={handleSubmit}>
         <div className=" flex justify-center items-center gap-6">
           <Image
-            src={userData?.profile_image}
+            src={userData?.profile_image ?? ''}
             alt="user profile image"
             width={48}
             height={48}
