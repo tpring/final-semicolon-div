@@ -4,18 +4,19 @@ import Image from 'next/image';
 import NotFound from '@/app/not-found';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import Loading from '@/app/(home)/loading';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import AnswerReplyForm from './AnswerReplyForm';
-import Kebob from '../qnapost/Kebob';
 import { useAuth } from '@/context/auth.context';
-import { timeForToday } from '@/utils/timeForToday';
+
+import AnswerReply from './AnswerReply';
 
 type AnswerCommentsProps = {
   commentId: string;
   replyCount: number;
+  setReplyCount: Dispatch<SetStateAction<number>>;
 };
 
-const AnswerReplies = ({ commentId, replyCount }: AnswerCommentsProps) => {
+const AnswerReplies = ({ commentId, replyCount, setReplyCount }: AnswerCommentsProps) => {
   const { me } = useAuth();
   const pageParamList = [];
   for (let i = 0; replyCount - i * 5 > 0; i++) {
@@ -56,7 +57,9 @@ const AnswerReplies = ({ commentId, replyCount }: AnswerCommentsProps) => {
 
   const handleBtnClick = async (pageParam: number) => {
     if (page < pageParam && !qnaReplyList?.pageParams.includes(pageParam)) {
-      await fetchNextPage();
+      for (let i = page; i < pageParam; i++) {
+        await fetchNextPage();
+      }
       setPage(pageParam);
       return;
     }
@@ -65,38 +68,9 @@ const AnswerReplies = ({ commentId, replyCount }: AnswerCommentsProps) => {
 
   return (
     <div>
-      <AnswerReplyForm commentId={commentId} />
+      <AnswerReplyForm commentId={commentId} setReplyCount={setReplyCount} />
       {qnaReplyList?.pages[page].map((reply: Treply) => {
-        return (
-          <div key={reply.id} className={`relative left-0 border-b`}>
-            <div className="flex h-[86px] mt-6 mx-5 items-center gap-[16px] ">
-              <div className="relative w-12 h-12">
-                <Image
-                  src={reply.users?.profile_image ?? ''}
-                  alt="Profile"
-                  layout="fill"
-                  objectFit="cover"
-                  className="rounded-full"
-                />
-              </div>
-              <div>
-                <div>{reply.users.nickname}</div>
-                <div>{timeForToday(reply.updated_at!)}</div>
-              </div>
-              {me?.id === reply.user_id ? (
-                <div className="flex ml-auto ">
-                  <Kebob />
-                </div>
-              ) : (
-                ''
-              )}
-            </div>
-            <div className="flex flex-col h-[86px] mb-6 mx-5  gap-[16px]">
-              <MDEditor.Markdown source={reply.reply} />
-              <div>{reply.created_at.slice(0, 10)}</div>
-            </div>
-          </div>
-        );
+        return <AnswerReply key={reply.id} reply={reply} setReplyCount={setReplyCount} />;
       })}
       <div className=" flex pt-6 gap-4 w-full justify-end">
         {pageParamList.map((pageParam) => {

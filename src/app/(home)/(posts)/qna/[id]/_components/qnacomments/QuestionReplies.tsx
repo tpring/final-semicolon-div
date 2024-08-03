@@ -1,22 +1,22 @@
 import MDEditor from '@uiw/react-md-editor';
 import Image from 'next/image';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import NotFound from '@/app/not-found';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import Loading from '@/app/(home)/loading';
 import { TpostReply } from '@/types/posts/qnaDetailTypes';
 import QuestionReplyForm from './QuestionReplyForm';
-import Kebob from '../qnapost/Kebob';
 import { useAuth } from '@/context/auth.context';
-import { timeForToday } from '@/utils/timeForToday';
+import { useQnaDetailStore } from '@/store/qnaDetailStore';
+import QuestionReply from './QuestionReply';
 
 type AnswerCommentsProps = {
-  questionId: string;
   postReplyCount: number;
+  setReplyCount: Dispatch<SetStateAction<number>>;
 };
 
-const QuestionReplies = ({ questionId, postReplyCount }: AnswerCommentsProps) => {
-  const { me } = useAuth();
+const QuestionReplies = ({ postReplyCount, setReplyCount }: AnswerCommentsProps) => {
+  const { postId } = useQnaDetailStore();
   const pageParamList = [];
   for (let i = 0; postReplyCount - i * 5 > 0; i++) {
     pageParamList.push(i + 1);
@@ -34,14 +34,19 @@ const QuestionReplies = ({ questionId, postReplyCount }: AnswerCommentsProps) =>
     }
     return data;
   };
-
+  useEffect(() => {
+    for (let i = 0; postReplyCount - i * 5 > 0; i++) {
+      pageParamList.push(i + 1);
+    }
+    page > pageParamList.length ? setPage(pageParamList.length) : '';
+  }, [postReplyCount]);
   const {
     fetchNextPage,
     data: qnaReplyList,
     isPending,
     isError
   } = useInfiniteQuery({
-    queryKey: ['qnaReply', questionId],
+    queryKey: ['qnaReply', postId],
     initialPageParam: 0,
     queryFn: getReplyList,
     getNextPageParam: (lastPage, allPages, lastPageParam) => {
@@ -56,10 +61,12 @@ const QuestionReplies = ({ questionId, postReplyCount }: AnswerCommentsProps) =>
   if (isError) {
     return <NotFound />;
   }
-  //배열 5개씩 자르기
+  //배열 5개씩 자르기 //한번에 4로 갔을 때 pageParam이 3이고
   const handleBtnClick = async (pageParam: number) => {
     if (page < pageParam && !qnaReplyList?.pageParams.includes(pageParam)) {
-      await fetchNextPage();
+      for (let i = page; i < pageParam; i++) {
+        await fetchNextPage();
+      }
       setPage(pageParam);
       return;
     }
@@ -68,38 +75,9 @@ const QuestionReplies = ({ questionId, postReplyCount }: AnswerCommentsProps) =>
 
   return (
     <div>
-      <QuestionReplyForm questionId={questionId} />
+      <QuestionReplyForm setReplyCount={setReplyCount} />
       {qnaReplyList?.pages[page].map((reply: TpostReply) => {
-        return (
-          <div key={reply.id} className={`relative left-0 border-b`}>
-            <div className="flex h-[86px] mt-6 mx-5 items-center gap-[16px] ">
-              <div className="relative w-12 h-12">
-                <Image
-                  src={reply.users?.profile_image ?? ''}
-                  alt="Profile"
-                  layout="fill"
-                  objectFit="cover"
-                  className="rounded-full"
-                />
-              </div>
-              <div>
-                <div>{reply.users.nickname}</div>
-                <div>{timeForToday(reply.updated_at!)}</div>
-              </div>
-              {me?.id === reply.user_id ? (
-                <div className="flex ml-auto ">
-                  <Kebob />
-                </div>
-              ) : (
-                ''
-              )}
-            </div>
-            <div className="flex flex-col h-[86px] mb-6 mx-5  gap-[16px]">
-              <MDEditor.Markdown source={reply.post_reply_content} />
-              <div>{reply.created_at.slice(0, 10)}</div>
-            </div>
-          </div>
-        );
+        return <QuestionReply key={reply.id} reply={reply} setReplyCount={setReplyCount} />;
       })}
       <div className=" flex pt-6 gap-4 w-full justify-end">
         {pageParamList.map((pageParam) => {
@@ -121,3 +99,34 @@ const QuestionReplies = ({ questionId, postReplyCount }: AnswerCommentsProps) =>
 };
 
 export default QuestionReplies;
+
+{
+  /* <div key={reply.id} className={`relative left-0 border-b`}>
+<div className="flex h-[86px] mt-6 mx-5 items-center gap-[16px] ">
+  <div className="relative w-12 h-12">
+    <Image
+      src={reply.users?.profile_image ?? ''}
+      alt="Profile"
+      layout="fill"
+      objectFit="cover"
+      className="rounded-full"
+    />
+  </div>
+  <div>
+    <div>{reply.users.nickname}</div>
+    <div>{timeForToday(reply.updated_at!)}</div>
+  </div>
+  {me?.id === reply.user_id ? (
+    <div className="flex ml-auto ">
+      <QuestionReplyKebobBtn replyId={reply.id} setReplyCount={setReplyCount} />
+    </div>
+  ) : (
+    ''
+  )}
+</div>
+<div className="flex flex-col h-[86px] mb-6 mx-5  gap-[16px]">
+  <MDEditor.Markdown source={reply.post_reply_content} />
+  <div>{reply.created_at.slice(0, 10)}</div>
+</div>
+</div> */
+}

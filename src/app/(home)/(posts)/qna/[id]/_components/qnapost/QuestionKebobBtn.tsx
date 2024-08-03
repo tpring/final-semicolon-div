@@ -1,19 +1,18 @@
-import Kebab from '@/assets/images/common/kebab';
+import Kebab from '@/assets/images/common/Kebab';
+import { useQnaDetailStore } from '@/store/qnaDetailStore';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-type KebobBtnProps = {
-  postId: string;
-};
-
-const QuestionKebobBtn = ({ postId }: KebobBtnProps) => {
+const QuestionKebobBtn = () => {
   const router = useRouter();
   const [openKebab, setOpenKebab] = useState<boolean>(false);
+  const { postId } = useQnaDetailStore();
 
   return (
     <>
-      <div className="mr-[10px] relative">
+      <div className=" relative">
         <button
+          className="w-[20px]"
           onClick={() => {
             setOpenKebab((prev) => !prev);
           }}
