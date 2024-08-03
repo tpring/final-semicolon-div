@@ -1,6 +1,6 @@
 'use client';
 
-import Kebab from '@/assets/images/common/kebab';
+import Kebab from '@/assets/images/common/Kebab';
 import { useAuth } from '@/context/auth.context';
 import { timeForToday } from '@/utils/timeForToday';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';

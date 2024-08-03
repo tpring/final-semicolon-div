@@ -8,13 +8,13 @@ import MDEditor from '@uiw/react-md-editor';
 import Image from 'next/image';
 import { archiveDetailType } from '@/types/posts/archiveDetailTypes';
 import BackArrowIcon from '@/assets/images/upsert_image/BackArrowIcon';
-import Kebab from '@/assets/images/common/kebab';
 import { useAuth } from '@/context/auth.context';
 import LikeButton from '@/components/common/LikeButton';
 import BookmarkButton from '@/components/common/BookmarkButton';
 import Share from '@/assets/images/common/Share';
 import { handleLinkCopy } from '@/components/handleLinkCopy';
 import CommentBubble from '@/assets/images/common/CommentBubble';
+import Kebab from '@/assets/images/common/Kebab';
 
 const ArchiveDetailPost = () => {
   const params = useParams();
