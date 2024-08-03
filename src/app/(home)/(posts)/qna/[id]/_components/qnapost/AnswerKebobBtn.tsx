@@ -1,3 +1,4 @@
+import { revalidate } from '@/actions/revalidate';
 import KebabButton from '@/assets/images/common/KebabButton';
 import { useAuth } from '@/context/auth.context';
 import { useQnaDetailStore } from '@/store/qnaDetailStore';
@@ -10,9 +11,10 @@ type KebobBtnProps = {
   commentId: string;
   isEdit: boolean;
   setIsEdit: Dispatch<SetStateAction<boolean>>;
+  setQnaCommentsCount: Dispatch<SetStateAction<number>>;
 };
 
-const AnswerKebobBtn = ({ commentId, isEdit, setIsEdit }: KebobBtnProps) => {
+const AnswerKebobBtn = ({ commentId, isEdit, setIsEdit, setQnaCommentsCount }: KebobBtnProps) => {
   const { postId } = useQnaDetailStore();
   const { me } = useAuth();
   const [openKebab, setOpenKebab] = useState<boolean>(false);
@@ -27,6 +29,8 @@ const AnswerKebobBtn = ({ commentId, isEdit, setIsEdit }: KebobBtnProps) => {
     if (!me?.id) return;
     const data = await deleteMutate({ commentId });
     toast.success('답변 삭제 완료', { autoClose: 1500, hideProgressBar: true });
+    setQnaCommentsCount((prev) => prev - 1);
+    revalidate('/', 'layout');
     return;
   };
 
