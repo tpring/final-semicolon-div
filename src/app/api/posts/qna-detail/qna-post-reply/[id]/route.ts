@@ -33,3 +33,26 @@ export const POST = async (request: Request, { params }: Tparams) => {
 
   return postError ? Response.json(POSTING_ERROR_MASSAGE) : Response.json({ data });
 };
+
+export const PATCH = async (request: Request, { params }: Tparams) => {
+  const supabase = createClient();
+  const post_reply_id = params.id;
+
+  const qnaPostReplyData = await request.json();
+  console.log(qnaPostReplyData, post_reply_id);
+  const { data, error: loadError } = await supabase
+    .from('qna_post_reply')
+    .update(qnaPostReplyData)
+    .eq('id', post_reply_id);
+
+  return loadError ? Response.json(POSTING_ERROR_MASSAGE) : Response.json({ data });
+};
+
+export const DELETE = async (request: Request, { params }: Tparams) => {
+  const supabase = createClient();
+  const post_reply_id = params.id;
+
+  const { data, error: deleteError } = await supabase.from('qna_post_reply').delete().eq('id', post_reply_id);
+
+  return deleteError ? Response.json(POSTING_ERROR_MASSAGE) : Response.json({ data });
+};

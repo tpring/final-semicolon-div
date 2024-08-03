@@ -4,34 +4,52 @@ import PostingAnswerModal from './PostingAnswerModal';
 import { useAuth } from '@/context/auth.context';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQnaDetailStore } from '@/store/qnaDetailStore';
 
 type PostingAnswerAreaProps = {
   content: string;
   setContent: Dispatch<SetStateAction<string>>;
   setToggleAnswer: Dispatch<SetStateAction<boolean>>;
-  postId: string;
 };
-const PostingAnswerArea = ({ content, setContent, setToggleAnswer, postId }: PostingAnswerAreaProps) => {
+const PostingAnswerArea = ({ content, setContent, setToggleAnswer }: PostingAnswerAreaProps) => {
   const router = useRouter();
   const { me } = useAuth();
+  const { postId } = useQnaDetailStore();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const queryClient = useQueryClient();
   const handleCancleClick = () => {
     setIsModalOpen(true);
   };
 
   const handlePostingAnswer: MouseEventHandler = async (event) => {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/posts/qna-detail/comment/${postId}`, {
-      method: 'POST',
-      body: JSON.stringify({ user_id: me?.id, comment: content })
-    });
-    const { data, message } = await response.json();
-    if (message) {
-      toast.error(message, { autoClose: 1500, hideProgressBar: true });
-    }
+    if (!me?.id) return;
+    const data = await addMutate({ user_id: me.id, content });
     toast.success('답변 작성 완료!', { autoClose: 1500, hideProgressBar: true });
     router.push(`/qna/${postId}`);
     return;
   };
+
+  const postingAnswer = async ({ user_id, content }: { user_id: string; content: string }) => {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/posts/qna-detail/comment/${postId}`, {
+      method: 'POST',
+      body: JSON.stringify({ user_id, comment: content })
+    });
+    const { data, message } = await response.json();
+    if (message) {
+      return toast.error(message);
+    }
+    return data;
+  };
+
+  const { mutate: addMutate } = useMutation({
+    mutationFn: postingAnswer,
+    onSuccess: () => {
+      setToggleAnswer(false);
+      setContent('');
+      queryClient.invalidateQueries({ queryKey: ['qnaComments', postId] });
+    }
+  });
 
   if (isModalOpen) {
     document.body.style.overflow = 'hidden';

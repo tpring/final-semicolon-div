@@ -6,22 +6,22 @@ type MyActivitiesHeaderProps = {
 const MyActivitiesHeader = ({ setActiveTab, activeTab }: MyActivitiesHeaderProps) => {
   return (
     <header>
-      <nav className=" w-full bg-[#E3E3E3] p-5 overflow-y-hidden">
-        <ul className="flex justify-between mx-[50px]">
+      <nav>
+        <ul className=" h-[50px] flex justify-between items-center text-center ">
           <li
-            className={`${activeTab === 'posts' ? 'text-black  ' : 'text-gray-500'}`}
+            className={`h-[50px] w-[283px] center-alignment ${activeTab === 'posts' ? 'text-main-400 border border-sub-50 bg-sub-50 rounded-t-2xl' : 'text-neutral-300'}`}
             onClick={() => setActiveTab('posts')}
           >
             내가 쓴 글
           </li>
           <li
-            className={`${activeTab === 'likes' ? 'text-black ' : 'text-gray-500'}`}
+            className={` h-[50px] w-[283px] center-alignment ${activeTab === 'likes' ? 'text-main-400 border border-sub-50 bg-sub-50 rounded-t-2xl' : 'text-neutral-300'}`}
             onClick={() => setActiveTab('likes')}
           >
             좋아요 한 글
           </li>
           <li
-            className={`${activeTab === 'bookmarks' ? 'text-black ' : 'text-gray-500'}`}
+            className={` h-[50px] w-[283px] center-alignment ${activeTab === 'bookmarks' ? 'text-main-400 border border-sub-50 bg-sub-50 rounded-t-2xl' : 'text-neutral-300'}`}
             onClick={() => setActiveTab('bookmarks')}
           >
             북마크

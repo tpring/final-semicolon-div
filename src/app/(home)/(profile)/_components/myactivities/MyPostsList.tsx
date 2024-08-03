@@ -1,29 +1,39 @@
 import { useEffect, useState } from 'react';
 import { MyCombinedItem } from '@/types/profile/profileType';
 import { myCombineItems } from '@/utils/combineItems';
-import FilterControls from './common/FilterControls';
 import PostCard from './common/PostCard';
 import CommentCard from './common/CommentCard';
 import MyActivitiesPagination from './common/MyActivitiesPagination';
 import { useMyComments, useMyPosts } from '@/hooks/myactivities/useMyPosts';
 import { useAuth } from '@/context/auth.context';
-import ConfirmModal from '@/components/modal/ConfirmModal';
 import { toast, ToastContainer } from 'react-toastify';
+import ConfirmModal from '@/components/modal/ConfirmModal';
+import Check from '@/assets/images/common/Check';
 
-const MyPostsList = () => {
+type MyPostsListProps = {
+  onTotalsChange?: (postCount: number, commentCount: number) => void;
+  selectedCategory: 'all' | 'qna' | 'forum' | 'archive';
+  selectedForumCategory: string | null;
+  selectedType: 'all' | 'post' | 'comment';
+};
+
+const MyPostsList = ({ onTotalsChange, selectedCategory, selectedForumCategory, selectedType }: MyPostsListProps) => {
   const { userData } = useAuth();
-  const forumCategories = ['일상', '커리어', '자기개발', '토론', '코드 리뷰'];
-  const [selectedCategory, setSelectedCategory] = useState<'all' | 'qna' | 'forum' | 'archive'>('all');
-  const [selectedForumCategory, setSelectedForumCategory] = useState<string | null>(null);
-  const [selectedType, setSelectedType] = useState<'all' | 'post' | 'comment'>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedItems, setSelectedItems] = useState<Map<string, { category: string; type: string }>>(new Map());
-  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
   const [combinedItems, setCombinedItems] = useState<MyCombinedItem[]>([]);
+  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [selectAll, setSelectAll] = useState(false);
 
   useEffect(() => {
     setCurrentPage(1);
+    setSelectedItems(new Map());
   }, [selectedCategory, selectedForumCategory, selectedType]);
+
+  useEffect(() => {
+    setSelectedItems(new Map());
+    setSelectAll(false);
+  }, [currentPage]);
 
   const {
     data: posts = { archivePosts: [], forumPosts: [], qnaPosts: [] },
@@ -46,8 +56,16 @@ const MyPostsList = () => {
       const combined = myCombineItems(posts, comments);
       combined.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
       setCombinedItems(combined);
+
+      const totalPosts = posts.archivePosts.length + posts.forumPosts.length + posts.qnaPosts.length;
+      const totalComments =
+        comments.archive.comments.length + comments.forum.comments.length + comments.qna.comments.length;
+
+      if (onTotalsChange) {
+        onTotalsChange(totalPosts, totalComments);
+      }
     }
-  }, [postLoading, commentLoading, posts, comments]);
+  }, [postLoading, commentLoading, posts, comments, onTotalsChange]);
 
   if (postLoading || commentLoading) return <div>Loading...</div>;
   if (postError || commentError) return <div>Error: {postError?.message || commentError?.message}</div>;
@@ -71,6 +89,19 @@ const MyPostsList = () => {
   const itemsPerPage = 4;
   const totalPages = Math.ceil(typeFilteredItems.length / itemsPerPage);
   const paginatedItems = typeFilteredItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectAll(e.target.checked);
+    setSelectedItems((prev) => {
+      const newMap = new Map(prev);
+      paginatedItems.forEach((item) => {
+        if (!newMap.has(item.id)) {
+          newMap.set(item.id, { category: item.category, type: item.type });
+        }
+      });
+      return newMap;
+    });
+  };
 
   const handleCheckboxChange = (id: string, category: string, type: string) => {
     setSelectedItems((prev) => {
@@ -125,6 +156,7 @@ const MyPostsList = () => {
       // 상태 업데이트
       setCombinedItems(updatedCombinedItems);
       setSelectedItems(new Map());
+      setSelectAll(false);
 
       toast.success('삭제가 완료 되었습니다.');
     } catch (error) {
@@ -134,21 +166,38 @@ const MyPostsList = () => {
 
   return (
     <div className="relative min-h-screen">
+      <div className="flex mb-[40px] items-center">
+        <label className="flex items-center">
+          <input type="checkbox" checked={selectAll} onChange={handleSelectAll} hidden />
+          {selectedItems.size === 0 ? (
+            <span className="mr-4 flex border border-neutral-200 text-neutral-500 rounded p-[8px_16px] h-[40px] mt-6">
+              <Check stroke="#757575" />
+              전체선택
+            </span>
+          ) : (
+            <span className="mr-4 flex border border-main-400 text-main-400 bg-sub-50  rounded p-[8px_16px] h-[40px] mt-6">
+              <Check stroke="#423edf" />
+              전체선택
+            </span>
+          )}
+        </label>
+        {selectedItems.size === 0 ? (
+          <button
+            onClick={() => toast.error('삭제할 게시물을 선택해주세요')}
+            className="border border-neutral-200 text-neutral-500 rounded p-[8px_16px] h-[40px] mt-6"
+          >
+            삭제
+          </button>
+        ) : (
+          <button
+            onClick={() => setConfirmModalOpen(true)}
+            className="border border-neutral-200 text-neutral-500 rounded p-[8px_16px] h-[40px] mt-6"
+          >
+            {selectedItems.size} 삭제
+          </button>
+        )}
+      </div>
       <ToastContainer />
-      <h2>내가 쓴 글 목록</h2>
-      <button onClick={() => setConfirmModalOpen(true)} className="border bg-sub-200 text-white rounded">
-        선택한 항목 삭제
-      </button>
-      <FilterControls
-        selectedCategory={selectedCategory}
-        selectedForumCategory={selectedForumCategory}
-        selectedType={selectedType}
-        onCategoryChange={setSelectedCategory}
-        onForumCategoryChange={setSelectedForumCategory}
-        onTypeChange={setSelectedType}
-        forumCategories={forumCategories}
-      />
-
       {paginatedItems.length === 0 ? (
         <div>내가 쓴 글을 추가해보세요</div>
       ) : (
@@ -161,11 +210,12 @@ const MyPostsList = () => {
                 content={item.content}
                 thumbnail={item.thumbnail}
                 tags={item.tags}
-                time={item.created_at}
+                created_at={item.created_at}
                 category={item.category}
+                likesCount={item.likesCount}
+                commentsCount={item.commentsCount}
                 forum_category={item.forum_category}
                 nickname={userData?.nickname || ''}
-                profile_image={userData?.profile_image || ''}
                 isSelected={selectedItems.has(item.id)}
                 onCheckboxChange={(id) => handleCheckboxChange(id, item.category, 'post')}
               />
@@ -179,6 +229,8 @@ const MyPostsList = () => {
                 category={item.category}
                 nickname={userData?.nickname || ''}
                 profile_image={userData?.profile_image || ''}
+                forum_category={item.forum_category}
+                created_at={item.created_at}
                 isSelected={selectedItems.has(item.id)}
                 onCheckboxChange={(id) => handleCheckboxChange(id, item.category, 'comment')}
               />

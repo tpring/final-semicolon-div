@@ -2,26 +2,35 @@ import { useState, useEffect } from 'react';
 import { useLikesComments, useLikesPosts } from '@/hooks/useLikes';
 import { CombinedItem } from '@/types/profile/profileType';
 import { combineItems } from '@/utils/combineItems';
-import FilterControls from './common/FilterControls';
 import PostCard from './common/PostCard';
 import CommentCard from './common/CommentCard';
 import MyActivitiesPagination from './common/MyActivitiesPagination';
 import ConfirmModal from '@/components/modal/ConfirmModal';
 import { toast, ToastContainer } from 'react-toastify';
+import Check from '@/assets/images/common/Check';
 
-const LikesList = () => {
-  const forumCategories = ['일상', '커리어', '자기개발', '토론', '코드 리뷰'];
-  const [selectedCategory, setSelectedCategory] = useState<'all' | 'qna' | 'forum' | 'archive'>('all');
-  const [selectedForumCategory, setSelectedForumCategory] = useState<string | null>(null);
-  const [selectedType, setSelectedType] = useState<'all' | 'post' | 'comment'>('all');
+type LikesListProps = {
+  selectedCategory: 'all' | 'qna' | 'forum' | 'archive';
+  selectedForumCategory: string | null;
+  selectedType: 'all' | 'post' | 'comment';
+};
+
+const LikesList = ({ selectedCategory, selectedForumCategory, selectedType }: LikesListProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedItems, setSelectedItems] = useState<Map<string, { category: string; type: string }>>(new Map());
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
   const [combinedItems, setCombinedItems] = useState<CombinedItem[]>([]);
+  const [selectAll, setSelectAll] = useState(false);
 
   useEffect(() => {
     setCurrentPage(1);
+    setSelectedItems(new Map());
   }, [selectedCategory, selectedForumCategory, selectedType]);
+
+  useEffect(() => {
+    setSelectedItems(new Map());
+    setSelectAll(false);
+  }, [currentPage]);
 
   // 데이터 훅
   const {
@@ -70,6 +79,18 @@ const LikesList = () => {
   const totalPages = Math.ceil(typeFilteredItems.length / itemsPerPage);
   const paginatedItems = typeFilteredItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
+  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectAll(e.target.checked);
+    setSelectedItems((prev) => {
+      const newMap = new Map(prev);
+      paginatedItems.forEach((item) => {
+        if (!newMap.has(item.id)) {
+          newMap.set(item.id, { category: item.category, type: item.type });
+        }
+      });
+      return newMap;
+    });
+  };
   const handleCheckboxChange = (id: string, category: string, type: string) => {
     setSelectedItems((prev) => {
       const newMap = new Map(prev);
@@ -132,23 +153,40 @@ const LikesList = () => {
 
   return (
     <div className="relative min-h-screen">
+      <div className="flex mb-[40px] items-center">
+        <label className="flex items-center">
+          <input type="checkbox" checked={selectAll} onChange={handleSelectAll} hidden />
+          {selectedItems.size === 0 ? (
+            <span className="mr-4 flex border border-neutral-200 text-neutral-500 rounded p-[8px_16px] h-[40px] mt-6">
+              <Check stroke="#757575" />
+              전체선택
+            </span>
+          ) : (
+            <span className="mr-4 flex border border-main-400 text-main-400 bg-sub-50  rounded p-[8px_16px] h-[40px] mt-6">
+              <Check stroke="#423edf" />
+              전체선택
+            </span>
+          )}
+        </label>
+        {selectedItems.size === 0 ? (
+          <button
+            onClick={() => toast.error('삭제할 게시물을 선택해주세요')}
+            className="border border-neutral-200 text-neutral-500 rounded p-[8px_16px] h-[40px] mt-6"
+          >
+            삭제
+          </button>
+        ) : (
+          <button
+            onClick={() => setConfirmModalOpen(true)}
+            className="border border-neutral-200 text-neutral-500 rounded p-[8px_16px] h-[40px] mt-6"
+          >
+            {selectedItems.size} 삭제
+          </button>
+        )}
+      </div>
       <ToastContainer />
-      <h2>좋아요 목록</h2>
-      <button onClick={() => setConfirmModalOpen(true)} className="border bg-sub-200 text-white rounded">
-        선택한 항목 삭제
-      </button>
-      <FilterControls
-        selectedCategory={selectedCategory}
-        selectedForumCategory={selectedForumCategory}
-        selectedType={selectedType}
-        onCategoryChange={setSelectedCategory}
-        onForumCategoryChange={setSelectedForumCategory}
-        onTypeChange={setSelectedType}
-        forumCategories={forumCategories}
-      />
-
       {paginatedItems.length === 0 ? (
-        <div>좋아요를 추가해보세요</div>
+        <div>북마크를 추가해보세요</div>
       ) : (
         paginatedItems.map((item) => (
           <div key={item.id} className="mb-6">
@@ -159,11 +197,12 @@ const LikesList = () => {
                 content={item.content}
                 thumbnail={item.thumbnail}
                 tags={item.tags}
-                time={item.created_at}
+                created_at={item.created_at}
                 category={item.category}
+                likesCount={item.likesCount}
+                commentsCount={item.commentsCount}
                 forum_category={item.forum_category}
                 nickname={item.user.nickname}
-                profile_image={item.user.profile_image}
                 isSelected={selectedItems.has(item.id)}
                 onCheckboxChange={(id) => handleCheckboxChange(id, item.category, 'post')}
               />
@@ -171,12 +210,14 @@ const LikesList = () => {
               <CommentCard
                 id={item.id}
                 title={item.title}
-                tags={item.tags}
                 comment={item.comment}
+                tags={item.tags}
                 time={new Date(item.created_at)}
                 category={item.category}
                 nickname={item.user.nickname}
                 profile_image={item.user.profile_image}
+                forum_category={item.forum_category}
+                created_at={item.created_at}
                 isSelected={selectedItems.has(item.id)}
                 onCheckboxChange={(id) => handleCheckboxChange(id, item.category, 'comment')}
               />

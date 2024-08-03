@@ -6,10 +6,9 @@ import PostingAnswerArea from './PostingAnswerArea';
 type PostingQnaAnswerProps = {
   content: string;
   setContent: Dispatch<SetStateAction<string>>;
-  postId: string;
 };
 
-const PostingQnaAnswer = ({ content, setContent, postId }: PostingQnaAnswerProps) => {
+const PostingQnaAnswer = ({ content, setContent }: PostingQnaAnswerProps) => {
   const { userData: answer } = useAuth();
   const [toggleAnswer, setToggleAnswer] = useState<boolean>(false);
 
@@ -31,7 +30,6 @@ const PostingQnaAnswer = ({ content, setContent, postId }: PostingQnaAnswerProps
             className="rounded-full"
           />
         </div>
-
         <div className="flex flex-col w-[1060px] ">
           <h2 className=" text-h5 font-bold h-[27px]">
             <span className="text-main-400 ">{answer?.nickname ?? ''}</span>님
@@ -48,12 +46,7 @@ const PostingQnaAnswer = ({ content, setContent, postId }: PostingQnaAnswerProps
         )}
       </div>
       {toggleAnswer ? (
-        <PostingAnswerArea
-          postId={postId}
-          content={content}
-          setContent={setContent}
-          setToggleAnswer={setToggleAnswer}
-        />
+        <PostingAnswerArea content={content} setContent={setContent} setToggleAnswer={setToggleAnswer} />
       ) : null}
     </div>
   );
