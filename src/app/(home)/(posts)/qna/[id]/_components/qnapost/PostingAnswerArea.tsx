@@ -26,7 +26,7 @@ const PostingAnswerArea = ({ content, setContent, setToggleAnswer, setQnaComment
 
   const handlePostingAnswer: MouseEventHandler = async (event) => {
     if (!me?.id) return;
-    const data = await addMutate({ user_id: me.id, content });
+    await addMutate({ user_id: me.id, content });
     toast.success('답변 작성 완료!', { autoClose: 1500, hideProgressBar: true });
     setQnaCommentsCount((prev) => prev + 1);
     await revalidate(`/`, 'layout');

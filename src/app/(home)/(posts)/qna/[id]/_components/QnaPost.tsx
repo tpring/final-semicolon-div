@@ -42,7 +42,11 @@ const QnaPost = ({ data }: QnaPostProps) => {
       {me && me.id !== data.user_id ? (
         <PostingQnaAnswer content={content} setContent={setContent} setQnaCommentsCount={setQnaCommentsCount} />
       ) : null}
-      <QnaAnswers qnaCommentsCount={qnaCommentsCount} questioner={data.user_id} />
+      <QnaAnswers
+        qnaCommentsCount={qnaCommentsCount}
+        questioner={data.user_id}
+        setQnaCommentsCount={setQnaCommentsCount}
+      />
       <button className=" fixed right-[168px] bottom-[62px]" onClick={handleTopBtnClick}>
         <GoToTop />
       </button>

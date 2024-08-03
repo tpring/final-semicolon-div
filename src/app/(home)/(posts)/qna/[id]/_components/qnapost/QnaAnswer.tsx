@@ -21,9 +21,10 @@ type QnaAnswerProps = {
   questioner: string;
   index?: number;
   qnaCommentsCount?: number;
+  setQnaCommentsCount: Dispatch<SetStateAction<number>>;
 };
 
-const QnaAnswer = ({ qnaComment, questioner, index, qnaCommentsCount }: QnaAnswerProps) => {
+const QnaAnswer = ({ qnaComment, questioner, index, qnaCommentsCount, setQnaCommentsCount }: QnaAnswerProps) => {
   const { me } = useAuth();
   const { postId, seletedComment, setSeletedComment } = useQnaDetailStore();
   const [openAnswerReply, setOpenAnswerReply] = useState(false);
@@ -133,7 +134,12 @@ const QnaAnswer = ({ qnaComment, questioner, index, qnaCommentsCount }: QnaAnswe
           </div>
           <div className="ml-auto">
             {me?.id === qnaComment.user_id ? (
-              <AnswerKebobBtn commentId={qnaComment.id} isEdit={isEdit} setIsEdit={setIsEdit} />
+              <AnswerKebobBtn
+                commentId={qnaComment.id}
+                isEdit={isEdit}
+                setIsEdit={setIsEdit}
+                setQnaCommentsCount={setQnaCommentsCount}
+              />
             ) : (
               ''
             )}
