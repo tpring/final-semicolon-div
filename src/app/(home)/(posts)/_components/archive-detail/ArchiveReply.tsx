@@ -1,6 +1,5 @@
 'use client';
 
-
 import { useAuth } from '@/context/auth.context';
 import { timeForToday } from '@/utils/timeForToday';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -12,7 +11,6 @@ import { toast } from 'react-toastify';
 import PaginationButtons from './PaginationButton';
 import KebabButton from '@/assets/images/common/KebabButton';
 
-// Reply 타입 정의
 type Reply = {
   id: string;
   comment_id: string;
@@ -27,52 +25,16 @@ type Reply = {
 
 function ArchiveReply({ comment_id }: { comment_id: string }) {
   const { me } = useAuth();
-  const params_id = useParams();
-  const [page, setPage] = useState(1); // 현재 페이지 번호
+  const params = useParams<{ id: string }>();
+  const [page, setPage] = useState(1);
   const queryClient = useQueryClient();
   const [replyRetouch, setReplyRetouch] = useState('');
   const [replyEditor, setReplyEditor] = useState<{ [key: string]: boolean }>({});
   const [replyEditorToggle, setReplyEditorToggle] = useState<{ [key: string]: boolean }>({});
-  const [replyInputToggle, setReplyInputToggle] = useState<{ [key: string]: boolean }>({});
-  const [replyListToggle, setReplyListToggle] = useState(false);
 
   const COMMENT_REPLY_PAGE = 5;
 
-  // 대댓글 추가
-  const replyAddMutation = useMutation({
-    mutationFn: async ({ user_id, comment_id, reply }: { user_id: string; comment_id: string; reply: string }) => {
-      const response = await fetch(`/api/posts/archive-detail/archive-reply/${params_id.id}`, {
-        method: 'POST',
-        body: JSON.stringify({ user_id, comment_id, reply })
-      });
-      const data = await response.json();
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['commentReply', comment_id, page] });
-      setReplyRetouch('');
-      setReplyInputToggle({ ...replyInputToggle, [comment_id]: false });
-    }
-  });
-
-  const handleAddReply = async () => {
-    if (!replyRetouch) {
-      toast.error('댓글을 입력해주세요!', {
-        autoClose: 2000
-      });
-      return;
-    }
-
-    if (me?.id) {
-      replyAddMutation.mutate({ user_id: me.id, comment_id, reply: replyRetouch });
-    } else {
-      toast.error('로그인이 필요합니다.', {
-        autoClose: 2000
-      });
-    }
-  };
-
-  // 대댓글 수정 (시간순 확인해야함! 수정 시 최신으로 되어서 기존 시간 유지하게 하고 내용만 변경되게!)
+  // 대댓글 수정
   const replyRetouchMutation = useMutation({
     mutationFn: async ({
       id,
@@ -85,15 +47,25 @@ function ArchiveReply({ comment_id }: { comment_id: string }) {
       replyRetouch: string | undefined;
       comment_id: string;
     }) => {
-      const response = await fetch(`/api/posts/archive-detail/archive-reply/${params_id.id}`, {
+      const response = await fetch(`/api/posts/archive-detail/archive-reply/${params.id}`, {
         method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, user_id, replyRetouch, comment_id })
       });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || '댓글 수정에 실패했습니다.');
+      }
       const data = await response.json();
       return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['commentReply', comment_id, page] });
+      toast.success('댓글이 수정되었습니다!');
+    },
+    onError: (error: any) => {
+      console.error('Update Mutation Error:', error.message);
+      toast.error('댓글 수정에 실패했습니다.');
     }
   });
 
@@ -111,8 +83,9 @@ function ArchiveReply({ comment_id }: { comment_id: string }) {
   // 대댓글 삭제
   const commentDelete = useMutation({
     mutationFn: async ({ id, user_id }: { id: string; user_id: string }) => {
-      const response = await fetch(`/api/posts/archive-detail/archive-reply/${params_id.id}`, {
+      const response = await fetch(`/api/posts/archive-detail/archive-reply/${params.id}`, {
         method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, user_id })
       });
 
@@ -147,24 +120,31 @@ function ArchiveReply({ comment_id }: { comment_id: string }) {
     queryFn: async () => {
       try {
         const response = await fetch(
-          `/api/posts/archive-detail/archive-reply/${params_id.id}?page=${page}&limit=${COMMENT_REPLY_PAGE}&comment_id=${comment_id}`
+          `/api/posts/archive-detail/archive-reply/${params.id}?page=${page}&limit=${COMMENT_REPLY_PAGE}&comment_id=${comment_id}`
         );
+        if (!response.ok) {
+          throw new Error('Failed to fetch replies');
+        }
         const data = await response.json();
         return data;
       } catch (error) {
-        console.error('Failed to fetch replies:', error);
+        return { getReply: [], count: 0 };
       }
     }
   });
 
   // 대댓글이 있는 댓글에만 페이지네이션 버튼을 보여주기 위한 조건
   const filteredReplies: Reply[] =
-    reply?.getReply.filter((currentReply: Reply) => currentReply.comment_id === comment_id) || [];
+    reply?.getReply?.filter((currentReply: Reply) => currentReply.comment_id === comment_id) || [];
   const replyCount = filteredReplies.length;
   const replyPages = replyCount > 0 ? Math.ceil(reply.count / COMMENT_REPLY_PAGE) : 0;
 
   if (isPending) {
     return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>대댓글을 불러오는 데 실패했습니다.</div>;
   }
 
   const changReplyRetouch = (
@@ -187,18 +167,9 @@ function ArchiveReply({ comment_id }: { comment_id: string }) {
     setReplyEditorToggle({ [id]: !replyEditorToggle[id] });
   };
 
-  // 대댓글 보기/숨기기 토글
-  const toggleReplyList = () => {
-    setReplyListToggle(!replyListToggle);
-  };
-
   return (
     <>
-      <div className="flex justify-end">
-        <button onClick={toggleReplyList}>{replyListToggle ? '대댓글 숨기기' : '대댓글 보기'}</button>
-      </div>
-
-      {replyListToggle && (
+      {filteredReplies.length > 0 && (
         <>
           {filteredReplies.map((currentReply: Reply) => (
             <div key={currentReply.id} className="w-full border-b-[1px] p-5 flex flex-col gap-4">
@@ -269,20 +240,6 @@ function ArchiveReply({ comment_id }: { comment_id: string }) {
               )}
             </div>
           ))}
-          {replyInputToggle[comment_id] && (
-            <div className="w-full p-5 flex flex-col gap-4">
-              <MDEditor
-                value={replyRetouch}
-                onChange={changReplyRetouch}
-                preview="edit"
-                extraCommands={commands.getCommands().filter(() => false)}
-                commands={commands.getCommands().filter((command) => command.name !== 'image')}
-                textareaProps={{ maxLength: 1000 }}
-                className="w-full"
-              />
-              <button onClick={handleAddReply}>대댓글 작성</button>
-            </div>
-          )}
           <PaginationButtons totalPages={replyPages} currentPage={page} onPageChange={setPage} />
         </>
       )}

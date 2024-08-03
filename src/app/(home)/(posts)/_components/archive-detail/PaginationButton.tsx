@@ -5,7 +5,6 @@ type PaginationButtonsProps = {
 };
 
 function PaginationButtons({ totalPages, currentPage, onPageChange }: PaginationButtonsProps) {
-  // 페이지 수가 1 이하이면 아무것도 렌더링하지 않습니다.
   if (totalPages <= 1) return null;
 
   return (

@@ -22,6 +22,7 @@ export const GET = async (request: Request) => {
     .from('archive_reply')
     .select('*, user:users(*)')
     .eq('comment_id', commentId)
+    .order('created_at', { ascending: false })
     .range(offset, offset + limit - 1);
 
   // 전체 대댓글 수 가져오기

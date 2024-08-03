@@ -87,14 +87,14 @@ const ArchiveInputComments = () => {
         <div className="flex justify-end items-end gap-2">
           <button
             type="button"
-            className="bg-slate-200 py-2 px-4"
+            className="w-[71px] h-[48px] bg-neutral-100 py-2 px-4 rounded-lg"
             onClick={() => {
               setComment('');
             }}
           >
             취소
           </button>
-          <button type="submit" className="bg-slate-200 py-2 px-4">
+          <button type="submit" className="w-[71px] h-[48px] bg-main-100 py-2 px-4 rounded-lg">
             등록
           </button>
         </div>
