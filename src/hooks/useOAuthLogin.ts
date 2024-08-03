@@ -12,7 +12,7 @@ const useOAuthLogin = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: provider,
         options: {
-          redirectTo: 'http://localhost:3000'
+          redirectTo: process.env.NEXT_PUBLIC_BASE_URL
         }
       });
 

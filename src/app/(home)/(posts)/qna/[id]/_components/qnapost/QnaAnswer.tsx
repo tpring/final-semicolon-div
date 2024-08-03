@@ -1,6 +1,6 @@
 import MDEditor from '@uiw/react-md-editor';
 import Image from 'next/image';
-import { MouseEventHandler, useState } from 'react';
+import { Dispatch, MouseEventHandler, SetStateAction, useState } from 'react';
 import { TqnaCommentsWithReplyCount } from '@/types/posts/qnaDetailTypes';
 import Share from '@/assets/images/common/Share';
 import AnswerReplies from '../qnacomments/AnswerReplies';
@@ -21,9 +21,10 @@ type QnaAnswerProps = {
   questioner: string;
   index?: number;
   qnaCommentsCount?: number;
+  setQnaCommentsCount: Dispatch<SetStateAction<number>>;
 };
 
-const QnaAnswer = ({ qnaComment, questioner, index, qnaCommentsCount }: QnaAnswerProps) => {
+const QnaAnswer = ({ qnaComment, questioner, index, qnaCommentsCount, setQnaCommentsCount }: QnaAnswerProps) => {
   const { me } = useAuth();
   const { postId, seletedComment, setSeletedComment } = useQnaDetailStore();
   const [openAnswerReply, setOpenAnswerReply] = useState(false);
@@ -70,6 +71,7 @@ const QnaAnswer = ({ qnaComment, questioner, index, qnaCommentsCount }: QnaAnswe
     const data = await editMutate({ commentId: qnaComment.id, comment: content });
     toast.success('수정 완료!', { autoClose: 1500, hideProgressBar: true });
     setIsEdit(false);
+    await revalidate('/', 'layout');
   };
 
   const editComment = async ({ commentId, comment }: { commentId: string; comment: string }) => {
@@ -132,7 +134,12 @@ const QnaAnswer = ({ qnaComment, questioner, index, qnaCommentsCount }: QnaAnswe
           </div>
           <div className="ml-auto">
             {me?.id === qnaComment.user_id ? (
-              <AnswerKebobBtn commentId={qnaComment.id} isEdit={isEdit} setIsEdit={setIsEdit} />
+              <AnswerKebobBtn
+                commentId={qnaComment.id}
+                isEdit={isEdit}
+                setIsEdit={setIsEdit}
+                setQnaCommentsCount={setQnaCommentsCount}
+              />
             ) : (
               ''
             )}

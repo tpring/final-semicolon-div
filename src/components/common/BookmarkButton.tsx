@@ -23,7 +23,8 @@ const BookmarkButton = ({ id, type }: BookmarkButtonProps) => {
   const currentBookmarks = bookmarksMap[type] || [];
   const isBookmarked = currentBookmarks.includes(id);
 
-  const handleBookmark = async () => {
+  const handleBookmark = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     if (!me) {
       toast.error('로그인 후 북마크가 가능합니다.');
       return;
@@ -49,7 +50,7 @@ const BookmarkButton = ({ id, type }: BookmarkButtonProps) => {
       const response = await fetch('/api/common/bookmark', {
         method: isBookmarked ? 'DELETE' : 'POST',
         headers: {
-          'Context-Type': 'application/json'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           user_id: me.id,

@@ -7,7 +7,6 @@ import { ForumCategory, Post, SortOption } from '@/types/posts/forumTypes';
 import PostCard from './PostCard';
 import Link from 'next/link';
 import { useInView } from 'react-intersection-observer';
-import Down from '@/assets/images/common/Down';
 import SortDropdown from '@/components/common/SortDropdownGrey';
 import CategoryTabs from './CategoryTabs';
 import WriteButton from '@/assets/images/forum/WriteButton';
@@ -18,7 +17,7 @@ const ForumPostsWithCategoryAndSort = () => {
   const [sortBy, setSortBy] = useState<SortOption>('latest');
   const [ref, inView] = useInView();
 
-  const categories: ForumCategory[] = ['전체', '일상', '커리어', '자기개발', '토론', '코드리뷰'];
+  const categories: ForumCategory[] = ['전체', '일상', '커리어', '자기개발', '토론', '코드 리뷰'];
   const sortOptions: { value: SortOption; label: string }[] = [
     { value: 'latest', label: '최신순' },
     { value: 'mostComments', label: '댓글순' },
@@ -36,7 +35,7 @@ const ForumPostsWithCategoryAndSort = () => {
 
     switch (sortMethod) {
       case 'latest':
-        return filteredPosts.sort((a, b) => dayjs(b.updated_at).unix() - dayjs(a.updated_at).unix());
+        return filteredPosts.sort((a, b) => dayjs(b.created_at).unix() - dayjs(a.created_at).unix());
       case 'mostComments':
         return filteredPosts.sort((a, b) => (b.forum_comment[0]?.count || 0) - (a.forum_comment[0]?.count || 0));
       case 'mostLikes':
