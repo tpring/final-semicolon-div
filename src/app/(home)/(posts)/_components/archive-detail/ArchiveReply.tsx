@@ -1,6 +1,6 @@
 'use client';
 
-import Kebab from '@/assets/images/common/kebab';
+
 import { useAuth } from '@/context/auth.context';
 import { timeForToday } from '@/utils/timeForToday';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -10,6 +10,7 @@ import { useParams } from 'next/navigation';
 import { useState, ChangeEvent } from 'react';
 import { toast } from 'react-toastify';
 import PaginationButtons from './PaginationButton';
+import KebabButton from '@/assets/images/common/KebabButton';
 
 // Reply 타입 정의
 type Reply = {
@@ -219,7 +220,7 @@ function ArchiveReply({ comment_id }: { comment_id: string }) {
                       <>
                         {replyEditor[currentReply.id] ? null : (
                           <div onClick={() => toggleEditingOptions(currentReply.id)} className="p-2">
-                            <Kebab />
+                            <KebabButton />
                           </div>
                         )}
                         {replyEditorToggle[currentReply.id] && (

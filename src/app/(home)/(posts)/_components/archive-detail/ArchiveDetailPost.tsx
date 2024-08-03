@@ -8,13 +8,15 @@ import MDEditor from '@uiw/react-md-editor';
 import Image from 'next/image';
 import { archiveDetailType } from '@/types/posts/archiveDetailTypes';
 import BackArrowIcon from '@/assets/images/upsert_image/BackArrowIcon';
-import Kebab from '@/assets/images/common/kebab';
 import { useAuth } from '@/context/auth.context';
 import LikeButton from '@/components/common/LikeButton';
 import BookmarkButton from '@/components/common/BookmarkButton';
 import Share from '@/assets/images/common/Share';
 import { handleLinkCopy } from '@/components/handleLinkCopy';
 import CommentBubble from '@/assets/images/common/CommentBubble';
+
+import KebabButton from '@/assets/images/common/KebabButton';
+
 
 const ArchiveDetailPost = () => {
   const params = useParams();
@@ -116,7 +118,7 @@ const ArchiveDetailPost = () => {
             {me?.id === post.user.id && (
               <div className="relative">
                 <button onClick={handleKebabClick} className="p-2">
-                  <Kebab />
+                  <KebabButton />
                 </button>
                 {isMenuOpen && (
                   <div className="absolute right-0 mt-2 py-2 w-48 bg-white border rounded-md shadow-xl z-10">
