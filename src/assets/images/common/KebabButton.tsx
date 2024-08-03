@@ -1,4 +1,4 @@
-const Kebab = () => {
+const KebabButton = () => {
   return (
     <svg width="4" height="20" viewBox="0 0 4 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="2" cy="18" r="2" transform="rotate(180 2 18)" fill="#0F0F0F" />
@@ -8,4 +8,4 @@ const Kebab = () => {
   );
 };
 
-export default Kebab;
+export default KebabButton;
