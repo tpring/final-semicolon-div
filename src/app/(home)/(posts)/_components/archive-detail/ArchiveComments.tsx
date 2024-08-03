@@ -10,12 +10,12 @@ import { toast } from 'react-toastify';
 import Image from 'next/image';
 import ArchiveReplyInput from './ArchiveReplyInput';
 import ArchiveReply from './ArchiveReply';
-import Kebab from '@/assets/images/common/kebab';
 import { useInView } from 'react-intersection-observer';
 import LikeButton from '@/components/common/LikeButton';
 import BookmarkButton from '@/components/common/BookmarkButton';
 import Share from '@/assets/images/common/Share';
 import { handleLinkCopy } from '@/components/handleLinkCopy';
+import KebabButton from '@/assets/images/common/KebabButton';
 
 type Comment = {
   id: string;
@@ -173,7 +173,7 @@ const ArchiveComments = () => {
                       <>
                         {editingState[comment.id] ? null : (
                           <div onClick={() => toggleEditingOptions(comment.id)} className="p-2">
-                            <Kebab />
+                            <KebabButton />
                           </div>
                         )}
                         {editingToggleState[comment.id] && (
