@@ -3,6 +3,7 @@ import Dot from '@/assets/images/common/Dot';
 import Share from '@/assets/images/common/Share';
 import BookmarkButton from '@/components/common/BookmarkButton';
 import LikeButton from '@/components/common/LikeButton';
+import { cutText } from '@/components/common/MarkdownCut';
 import { handleLinkCopy } from '@/components/handleLinkCopy';
 import { PostCardProps } from '@/types/posts/forumTypes';
 import { timeForToday } from '@/utils/timeForToday';
@@ -56,7 +57,7 @@ const PostCard = ({ post }: PostCardProps) => {
         </div>
         <h2 className="text-h4 font-bold text-neutral-900 mt-3">{post.title}</h2>
         <div className="post-content mt-2 custom-markdown" data-color-mode="light">
-          <MDEditor.Markdown source={processedContent} />
+          <MDEditor.Markdown source={cutText(processedContent, 500)} />
         </div>
 
         <div className="post-tags mt-2">
