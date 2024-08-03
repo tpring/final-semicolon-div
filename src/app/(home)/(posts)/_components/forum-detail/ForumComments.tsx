@@ -7,7 +7,7 @@ import MDEditor, { commands } from '@uiw/react-md-editor';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import ForumReply from './ForumReply';
-import Kebab from '@/assets/images/common/Kebab';
+
 import ForumReplyInput from './ForumReplyInput';
 import { toast } from 'react-toastify';
 import Image from 'next/image';
@@ -15,7 +15,6 @@ import { useInView } from 'react-intersection-observer';
 import { commentRetouch, forumCommentsType } from '@/types/posts/forumDetailTypes';
 import LikeButton from '@/components/common/LikeButton';
 import BookmarkButton from '@/components/common/BookmarkButton';
-import Kebob from '../../qna/[id]/_components/qnapost/Kebob';
 
 const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
   const { me } = useAuth();

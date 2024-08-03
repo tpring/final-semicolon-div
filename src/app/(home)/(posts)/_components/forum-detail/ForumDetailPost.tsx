@@ -8,10 +8,10 @@ import LikeButton from '@/components/common/LikeButton';
 import BookmarkButton from '@/components/common/BookmarkButton';
 import { handleRinkCopy } from '@/utils/handleRinkCopy';
 import Share from '@/assets/images/common/Share';
-import Kebab from '@/assets/images/common/Kebab';
 import { useAuth } from '@/context/auth.context';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
+import KebabButton from '@/assets/images/common/KebabButton';
 
 const ForumDetailPost = ({ forumDetail }: { forumDetail: forumDetailType[] }) => {
   const { me } = useAuth();
@@ -59,7 +59,7 @@ const ForumDetailPost = ({ forumDetail }: { forumDetail: forumDetailType[] }) =>
             {post.user_id === me?.id && (
               <div className="relative">
                 <div className="p-4" onClick={() => setKebobToggle(!kebobToggle)}>
-                  <Kebab />
+                  <KebabButton />
                 </div>
                 {kebobToggle ? (
                   <div className="w-[105px] right-0 absolute flex flex-col justify-center items-center bg-white shadow-lg border rounded-lg">
