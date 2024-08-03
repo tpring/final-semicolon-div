@@ -6,24 +6,31 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import QnaQuestion from './qnapost/QnaQuestion';
 import PostingQnaAnswer from './qnapost/PostingQnaAnswer';
-import { qnaData } from '@/types/posts/qnaDetailTypes';
+import { TqnaData } from '@/types/posts/qnaDetailTypes';
 import QnaAnswers from './qnapost/QnaAnswers';
 import GoToTop from '@/assets/images/common/GoToTop';
+import { useQnaDetailStore } from '@/store/qnaDetailStore';
 
 type QnaPostProps = {
-  data: [qnaData];
+  data: TqnaData;
+  postId: string;
 };
 
 const QnaPost = ({ data }: QnaPostProps) => {
   const { me } = useAuth();
-  const [questionData] = data;
-  const qnaAnswers = questionData.qna_comments;
+  const { setPostId, seletedComment, setSeletedComment } = useQnaDetailStore();
   const [content, setContent] = useState<string>('');
+  const qnaCommentsCount = data.qna_comments[0].count;
 
   const handleTopBtnClick = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-  useEffect(() => {}, [data]);
+
+  useEffect(() => {
+    setPostId(data.id);
+    setSeletedComment(data.selected_comment ?? '');
+  }, [data]);
+
   return (
     <div>
       <div className="mb-8">
@@ -31,9 +38,10 @@ const QnaPost = ({ data }: QnaPostProps) => {
           <BackArrowIcon />
         </Link>
       </div>
-      <QnaQuestion questionData={questionData} />
-      {me?.id ? <PostingQnaAnswer content={content} setContent={setContent} /> : null}
-      <QnaAnswers qnaAnswers={qnaAnswers} />
+      <QnaQuestion questionData={data} />
+      {me && me.id !== data.user_id ? <PostingQnaAnswer content={content} setContent={setContent} /> : null}
+
+      <QnaAnswers qnaCommentsCount={qnaCommentsCount} questioner={data.user_id} />
       <button className=" fixed right-[168px] bottom-[62px]" onClick={handleTopBtnClick}>
         <GoToTop />
       </button>
