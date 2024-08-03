@@ -4,8 +4,8 @@ const BackArrowIcon = () => {
       <path
         d="M24 30L12.1414 18.1414C12.0633 18.0633 12.0633 17.9367 12.1414 17.8586L24 6"
         stroke="#0F0F0F"
-        stroke-width="3"
-        stroke-linecap="round"
+        strokeWidth="3"
+        strokeLinecap="round"
       />
     </svg>
   );
