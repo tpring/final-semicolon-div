@@ -12,6 +12,10 @@ import ArchiveReplyInput from './ArchiveReplyInput';
 import ArchiveReply from './ArchiveReply';
 import Kebab from '@/assets/images/common/kebab';
 import { useInView } from 'react-intersection-observer';
+import LikeButton from '@/components/common/LikeButton';
+import BookmarkButton from '@/components/common/BookmarkButton';
+import Share from '@/assets/images/common/Share';
+import { handleLinkCopy } from '@/components/handleLinkCopy';
 
 type Comment = {
   id: string;
@@ -22,6 +26,13 @@ type Comment = {
   };
   user_id: string;
   updated_at: string;
+  created_at: string;
+};
+
+type Data = {
+  data: Comment[];
+  id: number;
+  count: number;
 };
 
 const ArchiveComments = () => {
@@ -117,6 +128,8 @@ const ArchiveComments = () => {
     queryFn: async ({ pageParam }) => {
       const response = await fetch(`/api/posts/archive-detail/archive-comments/${param.id}?page=${pageParam}`);
       const data = await response.json();
+      console.log(data);
+
       return data;
     },
     getNextPageParam: (lastPage, allPages, lastPageParam) => {
@@ -138,7 +151,7 @@ const ArchiveComments = () => {
 
   return (
     <>
-      {comments?.map((data) => (
+      {comments?.map((data: Data) => (
         <div key={data.id}>
           {data.data.map((comment: Comment) => (
             <div key={comment.id} className="w-full border-b-[1px] p-5 flex flex-col gap-4">
@@ -193,7 +206,6 @@ const ArchiveComments = () => {
                   />
                   <div>
                     <button onClick={() => toggleEditing(comment.id, comment.comment)}>취소</button>{' '}
-                    {/* comment.comment로 수정 */}
                     <button onClick={() => commentRetouchHandle(comment.id, comment.user_id)}>수정</button>
                   </div>
                 </div>
@@ -202,13 +214,34 @@ const ArchiveComments = () => {
                   <p>{comment.comment}</p>
                 </div>
               )}
-              {inputCommentToggle[comment.id] ? (
-                <ArchiveReplyInput comment_id={comment.id} toggle={ClickInputCommentToggle} />
-              ) : (
-                <button className="text-right" onClick={() => ClickInputCommentToggle(comment.id)}>
-                  대댓글 쓰기
-                </button>
-              )}
+              <div className="flex items-center justify-between max-w-[1200px] mx-auto">
+                <div className="flex items-center mt-1 text-sm text-neutral-300">
+                  {comment.created_at.slice(0, 16).replace(/-/g, '.').replace(/T/g, ' ')}
+                </div>
+                <div className=" mt-2 flex items-center ml-auto">
+                  <div className="flex items-center justify-center mr-2">
+                    <LikeButton id={comment.id} type="archiveComment" />
+                  </div>
+                  <div className=" mt-2 flex items-center justify-center">
+                    <BookmarkButton id={comment.id} type="archiveComment" />
+                  </div>
+                  <div className="flex items-center justify-center">
+                    <button onClick={() => handleLinkCopy(`${process.env.NEXT_PUBLIC_BASE_URL}/forum/${comment.id}`)}>
+                      <Share />
+                    </button>
+                  </div>
+                  <div className="flex items-center justify-center ml-2">
+                    {' '}
+                    {inputCommentToggle[comment.id] ? (
+                      <ArchiveReplyInput comment_id={comment.id} toggle={ClickInputCommentToggle} />
+                    ) : (
+                      <button className="text-right" onClick={() => ClickInputCommentToggle(comment.id)}>
+                        대댓글 쓰기
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
 
               <ArchiveReply comment_id={comment.id} />
             </div>

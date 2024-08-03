@@ -23,7 +23,7 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
     return NextResponse.json({ data: [], count: 0, error: error.message });
   }
 
-  return NextResponse.json({ data, count });
+  return NextResponse.json({ data, count, id: page });
 };
 
 export const POST = async (request: Request) => {
