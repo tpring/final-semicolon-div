@@ -15,7 +15,6 @@ import { useInView } from 'react-intersection-observer';
 import { commentRetouch, forumCommentsType } from '@/types/posts/forumDetailTypes';
 import LikeButton from '@/components/common/LikeButton';
 import BookmarkButton from '@/components/common/BookmarkButton';
-import Kebob from '../../qna/[id]/_components/qnapost/Kebob';
 
 const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
   const { me } = useAuth();
