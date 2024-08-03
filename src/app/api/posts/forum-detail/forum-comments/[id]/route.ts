@@ -1,10 +1,27 @@
 import { createClient } from '@/supabase/server';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-export const GET = async (request: Request, { params }: { params: { id: string } }) => {
+export const GET = async (request: NextRequest, { params }: { params: { id: string } }) => {
   const supabase = createClient();
-  const { data } = await supabase.from('forum_comments').select('*, user: users(*)').eq('post_id', params.id);
-  const { count, error } = await supabase.from('forum_comments').select('*', { count: 'exact', head: true });
+  const urlSearchParams = request.nextUrl.searchParams;
+  const page = urlSearchParams.get('page') ? Number(urlSearchParams.get('page')) : 0;
+
+  const { data } = await supabase
+    .from('forum_comments')
+    .select('*, user: users(*), reply: forum_reply(count)')
+    .eq('post_id', params.id)
+    .order('created_at', { ascending: false })
+    .range(page * 5, (page + 1) * 5 - 1);
+
+  const { count, error } = await supabase
+    .from('forum_comments')
+    .select('*', { count: 'exact', head: true })
+    .eq('post_id', params.id);
+
+  if (error) {
+    console.error('Error fetching data:', error.message);
+    return NextResponse.json({ data: [], count: 0, error: error.message });
+  }
 
   return NextResponse.json({ data, count });
 };
