@@ -4,7 +4,7 @@ import KebabButton from '@/assets/images/common/KebabButton';
 import { useAuth } from '@/context/auth.context';
 import { forumReplyType, replyRetouch } from '@/types/posts/forumDetailTypes';
 import { timeForToday } from '@/utils/timeForToday';
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import MDEditor, { commands } from '@uiw/react-md-editor';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
