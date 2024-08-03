@@ -1,4 +1,4 @@
-import Kebab from '@/assets/images/common/Kebab';
+import KebabButton from '@/assets/images/common/KebabButton';
 import { useQnaDetailStore } from '@/store/qnaDetailStore';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Dispatch, MouseEventHandler, SetStateAction, useState } from 'react';
@@ -51,7 +51,7 @@ const QuestionReplyKebobBtn = ({ replyId, setReplyCount, setIsEdit }: QuestionRe
             setOpenKebab((prev) => !prev);
           }}
         >
-          <Kebab />
+          <KebabButton />
         </button>
         <ul
           className={`${openKebab ? 'border border-neutral-100 bg-white' : 'hidden'} rounded-lg flex flex-col absolute w-[105px] h-[88px] right-0 text-center hover:border-main-400 text-body2 z-10`}
