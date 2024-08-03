@@ -5,50 +5,42 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 const ProfileSidebar = () => {
-  const [nickname, setNickname] = useState('');
-  const [profileImage, setProfileImage] = useState('');
   const pathname = usePathname();
   const router = useRouter();
   const { userData, logOut } = useAuth();
-
-  useEffect(() => {
-    if (userData) {
-      setNickname(userData.nickname || '');
-      setProfileImage(userData.profile_image || '');
-    }
-  }, [userData]);
 
   const handleLogout = async () => {
     const result = await logOut();
     if (result.status === 200) {
       router.push('/');
     } else {
-      toast.success(result.message || '로그아웃에 실패했습니다.');
+      toast.error(result.message || '로그아웃에 실패했습니다.');
     }
   };
 
-  if (!userData) {
-    router.push('/');
-  }
-
   return (
-    <div className="fixed w-[18%] max-w-[286px] h-[80%] border-r border-l border-neutral-50 shadow-custom bg-white p-[56px_24px]">
-      <div className="h-[334px] center-alignment">
-        <div className=" w-[120px] h-[120px] border mb-[26px] border-neutral-50 rounded-full overflow-hidden">
-          <Image
-            src={profileImage}
-            alt="프로필 이미지"
-            width={120}
-            height={120}
-            className="w-full h-full object-cover bg-white"
-            priority
-          />
+    <div className="flex-none w-[286px] h-[80%] border-r border-l border-neutral-50 shadow-custom bg-white p-[56px_24px]">
+      <div className="center-alignment">
+        <div className="mb-[26px] relative w-[120px] h-[120px] border border-neutral-50 rounded-full overflow-hidden bg-white">
+          {userData?.profile_image ? (
+            <Image
+              src={userData.profile_image}
+              alt="프로필 이미지"
+              fill
+              priority
+              className="w-full h-full object-cover bg-white"
+              sizes="120px"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-gray-200">
+              <span className="text-gray-500">No Image</span>
+            </div>
+          )}
         </div>
-        <p className="text-lg font-semibold">{nickname}</p>
+        <p className="text-lg font-semibold mb-[40px]">{userData?.nickname || 'Anonymous'}</p>
       </div>
       <nav>
         <ul>
@@ -60,7 +52,7 @@ const ProfileSidebar = () => {
               프로필
             </Link>
           </li>
-          <li className="mb-[24px] ">
+          <li className="mb-[24px]">
             <Link
               href="/profile/activities"
               className={
@@ -72,19 +64,8 @@ const ProfileSidebar = () => {
               내 활동
             </Link>
           </li>
-          {/* <li className="mb-[40px]">
-            <Link
-              href="/profile/settings"
-              className={
-                pathname === '/profile/settings' ? 'text-h5 font-bold text-main-400' : 'text-h5 font-bold text-sub-100'
-              }
-            >
-              설정
-            </Link>
-          </li> */}
-
-          <p className="mb-[40px] border-b border-neutral-100 " />
-          <li className="">
+          <p className="mb-[40px] border-b border-neutral-100" />
+          <li>
             <button className="text-h5 font-bold text-sub-100 hover:text-main-400" onClick={handleLogout}>
               로그아웃
             </button>

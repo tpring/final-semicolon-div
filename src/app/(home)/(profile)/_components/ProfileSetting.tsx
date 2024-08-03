@@ -129,7 +129,7 @@ const ProfileSetting = () => {
               className="relative w-32 h-32 border border-neutral-50 rounded-full overflow-hidden bg-white cursor-pointer"
               onClick={handleImageClick}
             >
-              {profileImage ? (
+              {profileImage && (
                 <Image
                   src={profileImage}
                   alt="Profile"
@@ -138,8 +138,6 @@ const ProfileSetting = () => {
                   className="rounded-full object-cover"
                   sizes="120px"
                 />
-              ) : (
-                <div></div>
               )}
               <input type="file" className="hidden" ref={inputRef} onChange={handleImageUpload} accept=".png" />
               <div className="absolute inset-0 center-alignment opacity-0 hover:opacity-100 transition-opacity duration-300 bg-black bg-opacity-30 rounded-full">
