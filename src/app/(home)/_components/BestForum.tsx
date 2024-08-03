@@ -14,6 +14,8 @@ import Share from '@/assets/images/common/Share';
 import CommentBubble from '@/assets/images/common/CommentBubble';
 import FilledLike from '@/assets/images/like/FilledLike';
 import Star from '@/assets/images/main-page_image/Star';
+import MDEditor from '@uiw/react-md-editor';
+import { cutText, removeImageAndCodeBlocks } from '@/components/common/MarkdownCut';
 
 const BestForum = () => {
   const { data: forumList } = useQuery<BestForumType[]>({
@@ -71,7 +73,7 @@ const BestForum = () => {
                   ) : null}
                   <h1 className="text-h5 font-bold ">{forum.title}</h1>
                   <p className="text-body2 font-regular normal whitespace-pre-wrap break-words overflow-hidden  ">
-                    {forum.content.replace(/!\[.*?\]\(.*?\)/g, '')}
+                    <MDEditor.Markdown source={cutText(removeImageAndCodeBlocks(forum.content), 300)} />
                   </p>
                 </div>
                 <p className=" text-right text-body font-regular text-neutral-400 mt-4">
