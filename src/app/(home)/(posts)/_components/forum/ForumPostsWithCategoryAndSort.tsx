@@ -36,7 +36,7 @@ const ForumPostsWithCategoryAndSort = () => {
 
     switch (sortMethod) {
       case 'latest':
-        return filteredPosts.sort((a, b) => dayjs(b.updated_at).unix() - dayjs(a.updated_at).unix());
+        return filteredPosts.sort((a, b) => dayjs(b.created_at).unix() - dayjs(a.created_at).unix());
       case 'mostComments':
         return filteredPosts.sort((a, b) => (b.forum_comment[0]?.count || 0) - (a.forum_comment[0]?.count || 0));
       case 'mostLikes':
