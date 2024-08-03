@@ -70,7 +70,9 @@ const BestForum = () => {
                     />
                   ) : null}
                   <h1 className="text-h5 font-bold ">{forum.title}</h1>
-                  <p className="text-body2 font-regular normal  overflow-hidden ">{forum.content}</p>
+                  <p className="text-body2 font-regular normal whitespace-pre-wrap break-words overflow-hidden  ">
+                    {forum.content.replace(/!\[.*?\]\(.*?\)/g, '')}
+                  </p>
                 </div>
                 <p className=" text-right text-body font-regular text-neutral-400 mt-4">
                   {forum.created_at.slice(0, 10).replace(/-/g, '.')}

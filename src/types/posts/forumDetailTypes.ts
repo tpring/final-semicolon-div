@@ -2,13 +2,16 @@ import { Tables } from '../supabase';
 
 export type forumDetailType = Tables<'forum_posts'> & {
   user: Tables<'users'>;
+  comment: { count: number }[];
 };
 
 type comments = {
   id: string;
   comment: string;
+  created_at: string;
   updated_at: string;
   user_id: string;
+  reply: { count: number }[];
   user: {
     nickname: string;
     profile_image: string;
@@ -18,6 +21,7 @@ type comments = {
 export type forumCommentsType = {
   id: string;
   data: comments[];
+  comment: { id: string };
   count: number;
 };
 
@@ -42,6 +46,7 @@ export type replyRetouch = {
 type reply = {
   id: string;
   reply: string;
+  created_at: string;
   comment_id: string;
   updated_at: string;
   user_id: string;
@@ -54,5 +59,6 @@ type reply = {
 export type forumReplyType = {
   id: string;
   reply: reply[];
+  created_at: string;
   count: number;
 };

@@ -105,6 +105,7 @@ const ForumReply = ({ comment_id }: { comment_id: string }) => {
   const toggleEditingOptions = (id: string) => {
     setReplyEditorToggle({ [id]: !replyEditorToggle[id] });
   };
+
   return (
     <>
       {reply?.pages.map((reply) => (
@@ -112,7 +113,10 @@ const ForumReply = ({ comment_id }: { comment_id: string }) => {
           {reply.reply?.map(
             (reply) =>
               reply.comment_id === comment_id && (
-                <div key={reply.id} className="w-full border-b-[1px] p-5 flex flex-col  gap-4">
+                <div
+                  key={reply.id}
+                  className={`flex flex-col justify-around h-[228px] border-l-4 border-b-[1px] gap-4 p-4 ${reply.user_id === me?.id ? 'bg-slate-100' : 'bg-white'}`}
+                >
                   <div className="flex justify-start items-center gap-4 ">
                     <Image
                       src={reply.user.profile_image}
@@ -170,6 +174,7 @@ const ForumReply = ({ comment_id }: { comment_id: string }) => {
                   ) : (
                     <div>
                       <p>{reply.reply}</p>
+                      <p>{reply.created_at.slice(0, 10).replace(/-/g, '.')}</p>
                     </div>
                   )}
                 </div>

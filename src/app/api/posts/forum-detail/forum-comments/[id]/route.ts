@@ -8,7 +8,7 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
 
   const { data } = await supabase
     .from('forum_comments')
-    .select('*, user: users(*)')
+    .select('*, user: users(*), reply: forum_reply(count)')
     .eq('post_id', params.id)
     .order('created_at', { ascending: false })
     .range(page * 5, (page + 1) * 5 - 1);
