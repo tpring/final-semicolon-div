@@ -161,7 +161,6 @@ export function AuthProvider({ children }: PropsWithChildren) {
           await fetchUserData(user.id);
         }
       } catch (error) {
-        console.error('Error initializing auth:', error);
       } finally {
         setIsInitialized(true);
       }

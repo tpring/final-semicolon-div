@@ -128,9 +128,9 @@ const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
       {comments?.map((data) => (
         <div key={data.id}>
           {data.data.map((comment) => (
-            <div key={comment.id} className="w-full flex flex-col ">
+            <div key={comment.id} className="w-full flex flex-col">
               <div
-                className={`flex flex-col justify-around h-[228px] border-b-[1px] gap-4 p-4 ${comment.user_id === me?.id ? 'bg-slate-100' : 'bg-white'}`}
+                className={`flex flex-col justify-around h-[344px] border-b-[1px] gap-4 p-4 ${comment.user_id === me?.id ? 'bg-slate-100' : 'bg-white'}`}
               >
                 <div className="flex justify-start items-center gap-4 ">
                   <Image
@@ -184,11 +184,22 @@ const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
                         return command.name !== 'image';
                       })}
                       textareaProps={{ maxLength: 1000 }}
-                      className="w-full "
+                      className="w-full"
+                      height={'auto'}
                     />
-                    <div>
-                      <button onClick={() => toggleEditing(comment.id, comment.user_id)}>취소</button>
-                      <button onClick={() => commentRetouchHandle(comment.id, comment.user_id)}>수정</button>
+                    <div className="flex justify-end items-end gap-2">
+                      <button
+                        onClick={() => toggleEditing(comment.id, comment.user_id)}
+                        className="w-[71px] h-[48px] bg-neutral-100 py-2 px-4 rounded-lg mt-4"
+                      >
+                        취소
+                      </button>
+                      <button
+                        onClick={() => commentRetouchHandle(comment.id, comment.user_id)}
+                        className="w-[71px] h-[48px] bg-main-100 py-2 px-4 rounded-lg mt-4"
+                      >
+                        수정
+                      </button>
                     </div>
                   </div>
                 ) : (
