@@ -13,9 +13,10 @@ const UserMenu = ({ isLoggedIn, userData, handleLogout }: UserMenuProps) => {
                 <Image
                   src={userData.profile_image}
                   alt="Profile"
-                  layout="fill"
-                  objectFit="cover"
-                  className="rounded-full"
+                  sizes="40px"
+                  className="rounded-full object-cover"
+                  fill
+                  priority
                 />
               </div>
             )}
