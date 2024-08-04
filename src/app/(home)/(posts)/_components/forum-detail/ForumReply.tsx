@@ -14,7 +14,7 @@ import ReplyPageButton from './ReplyPageButton';
 import { revalidate } from '@/actions/revalidate';
 import ConfirmModal from '@/components/modal/ConfirmModal';
 
-const ForumReply = ({ comment_id }: { comment_id: string }) => {
+const ForumReply = ({ comment_id, post_user_id }: { comment_id: string; post_user_id: string }) => {
   const { me } = useAuth();
   const params = useParams<{ id: string }>();
   const [page, setPage] = useState<number>(0);
@@ -124,50 +124,61 @@ const ForumReply = ({ comment_id }: { comment_id: string }) => {
           {reply.comment_id === comment_id && (
             <div
               key={reply.id}
-              className={`flex flex-col justify-around h-[228px] border-l-4 border-b-[1px] gap-4 p-4 ${reply.user_id === me?.id ? 'bg-slate-100' : 'bg-white'}`}
+              className={`flex flex-col justify-between  border-l-4 border-[#C7DCF5] border-b-[1px] gap-4 p-6 ${reply.user_id === me?.id ? 'bg-[#F2F7FD]' : 'bg-white'}`}
             >
-              <div className="flex justify-start items-center gap-4 ">
-                <Image
-                  src={reply.user.profile_image}
-                  alt="replyUserImage"
-                  width={100}
-                  height={100}
-                  className="rounded-full w-10 h-10"
-                />
-                <div className=" flex flex-col w-full">
-                  <h2>{reply.user.nickname}</h2>
-                  <p>{timeForToday(reply.updated_at)}</p>
-                </div>
-                <div className=" relative">
-                  <div className=" right-0">
-                    {me?.id === reply.user_id && (
-                      <>
-                        {replyEditor[reply.id] ? null : (
-                          <div onClick={() => toggleEditingOptions(reply.id)} className=" p-2 ">
-                            <KebabButton />
-                          </div>
-                        )}
-                        {replyEditorToggle[reply.id] && (
-                          <div className="w-[105px] right-0 absolute flex flex-col justify-center items-center bg-white shadow-lg border rounded-lg">
-                            <button className="h-[44px]" onClick={() => toggleReplyEditing(reply.id, reply.reply)}>
-                              댓글 수정
-                            </button>
-                            <button className="h-[44px]" onClick={() => setConfirmModal(true)}>
-                              댓글 삭제
-                            </button>
-                            {confirmModal && (
-                              <ConfirmModal
-                                isOpen={confirmModal}
-                                onClose={() => setConfirmModal(false)}
-                                onConfirm={() => handleReplyDelete(reply.id, reply.user_id)}
-                                message={'댓글을 삭제 하겠습니까?'}
-                              />
-                            )}
-                          </div>
-                        )}
-                      </>
+              <div className="flex justify-between ">
+                <div className=" flex justify-start items-center gap-4">
+                  <Image
+                    src={reply.user.profile_image}
+                    alt="replyUserImage"
+                    width={48}
+                    height={48}
+                    className="rounded-full "
+                  />
+                  <div className=" flex flex-col">
+                    {post_user_id === reply.user_id && (
+                      <p className=" text-subtitle2 font-medium  px-[12px] py-[4px] text-white bg-main-500 text-center rounded-[4px]  ">
+                        글쓴이
+                      </p>
                     )}
+                    <p className="text-subtitle1 font-medium">{reply.user.nickname}</p>
+                    <p className="text-body2 font-regular">{timeForToday(reply.updated_at)}</p>
                   </div>
+                </div>
+                <div className=" relative  ">
+                  {me?.id === reply.user_id && (
+                    <>
+                      {replyEditor[reply.id] ? null : (
+                        <div onClick={() => toggleEditingOptions(reply.id)} className="  p-4 ">
+                          <KebabButton />
+                        </div>
+                      )}
+                      {replyEditorToggle[reply.id] && (
+                        <div className="w-[105px] right-0 absolute flex flex-col justify-center items-center border-main-400 bg-white shadow-lg border rounded-lg">
+                          <button
+                            className="h-[44px] w-full rounded-t-lg hover:bg-main-50 hover:text-main-400"
+                            onClick={() => toggleReplyEditing(reply.id, reply.reply)}
+                          >
+                            댓글 수정
+                          </button>
+                          <button
+                            className="h-[44px] w-full rounded-b-lg hover:bg-main-50 hover:text-main-400"
+                            onClick={() => setConfirmModal(true)}
+                          >
+                            댓글 삭제
+                          </button>
+                          {confirmModal && (
+                            <ConfirmModal
+                              isOpen={confirmModal}
+                              onClose={() => setConfirmModal(false)}
+                              onConfirm={() => handleReplyDelete(reply.id, reply.user_id)}
+                              message={'댓글을 삭제 하겠습니까?'}
+                            />
+                          )}
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
               </div>
               {replyEditor[reply.id] ? (
@@ -181,19 +192,29 @@ const ForumReply = ({ comment_id }: { comment_id: string }) => {
                       return command.name !== 'image';
                     })}
                     textareaProps={{ maxLength: 1000 }}
-                    className="w-full "
+                    height={'auto'}
                   />
-                  <div>
-                    <button onClick={() => setReplyEditor({ [reply.id]: false })}>취소</button>
-                    <button onClick={() => replyRetouchHandle(reply.id, reply.user_id)}>수정</button>
+                  <div className="flex justify-end items-end mt-4 gap-6">
+                    <button
+                      onClick={() => setReplyEditor({ [reply.id]: false })}
+                      className=' className="bg-neutral-50 text-neutral-100 px-5 py-3 rounded-lg"'
+                    >
+                      취소
+                    </button>
+                    <button
+                      onClick={() => replyRetouchHandle(reply.id, reply.user_id)}
+                      className="bg-main-100 text-main-50 px-5 py-3 rounded-lg"
+                    >
+                      수정
+                    </button>
                   </div>
                 </div>
               ) : (
-                <div>
-                  <div>
-                    <p>{reply.reply}</p>
-                    <p>{reply.created_at.slice(0, 10).replace(/-/g, '.')}</p>
-                  </div>
+                <div className="flex flex-col  gap-4">
+                  <p className="text-body1 font-regular  ">{reply.reply}</p>
+                  <p className="text-body1 font-regular text-neutral-400">
+                    {reply.created_at.slice(0, 10).replace(/-/g, '.')}
+                  </p>
                 </div>
               )}
             </div>

@@ -52,7 +52,7 @@ const ForumReplyInput = ({ comment_id, toggle }: { comment_id: string; toggle: (
   };
 
   return (
-    <div className=" border-l-4 border-b-[1px] p-6">
+    <div className=" border-l-4 border-[#C7DCF5] border-b-[1px] p-6">
       <div className="flex justify-center items-center gap-6" data-color-mode="light">
         <Image
           src={userData?.profile_image ?? ''}
@@ -74,10 +74,13 @@ const ForumReplyInput = ({ comment_id, toggle }: { comment_id: string; toggle: (
         />
       </div>
       <div className="flex justify-end items-end gap-4 mt-4">
-        <button onClick={() => toggle(comment_id)} className="py-3 px-6 bg-slate-100 rounded-lg ">
+        <button
+          onClick={() => toggle(comment_id)}
+          className="bg-neutral-50 hover:bg-neutral-100 hover:text-neutral-600 text-neutral-100 px-5 py-3 rounded-lg"
+        >
           취소
         </button>
-        <button onClick={onClickReply} className="py-3 px-6 bg-slate-100 rounded-lg ">
+        <button onClick={onClickReply} className="bg-main-100 hover:bg-main-500 text-main-50 px-5 py-3 rounded-lg">
           등록
         </button>
       </div>

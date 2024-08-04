@@ -1,5 +1,6 @@
 'use client';
 
+import { revalidate } from '@/actions/revalidate';
 import { useAuth } from '@/context/auth.context';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import MDEditor, { commands } from '@uiw/react-md-editor';
@@ -31,6 +32,7 @@ const InputComments = () => {
       queryClient.invalidateQueries({ queryKey: ['forumComments'] });
       if (comment) {
         setComment('');
+        revalidate('/', 'page');
       }
     }
   });
@@ -80,14 +82,14 @@ const InputComments = () => {
         <div className=" flex justify-end items-end gap-6 mt-6">
           <button
             type="button"
-            className="bg-slate-200 px-5 py-3 rounded-lg"
+            className="bg-neutral-50 hover:bg-neutral-100 hover:text-neutral-600 text-neutral-100 px-5 py-3 rounded-lg"
             onClick={() => {
               setComment('');
             }}
           >
             취소
           </button>
-          <button className="bg-slate-200 px-5 py-3 rounded-lg">등록</button>
+          <button className="bg-main-100 hover:bg-main-500 text-main-50 px-5 py-3 rounded-lg">등록</button>
         </div>
       </form>
     </div>
