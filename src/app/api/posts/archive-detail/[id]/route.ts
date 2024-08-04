@@ -4,17 +4,13 @@ import { NextResponse } from 'next/server';
 export const GET = async (request: Request, { params }: { params: { id: string } }) => {
   const supabase = createClient();
 
-  const { data, error } = await supabase
+  const { data } = await supabase
     .from('archive_posts')
     .select(
       '*, user: users(*), bookmark: archive_bookmarks(count), likes: archive_likes(count), comment: archive_comments(count) '
     )
     .eq('id', params.id)
     .single();
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
 
   return NextResponse.json(data);
 };

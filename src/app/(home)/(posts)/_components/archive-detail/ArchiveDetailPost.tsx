@@ -7,25 +7,21 @@ import { useParams, useRouter } from 'next/navigation';
 import MDEditor from '@uiw/react-md-editor';
 import Image from 'next/image';
 import { archiveDetailType } from '@/types/posts/archiveDetailTypes';
-import BackArrowIcon from '@/assets/images/upsert_image/BackArrowIcon';
 import { useAuth } from '@/context/auth.context';
 import LikeButton from '@/components/common/LikeButton';
 import BookmarkButton from '@/components/common/BookmarkButton';
 import Share from '@/assets/images/common/Share';
-import { handleLinkCopy } from '@/components/handleLinkCopy';
-import CommentBubble from '@/assets/images/common/CommentBubble';
-
 import KebabButton from '@/assets/images/common/KebabButton';
-
+import { handleRinkCopy } from '@/utils/handleRinkCopy';
 
 const ArchiveDetailPost = () => {
   const params = useParams();
   const router = useRouter();
   const { me } = useAuth();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   // 게시글 데이터 가져오기
-  const { data, error, isLoading } = useQuery<archiveDetailType>({
+  const { data, error, isLoading } = useQuery<archiveDetailType[]>({
     queryKey: ['archiveDetail', params.id],
     queryFn: async () => {
       const response = await fetch(`/api/posts/archive-detail/${params.id}`);
@@ -33,11 +29,9 @@ const ArchiveDetailPost = () => {
         throw new Error('데이터를 가져오는데 실패했습니다.');
       }
       const data = await response.json();
-      return data;
+      return Array.isArray(data) ? data : [data];
     }
   });
-
-  const archiveDetail = data ? [data] : [];
 
   // 게시글 삭제 기능
   const deleteMutation = useMutation({
@@ -66,10 +60,6 @@ const ArchiveDetailPost = () => {
     setIsMenuOpen((prev) => !prev);
   };
 
-  const handleBackClick = () => {
-    router.back();
-  };
-
   const handleDeleteClick = (postId: string) => {
     if (confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
       deleteMutation.mutate(postId);
@@ -84,19 +74,16 @@ const ArchiveDetailPost = () => {
     return <div>로딩 중...</div>;
   }
 
-  if (error) {
-    return <div>게시글을 불러오는데 실패했습니다: {error.message}</div>;
+  if (error || !data || data.length === 0) {
+    return <div>게시글을 불러오는데 실패했습니다: {error?.message}</div>;
   }
 
   return (
     <div className="flex flex-col gap-4">
-      <button onClick={handleBackClick} className="mb-4 px-4 py-2 text-white rounded-md w-16">
-        <BackArrowIcon />
-      </button>
-      {archiveDetail.map((post) => (
+      {data.map((post) => (
         <div key={post.id} className="w-full flex flex-col gap-2 p-4 border-b-[1px] ">
           <div className="flex justify-between items-center">
-            <div className="flex justify-start items-center gap-2">
+            <div className="flex gap-2">
               <Image
                 src={post.user.profile_image}
                 alt="archiveUserImage"
@@ -114,43 +101,40 @@ const ArchiveDetailPost = () => {
                 </div>
               </div>
             </div>
-            {/* 로그인한 유저와 게시글 작성자가 동일한 경우에만 Kebob 메뉴 표시 */}
             {me?.id === post.user.id && (
               <div className="relative">
-                <button onClick={handleKebabClick} className="p-2">
+                <button onClick={handleKebabClick} className="p-4">
                   <KebabButton />
                 </button>
-                {isMenuOpen && (
-                  <div className="absolute right-0 mt-2 py-2 w-48 bg-white border rounded-md shadow-xl z-10">
-                    <button
-                      onClick={() => handleEditClick(post.id)}
-                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left"
-                    >
+                {isMenuOpen ? (
+                  <div className="w-[105px] right-0 absolute flex flex-col justify-center items-center bg-white shadow-lg border rounded-lg">
+                    <button className="h-[44px]" onClick={() => handleEditClick(post.id)}>
                       게시글 수정
                     </button>
-                    <button
-                      onClick={() => handleDeleteClick(post.id)}
-                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left"
-                    >
+                    <button className="h-[44px]" onClick={() => handleDeleteClick(post.id)}>
                       게시글 삭제
                     </button>
                   </div>
-                )}
+                ) : null}
               </div>
             )}
           </div>
-          <div>
-            <h2>{post.title}</h2>
-            <MDEditor.Markdown source={post.content} />
+          <div className="flex flex-col gap-4 mt-4">
+            <p className="text-h4 font-bold">{post.title}</p>
+            <MDEditor.Markdown source={post.content} className="text-body1 font-regular" />
           </div>
-          <div>
-            <p>{post.created_at.slice(0, 16).replace(/-/g, '.').replace(/T/g, ' ')}</p>
-            <LikeButton id={post.id} type="archive" />
-            <BookmarkButton id={post.id} type="archive" />
-            <div className="flex items-center justify-center">
-              <button onClick={() => handleLinkCopy(`${process.env.NEXT_PUBLIC_BASE_URL}/forum/${post.id}`)}>
+          <div className="flex justify-between items-center mb-4">
+            <p className="text-body1 text-neutral-400">{post.created_at.slice(0, 10).replace(/-/g, '.')}</p>
+            <div className="flex gap-5">
+              <LikeButton id={post.id} type="archive" />
+              <BookmarkButton id={post.id} type="archive" />
+              <button
+                type="button"
+                onClick={() => handleRinkCopy(`${process.env.NEXT_PUBLIC_BASE_URL}/archive/${post.id}`)}
+              >
                 <Share />
               </button>
+              <div className="text-main-400 text-subtitle1 font-medium">{post.comment[0].count}개의 댓글</div>
             </div>
           </div>
         </div>

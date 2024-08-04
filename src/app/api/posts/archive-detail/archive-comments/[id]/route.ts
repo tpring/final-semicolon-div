@@ -2,18 +2,17 @@ import { createClient } from '@/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const GET = async (request: NextRequest, { params }: { params: { id: string } }) => {
-  console.log(params);
-
   const supabase = createClient();
   const urlSearchParams = request.nextUrl.searchParams;
   const page = urlSearchParams.get('page') ? Number(urlSearchParams.get('page')) : 0;
 
   const { data } = await supabase
     .from('archive_comments')
-    .select('*, user: users(*)')
+    .select('*, user: users(*), reply: archive_reply(count)')
     .eq('post_id', params.id)
     .order('created_at', { ascending: false })
     .range(page * 5, (page + 1) * 5 - 1);
+
   const { count, error } = await supabase
     .from('archive_comments')
     .select('*', { count: 'exact', head: true })

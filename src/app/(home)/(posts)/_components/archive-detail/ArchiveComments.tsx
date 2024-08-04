@@ -8,57 +8,31 @@ import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import Image from 'next/image';
-import ArchiveReplyInput from './ArchiveReplyInput';
-import ArchiveReply from './ArchiveReply';
 import { useInView } from 'react-intersection-observer';
 import LikeButton from '@/components/common/LikeButton';
 import BookmarkButton from '@/components/common/BookmarkButton';
-import Share from '@/assets/images/common/Share';
-import { handleLinkCopy } from '@/components/handleLinkCopy';
 import KebabButton from '@/assets/images/common/KebabButton';
+import ArchiveReplyInput from './ArchiveReplyInput';
+import ArchiveReply from './ArchiveReply';
+import { archiveCommentsType, commentRetouch } from '@/types/posts/archiveDetailTypes';
 
-type Comment = {
-  id: string;
-  comment: string;
-  user: {
-    profile_image: string;
-    nickname: string;
-  };
-  user_id: string;
-  updated_at: string;
-  created_at: string;
-};
-
-type Data = {
-  data: Comment[];
-  id: number;
-  count: number;
-};
-
-const ArchiveComments = () => {
+const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
   const { me } = useAuth();
-  const param = useParams();
+  const param = useParams<{ id: string }>();
   const [ref, inView] = useInView();
   const queryClient = useQueryClient();
   const [mdEditorChange, setMdEditorChange] = useState<string>('');
   const [editingState, setEditingState] = useState<{ [key: string]: boolean }>({});
   const [editingToggleState, setEditingToggleState] = useState<{ [key: string]: boolean }>({});
   const [inputCommentToggle, setInputCommentToggle] = useState<{ [key: string]: boolean }>({});
+  const [replyToggle, setReplyToggle] = useState<{ [key: string]: boolean }>({});
 
   const COMMENT_PAGE = 5;
 
   // 댓글 수정
   const commentRetouch = useMutation({
-    mutationFn: async ({
-      id,
-      user_id,
-      mdEditorChange
-    }: {
-      id: string;
-      user_id: string;
-      mdEditorChange: string | undefined;
-    }) => {
-      await fetch(`/api/posts/archive-detail/archive-comments/${param.id}`, {
+    mutationFn: async ({ id, user_id, mdEditorChange }: commentRetouch) => {
+      const response = await fetch(`/api/posts/archive-detail/archive-comments/${param.id}`, {
         method: 'PATCH',
         body: JSON.stringify({ id, user_id, mdEditorChange })
       });
@@ -70,7 +44,7 @@ const ArchiveComments = () => {
 
   const commentRetouchHandle = async (id: string, user_id: string) => {
     commentRetouch.mutate({ id, user_id, mdEditorChange });
-    setEditingState({ [id]: false });
+    setEditingState({ Boolean: false });
     if (!mdEditorChange) {
       toast.error('댓글을 입력해주세요!', {
         autoClose: 2000
@@ -82,7 +56,7 @@ const ArchiveComments = () => {
   // 댓글 삭제
   const commentDelete = useMutation({
     mutationFn: async ({ id, user_id }: { id: string; user_id: string }) => {
-      await fetch(`/api/posts/archive-detail/archive-comments/${param.id}`, {
+      const response = await fetch(`/api/posts/archive-detail/archive-comments/${param.id}`, {
         method: 'DELETE',
         body: JSON.stringify({ id, user_id })
       });
@@ -96,24 +70,26 @@ const ArchiveComments = () => {
     commentDelete.mutate({ id, user_id });
   };
 
-  // 수정 작업 중 취소 버튼
-  const toggleEditing = (id: string, commentText: string) => {
+  const toggleEditing = (id: string, comment: string) => {
     setEditingState({ [id]: !editingState[id] });
     setEditingToggleState({ [id]: false });
-    setMdEditorChange(commentText);
+    setMdEditorChange(comment);
   };
 
-  // 댓글 수정 & 삭제 케밥
   const toggleEditingOptions = (id: string) => {
     setEditingToggleState({ [id]: !editingToggleState[id] });
   };
 
-  const changEditor = (value: string | undefined) => {
-    setMdEditorChange(value ?? '');
+  const changEditor = (value?: string) => {
+    setMdEditorChange(value!);
   };
 
   const ClickInputCommentToggle = (id: string) => {
     setInputCommentToggle({ [id]: !inputCommentToggle[id] });
+  };
+
+  const replyOpenToggle = (id: string) => {
+    setReplyToggle({ [id]: !replyToggle[id] });
   };
 
   // 댓글 가져오기
@@ -124,17 +100,15 @@ const ArchiveComments = () => {
     isError
   } = useInfiniteQuery({
     queryKey: ['archiveComments', param.id],
-    initialPageParam: 1,
+    initialPageParam: 0,
     queryFn: async ({ pageParam }) => {
       const response = await fetch(`/api/posts/archive-detail/archive-comments/${param.id}?page=${pageParam}`);
       const data = await response.json();
-      console.log(data);
-
-      return data;
+      return data as Promise<archiveCommentsType>;
     },
     getNextPageParam: (lastPage, allPages, lastPageParam) => {
       const nextPage = lastPageParam + 1;
-      return nextPage <= Math.ceil(allPages[0]?.count / COMMENT_PAGE) ? nextPage : undefined;
+      return nextPage <= Math.ceil(allPages[0].count / COMMENT_PAGE) ? nextPage : undefined;
     },
     select: ({ pages }) => pages.flat()
   });
@@ -146,108 +120,116 @@ const ArchiveComments = () => {
   }, [inView]);
 
   if (isPending) {
-    return <div>로딩</div>;
+    return <div>로딩..</div>;
   }
 
   return (
     <>
-      {comments?.map((data: Data) => (
+      {comments?.map((data) => (
         <div key={data.id}>
-          {data.data.map((comment: Comment) => (
-            <div key={comment.id} className="w-full border-b-[1px] p-5 flex flex-col gap-4">
-              <div className="flex justify-start items-center gap-4 ">
-                <Image
-                  src={comment.user.profile_image}
-                  alt="commentUserImage"
-                  width={100}
-                  height={100}
-                  className="rounded-full w-10 h-10"
-                />
-                <div className="flex flex-col w-full">
-                  <h2>{comment.user.nickname}</h2>
-                  <p>{timeForToday(comment.updated_at)}</p>
-                </div>
-                <div className="relative">
-                  <div className="right-0">
-                    {me?.id === comment.user_id && (
-                      <>
-                        {editingState[comment.id] ? null : (
-                          <div onClick={() => toggleEditingOptions(comment.id)} className="p-2">
-                            <KebabButton />
-                          </div>
-                        )}
-                        {editingToggleState[comment.id] && (
-                          <div className="w-[105px] right-0 absolute flex flex-col justify-center items-center bg-white shadow-lg border rounded-lg">
-                            <button className="h-[44px]" onClick={() => toggleEditing(comment.id, comment.comment)}>
-                              댓글 수정
-                            </button>
-                            <button className="h-[44px]" onClick={() => handleDelete(comment.id, comment.user_id)}>
-                              댓글 삭제
-                            </button>
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-              {editingState[comment.id] ? (
-                <div>
-                  <MDEditor
-                    value={mdEditorChange}
-                    onChange={changEditor}
-                    preview="edit"
-                    extraCommands={commands.getCommands().filter(() => false)}
-                    commands={commands.getCommands().filter((command) => {
-                      return command.name !== 'image';
-                    })}
-                    textareaProps={{ maxLength: 1000 }}
-                    className="w-full"
+          {data.data.map((comment) => (
+            <div key={comment.id} className="w-full flex flex-col ">
+              <div
+                className={`flex flex-col justify-around h-[228px] border-b-[1px] gap-4 p-4 ${comment.user_id === me?.id ? 'bg-slate-100' : 'bg-white'}`}
+              >
+                <div className="flex justify-start items-center gap-4 ">
+                  <Image
+                    src={comment.user.profile_image}
+                    alt="commentUserImage"
+                    width={100}
+                    height={100}
+                    className="rounded-full w-10 h-10"
                   />
+                  <div className=" flex flex-col w-full">
+                    {post_user_id === comment.user_id ? (
+                      <p className=" w-[66px] h-[30px] pt-[2px] text-white bg-main-500 text-center rounded-lg  ">
+                        글쓴이
+                      </p>
+                    ) : null}
+                    <h2>{comment.user.nickname}</h2>
+                    <p>{timeForToday(comment.updated_at)}</p>
+                  </div>
+                  <div className=" relative">
+                    <div className=" right-0">
+                      {me?.id === comment.user_id && (
+                        <>
+                          {editingState[comment.id] ? null : (
+                            <div onClick={() => toggleEditingOptions(comment.id)} className=" p-2 ">
+                              <KebabButton />
+                            </div>
+                          )}
+                          {editingToggleState[comment.id] && (
+                            <div className="w-[105px] right-0 absolute flex flex-col justify-center items-center bg-white shadow-lg border rounded-lg">
+                              <button className="h-[44px]" onClick={() => toggleEditing(comment.id, comment.comment)}>
+                                댓글 수정
+                              </button>
+                              <button className="h-[44px]" onClick={() => handleDelete(comment.id, comment.user_id)}>
+                                댓글 삭제
+                              </button>
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                {editingState[comment.id] ? (
                   <div>
-                    <button onClick={() => toggleEditing(comment.id, comment.comment)}>취소</button>{' '}
-                    <button onClick={() => commentRetouchHandle(comment.id, comment.user_id)}>수정</button>
+                    <MDEditor
+                      value={mdEditorChange}
+                      onChange={changEditor}
+                      preview="edit"
+                      extraCommands={commands.getCommands().filter(() => false)}
+                      commands={commands.getCommands().filter((command) => {
+                        return command.name !== 'image';
+                      })}
+                      textareaProps={{ maxLength: 1000 }}
+                      className="w-full "
+                    />
+                    <div>
+                      <button onClick={() => toggleEditing(comment.id, comment.user_id)}>취소</button>
+                      <button onClick={() => commentRetouchHandle(comment.id, comment.user_id)}>수정</button>
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <div>
-                  <p>{comment.comment}</p>
-                </div>
-              )}
-              <div className="flex items-center justify-between max-w-[1200px] mx-auto">
-                <div className="flex items-center mt-1 text-sm text-neutral-300">
-                  {comment.created_at.slice(0, 16).replace(/-/g, '.').replace(/T/g, ' ')}
-                </div>
-                <div className=" mt-2 flex items-center ml-auto">
-                  <div className="flex items-center justify-center mr-2">
+                ) : (
+                  <div>
+                    <p>{comment.comment}</p>
+                  </div>
+                )}
+                <div className=" flex justify-between gap-4">
+                  <p>{comment.created_at.slice(0, 10).replace(/-/g, '.')}</p>
+                  <div className=" flex gap-4">
                     <LikeButton id={comment.id} type="archiveComment" />
-                  </div>
-                  <div className=" mt-2 flex items-center justify-center">
                     <BookmarkButton id={comment.id} type="archiveComment" />
-                  </div>
-                  <div className="flex items-center justify-center">
-                    <button onClick={() => handleLinkCopy(`${process.env.NEXT_PUBLIC_BASE_URL}/forum/${comment.id}`)}>
-                      <Share />
-                    </button>
-                  </div>
-                  <div className="flex items-center justify-center ml-2">
-                    {' '}
+                    {replyToggle[comment.id] ? (
+                      <button onClick={() => replyOpenToggle(comment.id)}>댓글 숨기기</button>
+                    ) : (
+                      comment.reply.length > 0 &&
+                      comment.reply[0].count !== 0 && (
+                        <button onClick={() => replyOpenToggle(comment.id)}>{comment.reply[0].count}댓글 보기</button>
+                      )
+                    )}
                     {inputCommentToggle[comment.id] ? (
-                      <ArchiveReplyInput comment_id={comment.id} toggle={ClickInputCommentToggle} />
+                      <button className="text-right" onClick={() => ClickInputCommentToggle(comment.id)}>
+                        댓글 취소
+                      </button>
                     ) : (
                       <button className="text-right" onClick={() => ClickInputCommentToggle(comment.id)}>
-                        대댓글 쓰기
+                        댓글 쓰기
                       </button>
                     )}
                   </div>
                 </div>
               </div>
-
-              <ArchiveReply comment_id={comment.id} />
+              {inputCommentToggle[comment.id] ? (
+                <ArchiveReplyInput comment_id={comment.id} toggle={ClickInputCommentToggle} />
+              ) : null}
+              {replyToggle[comment.id] ? <ArchiveReply comment_id={comment.id} /> : null}
             </div>
           ))}
         </div>
       ))}
+
       <div ref={ref}></div>
     </>
   );
