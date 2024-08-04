@@ -10,17 +10,23 @@ import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import ReplyPageButton from './ReplyPageButton';
+import { revalidate } from '@/actions/revalidate';
+import ConfirmModal from '@/components/modal/ConfirmModal';
 
 const ForumReply = ({ comment_id }: { comment_id: string }) => {
   const { me } = useAuth();
   const params = useParams<{ id: string }>();
-  const [page, setPage] = useState<number>(1);
+  const [page, setPage] = useState<number>(0);
   const queryClient = useQueryClient();
   const [replyRetouch, setReplyRetouch] = useState<string>('');
   const [replyEditor, setReplyEditor] = useState<{ [key: string]: boolean }>({});
   const [replyEditorToggle, setReplyEditorToggle] = useState<{ [key: string]: boolean }>({});
+  const [confirmModal, setConfirmModal] = useState<boolean>(false);
 
+  //한 페이지 안에 reply 수
   const COMMENT_REPLY_PAGE = 5;
+
   //대댓글 수정
   const replyRetouchMutation = useMutation({
     mutationFn: async ({ id, user_id, replyRetouch }: replyRetouch) => {
@@ -58,6 +64,7 @@ const ForumReply = ({ comment_id }: { comment_id: string }) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['commentReply'] });
+      revalidate('/', 'page');
     }
   });
 
@@ -86,6 +93,10 @@ const ForumReply = ({ comment_id }: { comment_id: string }) => {
     }
   });
 
+  //reply 페이지 수
+  const replyCount = reply?.pages[0].count;
+  const totalPage = (replyCount as number) / COMMENT_REPLY_PAGE;
+
   if (isPending) {
     return <div>loading...</div>;
   }
@@ -107,82 +118,96 @@ const ForumReply = ({ comment_id }: { comment_id: string }) => {
   };
 
   return (
-    <>
-      {reply?.pages.map((reply) => (
-        <div key={reply.id}>
-          {reply.reply?.map(
-            (reply) =>
-              reply.comment_id === comment_id && (
-                <div
-                  key={reply.id}
-                  className={`flex flex-col justify-around h-[228px] border-l-4 border-b-[1px] gap-4 p-4 ${reply.user_id === me?.id ? 'bg-slate-100' : 'bg-white'}`}
-                >
-                  <div className="flex justify-start items-center gap-4 ">
-                    <Image
-                      src={reply.user.profile_image}
-                      alt="replyUserImage"
-                      width={100}
-                      height={100}
-                      className="rounded-full w-10 h-10"
-                    />
-                    <div className=" flex flex-col w-full">
-                      <h2>{reply.user.nickname}</h2>
-                      <p>{timeForToday(reply.updated_at)}</p>
-                    </div>
-                    <div className=" relative">
-                      <div className=" right-0">
-                        {me?.id === reply.user_id && (
-                          <>
-                            {replyEditor[reply.id] ? null : (
-                              <div onClick={() => toggleEditingOptions(reply.id)} className=" p-2 ">
-                                <KebabButton />
-                              </div>
-                            )}
-                            {replyEditorToggle[reply.id] && (
-                              <div className="w-[105px] right-0 absolute flex flex-col justify-center items-center bg-white shadow-lg border rounded-lg">
-                                <button className="h-[44px]" onClick={() => toggleReplyEditing(reply.id, reply.reply)}>
-                                  댓글 수정
-                                </button>
-                                <button className="h-[44px]" onClick={() => handleReplyDelete(reply.id, reply.user_id)}>
-                                  댓글 삭제
-                                </button>
-                              </div>
-                            )}
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  {replyEditor[reply.id] ? (
-                    <div>
-                      <MDEditor
-                        value={replyRetouch}
-                        onChange={changReplyRetouch}
-                        preview="edit"
-                        extraCommands={commands.getCommands().filter(() => false)}
-                        commands={commands.getCommands().filter((command) => {
-                          return command.name !== 'image';
-                        })}
-                        textareaProps={{ maxLength: 1000 }}
-                        className="w-full "
-                      />
-                      <div>
-                        <button onClick={() => setReplyEditor({ [reply.id]: false })}>취소</button>
-                        <button onClick={() => replyRetouchHandle(reply.id, reply.user_id)}>수정</button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div>
-                      <p>{reply.reply}</p>
-                      <p>{reply.created_at.slice(0, 10).replace(/-/g, '.')}</p>
-                    </div>
-                  )}
+    <div>
+      {reply?.pages[page].reply.map((reply) => (
+        <div key={reply.id} className="w-full">
+          {reply.comment_id === comment_id && (
+            <div
+              key={reply.id}
+              className={`flex flex-col justify-around h-[228px] border-l-4 border-b-[1px] gap-4 p-4 ${reply.user_id === me?.id ? 'bg-slate-100' : 'bg-white'}`}
+            >
+              <div className="flex justify-start items-center gap-4 ">
+                <Image
+                  src={reply.user.profile_image}
+                  alt="replyUserImage"
+                  width={100}
+                  height={100}
+                  className="rounded-full w-10 h-10"
+                />
+                <div className=" flex flex-col w-full">
+                  <h2>{reply.user.nickname}</h2>
+                  <p>{timeForToday(reply.updated_at)}</p>
                 </div>
-              )
+                <div className=" relative">
+                  <div className=" right-0">
+                    {me?.id === reply.user_id && (
+                      <>
+                        {replyEditor[reply.id] ? null : (
+                          <div onClick={() => toggleEditingOptions(reply.id)} className=" p-2 ">
+                            <KebabButton />
+                          </div>
+                        )}
+                        {replyEditorToggle[reply.id] && (
+                          <div className="w-[105px] right-0 absolute flex flex-col justify-center items-center bg-white shadow-lg border rounded-lg">
+                            <button className="h-[44px]" onClick={() => toggleReplyEditing(reply.id, reply.reply)}>
+                              댓글 수정
+                            </button>
+                            <button className="h-[44px]" onClick={() => setConfirmModal(true)}>
+                              댓글 삭제
+                            </button>
+                            {confirmModal && (
+                              <ConfirmModal
+                                isOpen={confirmModal}
+                                onClose={() => setConfirmModal(false)}
+                                onConfirm={() => handleReplyDelete(reply.id, reply.user_id)}
+                                message={'댓글을 삭제 하겠습니까?'}
+                              />
+                            )}
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+              {replyEditor[reply.id] ? (
+                <div data-color-mode="light">
+                  <MDEditor
+                    value={replyRetouch}
+                    onChange={changReplyRetouch}
+                    preview="edit"
+                    extraCommands={commands.getCommands().filter(() => false)}
+                    commands={commands.getCommands().filter((command) => {
+                      return command.name !== 'image';
+                    })}
+                    textareaProps={{ maxLength: 1000 }}
+                    className="w-full "
+                  />
+                  <div>
+                    <button onClick={() => setReplyEditor({ [reply.id]: false })}>취소</button>
+                    <button onClick={() => replyRetouchHandle(reply.id, reply.user_id)}>수정</button>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <div>
+                    <p>{reply.reply}</p>
+                    <p>{reply.created_at.slice(0, 10).replace(/-/g, '.')}</p>
+                  </div>
+                </div>
+              )}
+            </div>
           )}
         </div>
       ))}
-    </>
+      <ReplyPageButton
+        page={page}
+        setPage={setPage}
+        totalPage={totalPage}
+        fetchNextPage={fetchNextPage}
+        reply={reply}
+      />
+    </div>
   );
 };
 

@@ -55,9 +55,9 @@ const InputComments = () => {
   };
 
   return (
-    <div className="flex justify-start items-center  p-4 my-4  ">
+    <div className="flex justify-start items-center  py-6 px-5  ">
       <form className=" w-full" onSubmit={handleSubmit}>
-        <div className=" flex justify-center items-center gap-6">
+        <div className=" flex justify-center items-center gap-6" data-color-mode="light">
           <Image
             src={userData?.profile_image ?? ''}
             alt="user profile image"
@@ -77,17 +77,17 @@ const InputComments = () => {
             className="w-full "
           />
         </div>
-        <div className=" flex justify-end items-end gap-2 mt-4">
+        <div className=" flex justify-end items-end gap-6 mt-6">
           <button
             type="button"
-            className="bg-slate-200 py-2 px-4 rounded-lg"
+            className="bg-slate-200 px-5 py-3 rounded-lg"
             onClick={() => {
               setComment('');
             }}
           >
             취소
           </button>
-          <button className="bg-slate-200 py-2 px-4 rounded-lg">등록</button>
+          <button className="bg-slate-200 px-5 py-3 rounded-lg">등록</button>
         </div>
       </form>
     </div>

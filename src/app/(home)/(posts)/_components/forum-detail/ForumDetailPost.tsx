@@ -35,15 +35,15 @@ const ForumDetailPost = ({ forumDetail }: { forumDetail: forumDetailType[] }) =>
   return (
     <div className="flex flex-col gap-4">
       {forumDetail?.map((post) => (
-        <div key={post.id} className="w-full flex flex-col gap-2 border-b-[1px] ">
+        <div key={post.id} className="w-full flex flex-col gap-6 border-b-[1px] ">
           <div className="flex  justify-between items-center   ">
             <div className="flex gap-2">
               <Image
                 src={post.user.profile_image}
                 alt="forumUserImage"
-                width={100}
-                height={100}
-                className="rounded-full  h w-10 h-10 "
+                width={50}
+                height={50}
+                className="rounded-full  h w-[48px] h-[48px] "
               />
               <div>
                 <h3>{post.user.nickname}</h3>
@@ -74,11 +74,11 @@ const ForumDetailPost = ({ forumDetail }: { forumDetail: forumDetailType[] }) =>
               </div>
             )}
           </div>
-          <div className="flex flex-col gap-4 mt-4">
+          <div className="flex flex-col gap-6  whitespace-pre-wrap break-words" data-color-mode="light">
             <p className="text-h4 font-bold">{post.title}</p>
             <MDEditor.Markdown source={post.content} className="text-body1 font-regular" />
           </div>
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex justify-between items-center mb-6">
             <p className="text-body1 font-regular">{post.created_at.slice(0, 10).replace(/-/g, '.')}</p>
             <div className="flex gap-5">
               <LikeButton id={post.id} type="forum" />

@@ -55,6 +55,13 @@
 
 .w-md-editor-text-input {
   min-height: 512px !important;
+  -ms-overflow-style: none;
+}
+.w-md-editor-input {
+  -ms-overflow-style: none;
+}
+::-webkit-scrollbar {
+  display: none;
 }
 
 @layer utilities {

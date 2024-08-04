@@ -53,7 +53,7 @@ const ForumReplyInput = ({ comment_id, toggle }: { comment_id: string; toggle: (
 
   return (
     <div className=" border-l-4 border-b-[1px] p-6">
-      <div className="flex justify-center items-center gap-6">
+      <div className="flex justify-center items-center gap-6" data-color-mode="light">
         <Image
           src={userData?.profile_image ?? ''}
           alt="user profile image"
