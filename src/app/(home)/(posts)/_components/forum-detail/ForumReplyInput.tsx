@@ -55,7 +55,7 @@ const ForumReplyInput = ({ comment_id, toggle }: { comment_id: string; toggle: (
     <div className=" border-l-4 border-b-[1px] p-6">
       <div className="flex justify-center items-center gap-6">
         <Image
-          src={userData?.profile_image}
+          src={userData?.profile_image ?? ''}
           alt="user profile image"
           width={48}
           height={48}

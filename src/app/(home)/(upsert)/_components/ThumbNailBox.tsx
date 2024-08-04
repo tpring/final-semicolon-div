@@ -17,8 +17,8 @@ type ThumbNailBoxProps = {
 
 const ThumbNailBox = ({ prevUrl, setisThumbnailUrlDeleted }: ThumbNailBoxProps) => {
   const thumbnailInput = useRef<HTMLInputElement>(null);
-  const [thumbnailPreview, setThumbnailPreview] = useState<any>();
-  const [thumbnailName, setThumbnailName] = useState<any>();
+  const [thumbnailPreview, setThumbnailPreview] = useState<string>('');
+  const [thumbnailName, setThumbnailName] = useState<string>('');
 
   const handleThumbnailChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     if (event.target.files?.length === 0) return;
@@ -28,7 +28,9 @@ const ThumbNailBox = ({ prevUrl, setisThumbnailUrlDeleted }: ThumbNailBoxProps) 
       const reader = new FileReader();
       reader.readAsDataURL(event.target.files[0]);
       reader.onloadend = () => {
-        setThumbnailPreview(reader.result);
+        if (typeof reader.result === 'string') {
+          setThumbnailPreview(reader.result);
+        }
       };
     }
   };
@@ -53,7 +55,9 @@ const ThumbNailBox = ({ prevUrl, setisThumbnailUrlDeleted }: ThumbNailBoxProps) 
       const reader = new FileReader();
       reader.readAsDataURL(event.dataTransfer.files[0]);
       reader.onloadend = () => {
-        setThumbnailPreview(reader.result);
+        if (typeof reader.result === 'string') {
+          setThumbnailPreview(reader.result);
+        }
       };
     }
   };
@@ -68,8 +72,10 @@ const ThumbNailBox = ({ prevUrl, setisThumbnailUrlDeleted }: ThumbNailBoxProps) 
   };
 
   useEffect(() => {
-    setThumbnailPreview(prevUrl);
-    setThumbnailName(prevUrl?.slice(-36));
+    if (prevUrl) {
+      setThumbnailPreview(prevUrl);
+      setThumbnailName(prevUrl?.slice(-36));
+    }
   }, [prevUrl]);
 
   return (

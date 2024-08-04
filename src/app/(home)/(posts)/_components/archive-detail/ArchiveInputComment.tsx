@@ -17,7 +17,6 @@ const ArchiveInputComments = () => {
     setComment(value || '');
   };
 
-  // 댓글 입력 후 Query 다시 가져오기
   const handleComment = useMutation({
     mutationFn: async (userComment: any) => {
       const response = await fetch(`/api/posts/archive-detail/archive-comments/${params.id}`, {
@@ -49,7 +48,6 @@ const ArchiveInputComments = () => {
     }
   });
 
-  // submit 실행시 유효성 검사 & mutation으로 값을 전달
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const archiveComment = { user_id: me?.id, post_id: params.id, comment };
@@ -87,14 +85,14 @@ const ArchiveInputComments = () => {
         <div className="flex justify-end items-end gap-2">
           <button
             type="button"
-            className="bg-slate-200 py-2 px-4"
+            className="w-[71px] h-[48px] bg-neutral-100 py-2 px-4 rounded-lg"
             onClick={() => {
               setComment('');
             }}
           >
             취소
           </button>
-          <button type="submit" className="bg-slate-200 py-2 px-4">
+          <button type="submit" className="w-[71px] h-[48px] bg-main-100 py-2 px-4 rounded-lg">
             등록
           </button>
         </div>

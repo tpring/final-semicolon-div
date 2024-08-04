@@ -6,9 +6,10 @@ import PostingAnswerArea from './PostingAnswerArea';
 type PostingQnaAnswerProps = {
   content: string;
   setContent: Dispatch<SetStateAction<string>>;
+  setQnaCommentsCount: Dispatch<SetStateAction<number>>;
 };
 
-const PostingQnaAnswer = ({ content, setContent }: PostingQnaAnswerProps) => {
+const PostingQnaAnswer = ({ content, setContent, setQnaCommentsCount }: PostingQnaAnswerProps) => {
   const { userData: answer } = useAuth();
   const [toggleAnswer, setToggleAnswer] = useState<boolean>(false);
 
@@ -46,7 +47,12 @@ const PostingQnaAnswer = ({ content, setContent }: PostingQnaAnswerProps) => {
         )}
       </div>
       {toggleAnswer ? (
-        <PostingAnswerArea content={content} setContent={setContent} setToggleAnswer={setToggleAnswer} />
+        <PostingAnswerArea
+          content={content}
+          setContent={setContent}
+          setToggleAnswer={setToggleAnswer}
+          setQnaCommentsCount={setQnaCommentsCount}
+        />
       ) : null}
     </div>
   );
