@@ -3,10 +3,10 @@
 import { useAuth } from '@/context/auth.context';
 import { timeForToday } from '@/utils/timeForToday';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import MDEditor, { commands, ContextStore } from '@uiw/react-md-editor';
+import MDEditor, { commands } from '@uiw/react-md-editor';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
-import { useState, ChangeEvent } from 'react';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
 import PaginationButtons from './PaginationButton';
 import KebabButton from '@/assets/images/common/KebabButton';
@@ -147,22 +147,16 @@ function ArchiveReply({ comment_id }: { comment_id: string }) {
     return <div>대댓글을 불러오는 데 실패했습니다.</div>;
   }
 
-  const changReplyRetouch = (
-    value?: string | undefined,
-    event?: ChangeEvent | undefined,
-    state?: ContextStore | undefined
-  ) => {
+  const changReplyRetouch = (value?: string | undefined) => {
     setReplyRetouch(value || '');
   };
 
-  // 댓글 수정 버튼
   const toggleReplyEditing = (id: string, reply: string) => {
     setReplyEditor({ [id]: true });
     setReplyEditorToggle({ [id]: !replyEditorToggle[id] });
     setReplyRetouch(reply);
   };
 
-  // 댓글 수정&삭제 케밥
   const toggleEditingOptions = (id: string) => {
     setReplyEditorToggle({ [id]: !replyEditorToggle[id] });
   };
