@@ -14,7 +14,7 @@ import Share from '@/assets/images/common/Share';
 import KebabButton from '@/assets/images/common/KebabButton';
 import { handleRinkCopy } from '@/utils/handleRinkCopy';
 
-const ArchiveDetailPost = () => {
+const ArchiveDetailPost = ({ archiveDetail }: { archiveDetail: archiveDetailType[] }) => {
   const params = useParams();
   const router = useRouter();
   const { me } = useAuth();
@@ -96,7 +96,7 @@ const ArchiveDetailPost = () => {
                 <div className="flex justify-start items-center gap-3">
                   <p>
                     {timeForToday(post.updated_at ? post.updated_at : post.created_at)}
-                    <span className="text-xs">{post.updated_at && '(수정됨)'}</span>
+                    <span>{post.updated_at !== post.created_at && '(수정됨)'}</span>
                   </p>
                 </div>
               </div>
