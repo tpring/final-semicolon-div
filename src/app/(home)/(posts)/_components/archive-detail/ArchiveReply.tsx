@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { toast } from 'react-toastify';
 import PaginationButtons from './PaginationButton';
 import KebabButton from '@/assets/images/common/KebabButton';
+import ConfirmModal from '@/components/modal/ConfirmModal';
 
 type Reply = {
   id: string;
@@ -31,6 +32,7 @@ function ArchiveReply({ comment_id }: { comment_id: string }) {
   const [replyRetouch, setReplyRetouch] = useState('');
   const [replyEditor, setReplyEditor] = useState<{ [key: string]: boolean }>({});
   const [replyEditorToggle, setReplyEditorToggle] = useState<{ [key: string]: boolean }>({});
+  const [confirmModal, setConfirmModal] = useState<boolean>(false);
 
   const COMMENT_REPLY_PAGE = 5;
 
@@ -202,6 +204,14 @@ function ArchiveReply({ comment_id }: { comment_id: string }) {
                             >
                               댓글 삭제
                             </button>
+                            {confirmModal && (
+                              <ConfirmModal
+                                isOpen={confirmModal}
+                                onClose={() => setConfirmModal(false)}
+                                onConfirm={() => handleReplyDelete(reply.id, reply.user_id)}
+                                message={'댓글을 삭제 하겠습니까?'}
+                              />
+                            )}
                           </div>
                         )}
                       </>
