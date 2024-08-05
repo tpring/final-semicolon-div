@@ -9,6 +9,8 @@ type CommentCardProps = {
   created_at: string;
   profile_image: string;
   forum_category: string;
+  likesCount: string;
+  commentsCount: string;
   isSelected: boolean;
   onCheckboxChange: (id: string) => void;
 };
@@ -23,6 +25,8 @@ const CommentCard = ({
   profile_image,
   isSelected,
   forum_category,
+  likesCount,
+  commentsCount,
   created_at,
   onCheckboxChange
 }: CommentCardProps) => {
@@ -50,14 +54,16 @@ const CommentCard = ({
         </div>
         <div className="">
           <p className="mb-2 text-neutral-900 text-subtitle1 font-bold line-clamp-1 max-w-[600px]"> {comment}</p>
-          <p>원문 제목: {title} [0]</p>
+          <p>
+            원문 제목: {title} [{commentsCount}]
+          </p>
           {forum_category && <p className="text-body2 font-regular text-neutral-400">{forum_category}</p>}
           <div className="mb-2">
             <span className="text-body2 font-regular text-neutral-400">
               {nickname}
               <span className="text-body1 font-regular text-neutral-100">•</span> {formattedDate}
               <span className="text-body1 font-regular text-neutral-100">•</span> {formattedTime}
-              <span className="text-body1 font-regular text-neutral-100">•</span> 좋아요 0
+              <span className="text-body1 font-regular text-neutral-100">•</span> 좋아요 {likesCount}
             </span>
           </div>
           {tags.length > 0 && (

@@ -31,43 +31,50 @@ export async function GET(request: NextRequest) {
   }
 
   // 댓글 ID를 추출합니다.
-  const postIds = [
-    ...archiveComments.map((b) => b.post_id),
-    ...forumComments.map((b) => b.post_id),
-    ...qnaComments.map((b) => b.post_id)
+  const archiveCommentIds = archiveComments.map((comment) => comment.id);
+  const forumCommentIds = forumComments.map((comment) => comment.id);
+  const qnaCommentIds = qnaComments.map((comment) => comment.id);
+
+  const likesCounts = [
+    supabase.from('archive_comment_likes').select('comment_id').in('comment_id', archiveCommentIds),
+    supabase.from('forum_comment_likes').select('comment_id').in('comment_id', forumCommentIds),
+    supabase.from('qna_comment_likes').select('comment_id').in('comment_id', qnaCommentIds)
   ];
+
+  const [archiveLikesCounts, forumLikesCounts, qnaLikesCounts] = await Promise.all(likesCounts);
+
+  // post ID를 추출합니다.
+  const archivePostId = archiveComments.map((post) => post.post_id);
+  const forumPostId = forumComments.map((post) => post.post_id);
+  const qnaPostId = qnaComments.map((post) => post.post_id);
 
   // 댓글 ID로 각 게시물 테이블에서 댓글 정보를 가져옵니다.
   const postFetches = [
-    supabase.from('archive_posts').select('*').in('id', postIds),
-    supabase.from('forum_posts').select('*').in('id', postIds),
-    supabase.from('qna_posts').select('*').in('id', postIds)
+    supabase.from('archive_posts').select('*').in('id', archivePostId),
+    supabase.from('forum_posts').select('*').in('id', forumPostId),
+    supabase.from('qna_posts').select('*').in('id', qnaPostId)
   ];
 
   const tagFetches = [
-    supabase.from('archive_tags').select('post_id, tag').in('post_id', postIds),
-    supabase.from('forum_tags').select('post_id, tag').in('post_id', postIds),
-    supabase.from('qna_tags').select('post_id, tag').in('post_id', postIds)
+    supabase.from('archive_tags').select('post_id, tag').in('post_id', archivePostId),
+    supabase.from('forum_tags').select('post_id, tag').in('post_id', forumPostId),
+    supabase.from('qna_tags').select('post_id, tag').in('post_id', qnaPostId)
+  ];
+  const commentCounts = [
+    supabase.from('archive_comments').select('post_id').in('post_id', archivePostId),
+    supabase.from('forum_comments').select('post_id').in('post_id', forumPostId),
+    supabase.from('qna_comments').select('post_id').in('post_id', qnaPostId)
   ];
 
   const [archivePosts, forumPosts, qnaPosts] = await Promise.all(postFetches);
   const [archiveTags, forumTags, qnaTags] = await Promise.all(tagFetches);
 
-  if (
-    archivePosts.error ||
-    forumPosts.error ||
-    qnaPosts.error ||
-    archiveTags.error ||
-    forumTags.error ||
-    qnaTags.error
-  ) {
-    return NextResponse.json({ error: '게시물 또는 태그 가져오기 실패' }, { status: 500 });
-  }
+  const [archiveCommentCounts, forumCommentCounts, qnaCommentCounts] = await Promise.all(commentCounts);
 
   const postUserIds = [
-    ...archivePosts.data.map((c) => c.user_id),
-    ...forumPosts.data.map((c) => c.user_id),
-    ...qnaPosts.data.map((c) => c.user_id)
+    ...archivePosts.data!.map((c) => c.user_id),
+    ...forumPosts.data!.map((c) => c.user_id),
+    ...qnaPosts.data!.map((c) => c.user_id)
   ];
 
   const { data: postUsers, error: postUserError } = await supabase
@@ -79,33 +86,49 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: '게시글 유저 정보 가져오기 실패' }, { status: 500 });
   }
 
+  // 수 데이터 정리
+  const createCommentMap = (Counts: { post_id: string }[]) =>
+    Counts.reduce<Record<string, number>>((acc, { post_id }) => ((acc[post_id] = (acc[post_id] || 0) + 1), acc), {});
+
+  const createlikeMap = (Counts: { comment_id: string }[]) =>
+    Counts.reduce<Record<string, number>>(
+      (acc, { comment_id }) => ((acc[comment_id] = (acc[comment_id] || 0) + 1), acc),
+      {}
+    );
+
   const commentData = {
     archiveComments: archiveComments.map((comment) => ({
-      ...comment
+      ...comment,
+      likesCount: createlikeMap(archiveLikesCounts.data!)[comment.id] || 0
     })),
     forumComments: forumComments.map((comment) => ({
-      ...comment
+      ...comment,
+      likesCount: createlikeMap(forumLikesCounts.data!)[comment.id] || 0
     })),
     qnaComments: qnaComments.map((comment) => ({
-      ...comment
+      ...comment,
+      likesCount: createlikeMap(qnaLikesCounts.data!)[comment.id] || 0
     }))
   };
 
   const postData = {
-    archivePosts: archivePosts.data.map((post) => ({
+    archivePosts: archivePosts.data!.map((post) => ({
       ...post,
       user: postUsers.find((user) => user.id === post.user_id),
-      tags: archiveTags.data.filter((tag) => tag.post_id === post.id).map((tag) => tag.tag)
+      tags: archiveTags.data!.filter((tag) => tag.post_id === post.id).map((tag) => tag.tag),
+      commentsCount: createCommentMap(archiveCommentCounts.data!)[post.id] || 0
     })),
-    forumPosts: forumPosts.data.map((post) => ({
+    forumPosts: forumPosts.data!.map((post) => ({
       ...post,
       user: postUsers.find((user) => user.id === post.user_id),
-      tags: forumTags.data.filter((tag) => tag.post_id === post.id).map((tag) => tag.tag)
+      tags: forumTags.data!.filter((tag) => tag.post_id === post.id).map((tag) => tag.tag),
+      commentsCount: createCommentMap(forumCommentCounts.data!)[post.id] || 0
     })),
-    qnaPosts: qnaPosts.data.map((post) => ({
+    qnaPosts: qnaPosts.data!.map((post) => ({
       ...post,
       user: postUsers.find((user) => user.id === post.user_id),
-      tags: qnaTags.data.filter((tag) => tag.post_id === post.id).map((tag) => tag.tag)
+      tags: qnaTags.data!.filter((tag) => tag.post_id === post.id).map((tag) => tag.tag),
+      commentsCount: createCommentMap(qnaCommentCounts.data!)[post.id] || 0
     }))
   };
 

@@ -108,7 +108,7 @@ const Search = () => {
             </div>
           ) : selectedCategory === 'archive' ? (
             <div>
-              <span className=" text-subtitle1 font-medium text-neutral-700"> 라이브러리 게시글 </span>
+              <span className=" text-subtitle1 font-medium text-neutral-700"> 아카이브 게시글 </span>
               <span className="text-subtitle1 font-bold text-neutral-800"> ({data.archive.length}) </span>
             </div>
           ) : selectedCategory === 'forum' ? (

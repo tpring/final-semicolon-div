@@ -74,7 +74,7 @@ const FilterControls = ({
             }}
             className={`w-[87px] h-[40px] mr-6 ${
               selectedCategory === 'all'
-                ? 'text-subtitle1 font-medium text-main-400 border border-main-400 rounded-lg bg-sub-50'
+                ? 'text-subtitle1 font-medium text-main-400 border border-main-400 rounded-lg bg-main-50'
                 : 'text-subtitle1 font-medium text-neutral-700 border border-neutral-100 rounded-lg bg-white'
             }`}
           >
@@ -87,7 +87,7 @@ const FilterControls = ({
             }}
             className={`w-[87px] h-[40px] mr-6 ${
               selectedCategory === 'qna'
-                ? 'text-subtitle1 font-medium text-main-400 border border-main-400 rounded-lg bg-sub-50'
+                ? 'text-subtitle1 font-medium text-main-400 border border-main-400 rounded-lg bg-main-50'
                 : 'text-subtitle1 font-medium text-neutral-700 border border-neutral-100 rounded-lg bg-white'
             }`}
           >
@@ -98,7 +98,7 @@ const FilterControls = ({
               onClick={toggleForumMenu}
               className={`w-[118px] h-[40px] p-[8px_16px_8px_16px] mr-6 flex items-center justify-between ${
                 selectedCategory === 'forum'
-                  ? 'text-subtitle1 font-medium text-main-400 border border-main-400 rounded-lg bg-sub-50'
+                  ? 'text-subtitle1 font-medium text-main-400 border border-main-400 rounded-lg bg-main-50'
                   : 'text-subtitle1 font-medium text-neutral-700 border border-neutral-100 rounded-lg bg-white'
               }`}
             >
@@ -128,7 +128,7 @@ const FilterControls = ({
                 <li
                   className={`flex items-center justify-between p-[8px_16px_8px_32px] h-[40px] ${
                     selectedForumCategory === '전체'
-                      ? 'text-subtitle1 font-medium text-main-400'
+                      ? 'text-subtitle1 font-medium text-main-400 bg-main-50'
                       : 'text-subtitle1 font-medium text-neutral-700'
                   } cursor-pointer`}
                 >
@@ -223,18 +223,18 @@ const FilterControls = ({
             }}
             className={`w-[118px] h-[40px] mr-6 ${
               selectedCategory === 'archive'
-                ? 'text-subtitle1 font-medium text-main-400 border border-main-400 rounded-lg bg-sub-50'
+                ? 'text-subtitle1 font-medium text-main-400 border border-main-400 rounded-lg bg-main-50'
                 : 'text-subtitle1 font-medium text-neutral-700 border border-neutral-100 rounded-lg bg-white'
             }`}
           >
-            라이브러리
+            아카이브
           </button>
         </div>
         <button
           onClick={toggleMenu}
           className={` flex items-center justify-between p-[8px_16px_8px_16px] w-[127px] h-[40px] mr-6 ${
             selectedType !== 'all'
-              ? 'text-subtitle1 font-medium text-main-400 border border-main-400 rounded-lg bg-sub-50'
+              ? 'text-subtitle1 font-medium text-main-400 border border-main-400 rounded-lg bg-main-50'
               : 'text-subtitle1 font-medium text-neutral-700 border border-neutral-100 rounded-lg bg-white'
           }`}
         >
@@ -266,6 +266,19 @@ const FilterControls = ({
               필터
               <Down />
             </li>
+            <p
+              onClick={() => {
+                onTypeChange('all');
+                setShowMenu(false);
+              }}
+              className={`p-[8px_8px_8px_8px] h-[40px] center-alignment ${
+                selectedType === 'all'
+                  ? 'text-subtitle1 font-medium text-main-400 bg-main-50'
+                  : 'text-subtitle1 font-medium text-neutral-700'
+              } cursor-pointer`}
+            >
+              전체
+            </p>
             <p
               onClick={() => {
                 onTypeChange('post');
