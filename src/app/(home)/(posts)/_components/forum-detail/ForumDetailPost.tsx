@@ -35,23 +35,24 @@ const ForumDetailPost = ({ forumDetail }: { forumDetail: forumDetailType[] }) =>
   return (
     <div className="flex flex-col gap-4">
       {forumDetail?.map((post) => (
-        <div key={post.id} className="w-full flex flex-col gap-2 border-b-[1px] ">
+        <div key={post.id} className="w-full flex flex-col gap-6 border-b-[1px] ">
           <div className="flex  justify-between items-center   ">
-            <div className="flex gap-2">
+            <div className="flex gap-4">
               <Image
                 src={post.user.profile_image}
                 alt="forumUserImage"
-                width={100}
-                height={100}
-                className="rounded-full  h w-10 h-10 "
+                width={50}
+                height={50}
+                className="rounded-full  h w-[48px] h-[48px] "
               />
-              <div>
-                <h3>{post.user.nickname}</h3>
-                <div className=" flex justify-start items-center gap-3">
-                  <p>{post.forum_category}</p>
-                  <p>
+              <div className=" flex flex-col gap-2">
+                <p className="text-subtitle1 font-medium">{post.user.nickname}</p>
+                <div className=" flex justify-start items-center gap-2">
+                  <p className="text-body2 font-regular text-neutral-300">{post.forum_category}</p>
+                  <p className="text-neutral-100">•</p>
+                  <p className="text-body2 font-regular text-neutral-300">
                     {timeForToday(post.updated_at ? post.updated_at : post.created_at)}
-                    <span className="text-xs">{post.updated_at && '(수정됨)'}</span>
+                    <span>{post.updated_at !== post.created_at && '(수정됨)'}</span>
                   </p>
                 </div>
               </div>
@@ -62,11 +63,17 @@ const ForumDetailPost = ({ forumDetail }: { forumDetail: forumDetailType[] }) =>
                   <KebabButton />
                 </div>
                 {kebobToggle ? (
-                  <div className="w-[105px] right-0 absolute flex flex-col justify-center items-center bg-white shadow-lg border rounded-lg">
-                    <button className="h-[44px]" onClick={handlePostRetouch}>
+                  <div className="w-[105px] right-0 absolute flex flex-col justify-center items-center shadow-lg border rounded-lg ">
+                    <button
+                      className="h-[44px] w-full rounded-t-lg hover:bg-main-50 hover:text-main-400 "
+                      onClick={handlePostRetouch}
+                    >
                       게시글 수정
                     </button>
-                    <button className="h-[44px]" onClick={handlePostDelete}>
+                    <button
+                      className="h-[44px]  w-full rounded-b-lg hover:bg-main-50 hover:text-main-400"
+                      onClick={handlePostDelete}
+                    >
                       게시글 삭제
                     </button>
                   </div>
@@ -74,12 +81,14 @@ const ForumDetailPost = ({ forumDetail }: { forumDetail: forumDetailType[] }) =>
               </div>
             )}
           </div>
-          <div className="flex flex-col gap-4 mt-4">
+          <div className="flex flex-col gap-6  whitespace-pre-wrap break-words" data-color-mode="light">
             <p className="text-h4 font-bold">{post.title}</p>
             <MDEditor.Markdown source={post.content} className="text-body1 font-regular" />
           </div>
-          <div className="flex justify-between items-center mb-4">
-            <p className="text-body1 font-regular">{post.created_at.slice(0, 10).replace(/-/g, '.')}</p>
+          <div className="flex justify-between items-center mb-6">
+            <p className="text-body1 font-regular text-neutral-400">
+              {post.created_at.slice(0, 10).replace(/-/g, '.')}
+            </p>
             <div className="flex gap-5">
               <LikeButton id={post.id} type="forum" />
               <BookmarkButton id={post.id} type="forum" />
@@ -89,7 +98,7 @@ const ForumDetailPost = ({ forumDetail }: { forumDetail: forumDetailType[] }) =>
               >
                 <Share />
               </button>
-              <p> {post.comment[0].count}개의 댓글</p>
+              <p className="text-subtitle1 font-medium text-main-400"> {post.comment[0].count}개의 댓글</p>
             </div>
           </div>
         </div>

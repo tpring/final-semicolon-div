@@ -93,7 +93,6 @@ const MyActivities = () => {
           onCategoryChange={setSelectedCategory}
           onForumCategoryChange={setSelectedForumCategory}
           onTypeChange={setSelectedType}
-          forumCategories={['일상', '커리어', '자기개발', '토론', '코드 리뷰']}
         />
         {renderActiveTab()}
       </div>

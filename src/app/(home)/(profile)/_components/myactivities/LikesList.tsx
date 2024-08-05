@@ -218,6 +218,8 @@ const LikesList = ({ selectedCategory, selectedForumCategory, selectedType }: Li
                 profile_image={item.user.profile_image}
                 forum_category={item.forum_category}
                 created_at={item.created_at}
+                likesCount={item.likesCount}
+                commentsCount={item.commentsCount}
                 isSelected={selectedItems.has(item.id)}
                 onCheckboxChange={(id) => handleCheckboxChange(id, item.category, 'comment')}
               />

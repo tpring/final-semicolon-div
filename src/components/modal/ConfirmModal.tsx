@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Modal from './Modal';
 
 type ConfirmModalProps = {
@@ -9,6 +9,12 @@ type ConfirmModalProps = {
 };
 
 const ConfirmModal = ({ isOpen, onClose, onConfirm, message }: ConfirmModalProps) => {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    }
+  }, [isOpen]);
+
   const handleConfirm = () => {
     onConfirm();
     onClose();

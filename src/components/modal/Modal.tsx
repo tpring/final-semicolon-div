@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 type ModalProps = {
   isOpen: boolean;
   onClose: () => void;
@@ -5,6 +7,12 @@ type ModalProps = {
 };
 
 const Modal = ({ isOpen, onClose, children }: ModalProps) => {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (

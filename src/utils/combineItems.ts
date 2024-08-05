@@ -5,13 +5,17 @@ export const combineItems = (posts: PostsData, comments: CommentsData): Combined
   const commentPostArray = [...comments.archive.posts, ...comments.forum.posts, ...comments.qna.posts];
   const commentArray = [...comments.archive.comments, ...comments.forum.comments, ...comments.qna.comments];
 
-  const postMap = new Map<string, { title: string; tags: string[]; category: string; forum_category: string }>();
+  const postMap = new Map<
+    string,
+    { title: string; tags: string[]; category: string; forum_category: string; commentsCount: string }
+  >();
   commentPostArray.forEach((post) => {
     postMap.set(post.id, {
       title: post.title,
       tags: post.tags || [],
       category: post.category,
-      forum_category: post.forum_category || ''
+      forum_category: post.forum_category || '',
+      commentsCount: post.commentsCount
     });
   });
 
@@ -35,7 +39,13 @@ export const combineItems = (posts: PostsData, comments: CommentsData): Combined
       }
     })),
     ...commentArray.map((comment) => {
-      const postInfo = postMap.get(comment.post_id) || { title: '', tags: [], category: '', forum_category: '' };
+      const postInfo = postMap.get(comment.post_id) || {
+        title: '',
+        tags: [],
+        category: '',
+        forum_category: '',
+        commentsCount: ''
+      };
       return {
         type: 'comment' as const,
         id: comment.id,
@@ -46,6 +56,8 @@ export const combineItems = (posts: PostsData, comments: CommentsData): Combined
         created_at: comment.created_at,
         category: postInfo.category,
         forum_category: postInfo.forum_category,
+        likesCount: comment.likesCount,
+        commentsCount: postInfo.commentsCount,
         user: {
           id: comment.user.id,
           nickname: comment.user.nickname,
@@ -62,13 +74,17 @@ export const myCombineItems = (posts: PostsData, comments: CommentsData): MyComb
   const commentPostArray = [...comments.archive.posts, ...comments.forum.posts, ...comments.qna.posts];
   const commentArray = [...comments.archive.comments, ...comments.forum.comments, ...comments.qna.comments];
 
-  const postMap = new Map<string, { title: string; tags: string[]; category: string; forum_category: string }>();
+  const postMap = new Map<
+    string,
+    { title: string; tags: string[]; category: string; forum_category: string; commentsCount: string }
+  >();
   commentPostArray.forEach((post) => {
     postMap.set(post.id, {
       title: post.title,
       tags: post.tags || [],
       category: post.category,
-      forum_category: post.forum_category || ''
+      forum_category: post.forum_category || '',
+      commentsCount: post.commentsCount
     });
   });
 
@@ -91,7 +107,8 @@ export const myCombineItems = (posts: PostsData, comments: CommentsData): MyComb
         title: '',
         tags: [],
         category: '',
-        forum_category: ''
+        forum_category: '',
+        commentsCount: ''
       };
 
       return {
@@ -104,6 +121,8 @@ export const myCombineItems = (posts: PostsData, comments: CommentsData): MyComb
         created_at: comment.created_at,
         category: postInfo.category,
         forum_category: postInfo.forum_category,
+        likesCount: comment.likesCount,
+        commentsCount: postInfo.commentsCount,
         user: comment.user
       };
     })
