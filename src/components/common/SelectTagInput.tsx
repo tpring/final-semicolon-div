@@ -27,6 +27,7 @@ const SelectTagInput = ({ tagList, setTagList }: SelectTagInputProps) => {
         return TAG.name === tag.name ? { name: tag.name, selected: !tag.selected } : TAG;
       })
     );
+    setSelectedCount((prev) => prev + 1);
   };
 
   const handleRemoveTag = (tag: Ttag): void => {
@@ -84,7 +85,6 @@ const SelectTagInput = ({ tagList, setTagList }: SelectTagInputProps) => {
                   key={tag.name}
                   onClick={() => {
                     handleSelect(tag);
-                    setSelectedCount((prev) => prev + 1);
                   }}
                 >
                   {tag.name}
