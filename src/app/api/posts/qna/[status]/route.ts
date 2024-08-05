@@ -17,7 +17,7 @@ const getSelectedQnaPosts = async (page: number, limit: number) => {
     .range(page * limit, (page + 1) * limit - 1);
 
   if (error) {
-    console.log('qna', error);
+    // console.log('qna', error);
   }
 
   const { count, error: countError } = await supabase
@@ -26,7 +26,7 @@ const getSelectedQnaPosts = async (page: number, limit: number) => {
     .not('selected_comment', 'is', null);
 
   if (countError) {
-    console.log('countError', countError);
+    // console.log('countError', countError);
   }
 
   if (!posts || posts.length === 0) {
@@ -49,7 +49,7 @@ const getWaitingQnaPosts = async (page: number, limit: number) => {
     .range(page * limit, (page + 1) * limit - 1);
 
   if (error) {
-    console.log('qna', error);
+    // console.log('qna', error);
   }
 
   const { count, error: countError } = await supabase
@@ -58,7 +58,7 @@ const getWaitingQnaPosts = async (page: number, limit: number) => {
     .is('selected_comment', null);
 
   if (countError) {
-    console.log('countError', countError);
+    // console.log('countError', countError);
   }
 
   if (!posts || posts.length === 0) {
@@ -79,7 +79,7 @@ const getPopularQnaPost = async (page: number, limit: number) => {
     .order('updated_at', { ascending: false });
 
   if (error) {
-    console.error('error', error);
+    // console.error('error', error);
     return NextResponse.json({ data: [], error: error.message });
   }
 

@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
   if (signInError || !user) {
     return NextResponse.json({ error: 'Wrong information.' }, { status: 401 });
   }
-  console.log('유저정보', user);
+  // console.log('유저정보', user);
 
   // 로그인 성공 시 users 테이블에서 닉네임 가져오기
   const { data: profile, error: profileError } = await supabase
