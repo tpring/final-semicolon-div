@@ -137,7 +137,7 @@ const SignupForm = () => {
   return (
     <div className="flex items-center justify-center min-h-screen">
       <ToastContainer />
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-lg">
+      <div className="bg-white p-8 rounded-md shadow-lg w-full max-w-lg">
         <div className="flex items-center justify-center mb-16">
           <Logo />
         </div>

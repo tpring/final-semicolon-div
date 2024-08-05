@@ -85,7 +85,7 @@ function LoginForm() {
               className="w-full p-3 border rounded"
             />
           </div>
-          <button type="submit" className="w-full p-3 bg-main-100 hover:bg-main-400 text-white rounded">
+          <button type="submit" className="w-full p-3 bg-main-100 hover:bg-main-400 text-white rounded-md">
             로그인
           </button>
         </form>
