@@ -66,7 +66,7 @@ function ArchiveReply({ comment_id }: { comment_id: string }) {
       toast.success('댓글이 수정되었습니다!');
     },
     onError: (error: any) => {
-      console.error('Update Mutation Error:', error.message);
+      // console.error('Update Mutation Error:', error.message);
       toast.error('댓글 수정에 실패했습니다.');
     }
   });
@@ -103,7 +103,7 @@ function ArchiveReply({ comment_id }: { comment_id: string }) {
       toast.success('댓글이 삭제되었습니다.');
     },
     onError: (error: any) => {
-      console.error('Delete Mutation Error:', error.message);
+      // console.error('Delete Mutation Error:', error.message);
       toast.error('댓글 삭제에 실패했습니다.');
     }
   });

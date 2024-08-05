@@ -54,7 +54,7 @@ export const PATCH = async (request: Request, { params }: Tparams) => {
   const comment_id = params.id;
 
   const answerData = await request.json();
-  console.log(answerData);
+  // console.log(answerData);
   const { data, error: loadError } = await supabase.from('qna_comments').update(answerData).eq('id', comment_id);
 
   return loadError ? Response.json(POSTING_ERROR_MASSAGE) : Response.json({ data });
