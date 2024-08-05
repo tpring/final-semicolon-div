@@ -113,9 +113,15 @@ const BestForum = () => {
                       <Image src={forum.thumbnail} alt="forumThumbnail" width={210} height={210} />
                     ) : null}
                     <h1 className="text-h5 font-bold ">{forum.title}</h1>
-                    <div className="text-body2 font-regular normal whitespace-pre-wrap break-words overflow-hidden  ">
-                      <MDEditor.Markdown source={cutText(removeImageAndCodeBlocks(forum.content), 300)} />
-                    </div>
+                    {forum.thumbnail ? (
+                      <div className="text-body2 font-regular normal whitespace-pre-wrap break-words overflow-hidden  ">
+                        <MDEditor.Markdown source={cutText(removeImageAndCodeBlocks(forum.content), 100)} />
+                      </div>
+                    ) : (
+                      <div className="text-body2 font-regular normal whitespace-pre-wrap break-words overflow-hidden  ">
+                        <MDEditor.Markdown source={cutText(removeImageAndCodeBlocks(forum.content), 200)} />
+                      </div>
+                    )}
                   </div>
                   <p className=" text-right text-body font-regular text-neutral-400 mt-4">
                     {forum.created_at.slice(0, 10).replace(/-/g, '.')}
