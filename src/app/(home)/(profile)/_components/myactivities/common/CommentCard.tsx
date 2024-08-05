@@ -44,17 +44,17 @@ const CommentCard = ({
   });
 
   return (
-    <Link href={`/${category}/${id}`}>
-      <div className="w-[850px] border-b p-4 ">
-        <div className="flex ">
-          <div className="mr-4">
-            <input
-              type="checkbox"
-              checked={isSelected}
-              onChange={() => onCheckboxChange(id)}
-              className="w-[18px] h-[18px]"
-            />
-          </div>
+    <div className="w-[850px] border-b p-4 ">
+      <div className="flex ">
+        <div className="mr-4">
+          <input
+            type="checkbox"
+            checked={isSelected}
+            onChange={() => onCheckboxChange(id)}
+            className="w-[18px] h-[18px]"
+          />
+        </div>
+        <Link href={`/${category}/${id}`}>
           <div className="">
             <p className="mb-2 text-neutral-900 text-subtitle1 font-bold line-clamp-1 max-w-[600px]"> {comment}</p>
             <p>
@@ -81,10 +81,10 @@ const CommentCard = ({
                 ))}
               </div>
             )}
-          </div>
-        </div>
+          </div>{' '}
+        </Link>
       </div>
-    </Link>
+    </div>
   );
 };
 

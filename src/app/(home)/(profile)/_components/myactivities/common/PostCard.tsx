@@ -45,17 +45,17 @@ const PostCard = ({
   });
 
   return (
-    <Link href={`/${category}/${id}`}>
-      <div className="w-[850px] border-b p-4 ">
-        <div className="flex ">
-          <div className="mr-4">
-            <input
-              type="checkbox"
-              checked={isSelected}
-              onChange={() => onCheckboxChange(id)}
-              className="w-[18px] h-[18px]"
-            />
-          </div>
+    <div className="w-[850px] border-b p-4 ">
+      <div className="flex ">
+        <div className="mr-4">
+          <input
+            type="checkbox"
+            checked={isSelected}
+            onChange={() => onCheckboxChange(id)}
+            className="w-[18px] h-[18px]"
+          />
+        </div>
+        <Link href={`/${category}/${id}`}>
           <div className="">
             <div className="flex items-center mb-2">
               <span className="text-neutral-900 text-subtitle1 font-bold line-clamp-1 max-w-[600px]">{title}</span>
@@ -88,9 +88,9 @@ const PostCard = ({
               </div>
             )}
           </div>
-        </div>
+        </Link>
       </div>
-    </Link>
+    </div>
   );
 };
 
