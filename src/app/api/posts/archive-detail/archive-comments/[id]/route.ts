@@ -17,12 +17,12 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
     .from('archive_comments')
     .select('*', { count: 'exact', head: true })
     .eq('post_id', params.id);
+
   if (error) {
-    // console.error('error', error.message);
     return NextResponse.json({ data: [], count: 0, error: error.message });
   }
 
-  return NextResponse.json({ data, count, id: page });
+  return NextResponse.json({ data, count });
 };
 
 export const POST = async (request: Request) => {
