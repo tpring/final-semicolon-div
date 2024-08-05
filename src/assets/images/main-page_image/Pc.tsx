@@ -1,10 +1,10 @@
 const Pc = () => {
   return (
     <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <g clip-path="url(#clip0_3003_70230)">
+      <g clipPath="url(#clip0_3003_70230)">
         <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
+          fillRule="evenodd"
+          clipRule="evenodd"
           d="M33.561 6.04688H6.56299C5.71799 6.04688 5.03299 6.73188 5.03299 7.57688V28.2659H35.091V7.57688C35.091 6.73188 34.406 6.04688 33.561 6.04688Z"
           fill="#333D4B"
         />

@@ -8,9 +8,9 @@ const BlueCheck = () => {
       <path
         d="M11 17L14.5289 20.8637C14.5379 20.8736 14.5478 20.8827 14.5589 20.8902C14.8348 21.0763 15.2822 21.0188 15.4522 20.7709L21 11"
         stroke="white"
-        stroke-width="2.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );

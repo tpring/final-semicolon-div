@@ -1,15 +1,15 @@
 const CarouselRightHover = () => {
   return (
     <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <g clip-path="url(#clip0_2416_2103)">
+      <g clipPath="url(#clip0_2416_2103)">
         <g filter="url(#filter0_d_2416_2103)">
           <circle cx="32" cy="32" r="26" fill="#DBDBDB" />
         </g>
         <path
           d="M25 21L38.7998 31.8427C38.9018 31.9228 38.9018 32.0772 38.7998 32.1573L25 43"
           stroke="#8F8F8F"
-          stroke-width="3"
-          stroke-linecap="round"
+          strokeWidth="3"
+          strokeLinecap="round"
         />
       </g>
       <defs>
@@ -20,9 +20,9 @@ const CarouselRightHover = () => {
           width="68"
           height="68"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
             in="SourceAlpha"
             type="matrix"
