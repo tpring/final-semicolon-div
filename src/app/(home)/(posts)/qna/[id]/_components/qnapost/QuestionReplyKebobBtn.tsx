@@ -1,3 +1,4 @@
+import { revalidatePostTag } from '@/actions/revalidatePostTag';
 import KebabButton from '@/assets/images/common/KebabButton';
 import { useQnaDetailStore } from '@/store/qnaDetailStore';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -21,6 +22,7 @@ const QuestionReplyKebobBtn = ({ replyId, setReplyCount, setIsEdit }: QuestionRe
     toast.success('댓글 삭제 완료', { autoClose: 1500, hideProgressBar: true });
     setOpenKebab(false);
     setReplyCount((prev) => prev - 1);
+    await revalidatePostTag(`qna-detail-${postId}`);
     return;
   };
 
@@ -57,7 +59,7 @@ const QuestionReplyKebobBtn = ({ replyId, setReplyCount, setIsEdit }: QuestionRe
           className={`${openKebab ? 'border border-neutral-100 bg-white' : 'hidden'} rounded-lg flex flex-col absolute w-[105px] h-[88px] right-0 text-center hover:border-main-400 text-body2 z-10`}
         >
           <li
-            className={`h-[44px] content-center ${openKebab ? '' : 'hidden'} hover:bg-main-100 hover:text-main-400 rounded-t-lg `}
+            className={`h-[44px] content-center ${openKebab ? '' : 'hidden'} hover:bg-main-100 hover:text-main-400 rounded-t-lg cursor-pointer`}
             onClick={() => {
               setIsEdit(true);
               setOpenKebab(false);
@@ -66,7 +68,7 @@ const QuestionReplyKebobBtn = ({ replyId, setReplyCount, setIsEdit }: QuestionRe
             댓글 수정
           </li>
           <li
-            className={`h-[44px]  content-center ${openKebab ? '' : 'hidden'}  hover:bg-main-100 hover:text-main-400 rounded-b-lg`}
+            className={`h-[44px]  content-center ${openKebab ? '' : 'hidden'}  hover:bg-main-100 hover:text-main-400 rounded-b-lg cursor-pointer`}
             onClick={handleDeleteReply}
           >
             댓글 삭제

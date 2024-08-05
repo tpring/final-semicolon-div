@@ -13,6 +13,7 @@ import BookmarkButton from '@/components/common/BookmarkButton';
 import Share from '@/assets/images/common/Share';
 import KebabButton from '@/assets/images/common/KebabButton';
 import { handleRinkCopy } from '@/utils/handleRinkCopy';
+import { toast } from 'react-toastify';
 
 const ArchiveDetailPost = ({ archiveDetail }: { archiveDetail: archiveDetailType[] }) => {
   const params = useParams();
@@ -47,12 +48,11 @@ const ArchiveDetailPost = ({ archiveDetail }: { archiveDetail: archiveDetailType
       }
     },
     onSuccess: () => {
-      alert('게시글이 성공적으로 삭제되었습니다.');
+      toast.success('게시글이 성공적으로 삭제되었습니다.');
       router.back();
     },
     onError: (error: Error) => {
-      // console.error(error);
-      alert('게시글 삭제에 실패했습니다. 다시 시도해 주세요.');
+      toast.error('게시글 삭제에 실패했습니다. 다시 시도해 주세요.');
     }
   });
 
