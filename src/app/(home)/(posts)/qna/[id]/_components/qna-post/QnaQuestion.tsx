@@ -4,9 +4,9 @@ import { TqnaData } from '@/types/posts/qnaDetailTypes';
 import Image from 'next/image';
 import Share from '@/assets/images/common/Share';
 import LikeButton from '@/components/common/LikeButton';
-import QuestionReplies from '../qnacomments/QuestionReplies';
+import QuestionReplies from '../qna-comments/QuestionReplies';
 import { useAuth } from '@/context/auth.context';
-import QuestionKebobBtn from '../kebobbtn/QuestionKebobBtn';
+import QuestionKebobBtn from '../kebob-btn/QuestionKebobBtn';
 import { timeForToday } from '@/utils/timeForToday';
 import BookmarkButton from '@/components/common/BookmarkButton';
 

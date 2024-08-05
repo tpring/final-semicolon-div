@@ -6,7 +6,7 @@ import { timeForToday } from '@/utils/timeForToday';
 import { useAuth } from '@/context/auth.context';
 import { toast } from 'react-toastify';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import QuestionReplyKebobBtn from '../kebobbtn/QuestionReplyKebobBtn';
+import QuestionReplyKebobBtn from '../kebob-btn/QuestionReplyKebobBtn';
 import { useQnaDetailStore } from '@/store/qnaDetailStore';
 
 type QuestionReplyProps = {

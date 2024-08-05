@@ -1,6 +1,6 @@
 import MDEditor, { commands } from '@uiw/react-md-editor';
 import { Dispatch, MouseEventHandler, SetStateAction, useState } from 'react';
-import AnswerReplytKebobBtn from '../kebobbtn/AnswerReplytKebobBtn';
+import AnswerReplytKebobBtn from '../kebob-btn/AnswerReplytKebobBtn';
 import { Treply } from '@/types/posts/qnaDetailTypes';
 import Image from 'next/image';
 import { timeForToday } from '@/utils/timeForToday';
