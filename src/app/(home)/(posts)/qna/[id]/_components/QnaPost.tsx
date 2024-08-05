@@ -4,10 +4,10 @@ import BackArrowIcon from '@/assets/images/upsert_image/BackArrowIcon';
 import { useAuth } from '@/context/auth.context';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import QnaQuestion from './qnapost/QnaQuestion';
-import PostingQnaAnswer from './qnapost/PostingQnaAnswer';
+import QnaQuestion from './qna-post/QnaQuestion';
+import PostingQnaAnswer from './qna-post/PostingQnaAnswer';
 import { TqnaData } from '@/types/posts/qnaDetailTypes';
-import QnaAnswers from './qnapost/QnaAnswers';
+import QnaAnswers from './qna-post/QnaAnswers';
 import GoToTop from '@/assets/images/common/GoToTop';
 import { useQnaDetailStore } from '@/store/qnaDetailStore';
 
