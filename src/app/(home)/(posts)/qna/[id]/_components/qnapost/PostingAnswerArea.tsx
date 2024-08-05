@@ -1,6 +1,6 @@
 import CustomMDEditor from '@/app/(home)/(upsert)/_components/CustomMDEditor';
 import { Dispatch, MouseEventHandler, SetStateAction, useState } from 'react';
-import PostingAnswerModal from './PostingAnswerModal';
+import PostingAnswerModal from '../confirm-modal/PostingAnswerModal';
 import { useAuth } from '@/context/auth.context';
 import { toast } from 'react-toastify';
 import { useMutation, useQueryClient } from '@tanstack/react-query';

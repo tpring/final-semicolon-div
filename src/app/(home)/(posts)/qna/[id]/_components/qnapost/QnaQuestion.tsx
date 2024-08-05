@@ -6,10 +6,9 @@ import Share from '@/assets/images/common/Share';
 import LikeButton from '@/components/common/LikeButton';
 import QuestionReplies from '../qnacomments/QuestionReplies';
 import { useAuth } from '@/context/auth.context';
-import QuestionKebobBtn from './QuestionKebobBtn';
+import QuestionKebobBtn from '../kebobbtn/QuestionKebobBtn';
 import { timeForToday } from '@/utils/timeForToday';
 import BookmarkButton from '@/components/common/BookmarkButton';
-import { useQueryClient } from '@tanstack/react-query';
 
 type QnaQuestionProps = {
   questionData: TqnaData;

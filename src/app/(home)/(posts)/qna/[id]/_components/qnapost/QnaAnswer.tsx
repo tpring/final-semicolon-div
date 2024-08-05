@@ -6,7 +6,7 @@ import Share from '@/assets/images/common/Share';
 import AnswerReplies from '../qnacomments/AnswerReplies';
 import LikeButton from '@/components/common/LikeButton';
 import { useAuth } from '@/context/auth.context';
-import AnswerKebobBtn from './AnswerKebobBtn';
+import AnswerKebobBtn from '../kebobbtn/AnswerKebobBtn';
 import { timeForToday } from '@/utils/timeForToday';
 import BookmarkButton from '@/components/common/BookmarkButton';
 import CustomMDEditor from '@/app/(home)/(upsert)/_components/CustomMDEditor';
