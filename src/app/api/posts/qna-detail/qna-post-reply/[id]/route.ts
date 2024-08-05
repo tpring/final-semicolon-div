@@ -1,4 +1,4 @@
-import { POSTING_ERROR_MASSAGE } from '@/constants/upsert.api';
+import { DELETE_ERROR_MASSAGE, EDIT_ERROR_MASSAGE, POSTING_ERROR_MASSAGE } from '@/constants/upsert.api';
 import { createClient } from '@/supabase/server';
 import { NextRequest } from 'next/server';
 
@@ -45,7 +45,7 @@ export const PATCH = async (request: Request, { params }: Tparams) => {
     .update(qnaPostReplyData)
     .eq('id', post_reply_id);
 
-  return loadError ? Response.json(POSTING_ERROR_MASSAGE) : Response.json({ data });
+  return loadError ? Response.json(EDIT_ERROR_MASSAGE) : Response.json({ data });
 };
 
 export const DELETE = async (request: Request, { params }: Tparams) => {
@@ -54,5 +54,5 @@ export const DELETE = async (request: Request, { params }: Tparams) => {
 
   const { data, error: deleteError } = await supabase.from('qna_post_reply').delete().eq('id', post_reply_id);
 
-  return deleteError ? Response.json(POSTING_ERROR_MASSAGE) : Response.json({ data });
+  return deleteError ? Response.json(DELETE_ERROR_MASSAGE) : Response.json({ data });
 };

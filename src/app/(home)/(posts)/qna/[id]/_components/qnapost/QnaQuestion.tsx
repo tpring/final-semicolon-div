@@ -20,9 +20,6 @@ const QnaQuestion = ({ questionData }: QnaQuestionProps) => {
   const [openQuestionReply, setOpenQuestionReply] = useState<boolean>(false);
   const [replyCount, setReplyCount] = useState<number>(questionData?.qna_post_reply[0].count);
 
-  const test = useQueryClient();
-  const testData = test.getQueriesData({ queryKey: ['qnaReply', questionData.id] });
-
   const handleReplyClick = () => {
     setOpenQuestionReply((prev) => !prev);
   };
@@ -54,7 +51,7 @@ const QnaQuestion = ({ questionData }: QnaQuestionProps) => {
           <span className="text-body1 text-neutral-500">{timeForToday(questionData.updated_at ?? '')}</span>
         </div>
       </div>
-      <div className=" max-w-[1204px] flex items-center justify-center my-6">
+      <div className=" max-w-[1204px] flex  my-6">
         <MDEditor.Markdown style={{ maxWidth: '1156px' }} source={questionData.content} />
       </div>
       <div className="flex justify-between h-[59px] items-center">
