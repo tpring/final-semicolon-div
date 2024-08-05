@@ -7,7 +7,9 @@ const SearchBar = () => {
   const [keyword, setKeyword] = useState('');
 
   const handleSearch = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (keyword === '') {
+      return;
+    } else if (e.key === 'Enter') {
       router.push(`/search?searchType=title&keyword=${keyword}`);
     }
   };

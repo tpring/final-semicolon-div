@@ -9,7 +9,6 @@ type FilterControlsProps = {
   onCategoryChange: (category: 'all' | 'qna' | 'forum' | 'archive') => void;
   onForumCategoryChange: (category: string | null) => void;
   onTypeChange: (type: 'all' | 'post' | 'comment') => void;
-  forumCategories: string[];
 };
 
 const FilterControls = ({
@@ -24,7 +23,7 @@ const FilterControls = ({
   const [showMenu, setShowMenu] = useState(false);
 
   const forumMenuRef = useRef<HTMLDivElement | null>(null);
-  const menuButtonRef = useRef<HTMLButtonElement | null>(null);
+  const menuButtonRef = useRef<HTMLDivElement | null>(null);
 
   const toggleForumMenu = (e: React.MouseEvent<HTMLButtonElement>) => {
     setShowForumMenu(!showForumMenu);
@@ -253,7 +252,7 @@ const FilterControls = ({
         </button>
         {showMenu && (
           <div
-            ref={forumMenuRef}
+            ref={menuButtonRef}
             className="absolute z-[1000] right-[48px] w-[127px] border border-neutral-100 rounded-lg bg-white hover:border hover:border-main-400 "
           >
             <li
