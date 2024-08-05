@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 
 type PostingAnswerModalProps = {
   isModalOpen: boolean;
@@ -7,7 +7,7 @@ type PostingAnswerModalProps = {
   setToggleAnswer: Dispatch<SetStateAction<boolean>>;
 };
 
-const PostingAnswerModal = ({ isModalOpen, setIsModalOpen, setContent, setToggleAnswer }: PostingAnswerModalProps) => {
+const PostingAnswerModal = ({ setIsModalOpen, setContent, setToggleAnswer }: PostingAnswerModalProps) => {
   const handleModalCancle = () => {
     document.body.style.overflow = 'unset';
     setIsModalOpen(false);

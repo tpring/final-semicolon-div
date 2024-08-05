@@ -1,13 +1,10 @@
 import { Treply } from '@/types/posts/qnaDetailTypes';
-import MDEditor from '@uiw/react-md-editor';
-import Image from 'next/image';
 import NotFound from '@/app/not-found';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import Loading from '@/app/(home)/loading';
 import { Dispatch, SetStateAction, useState } from 'react';
 import AnswerReplyForm from './AnswerReplyForm';
 import { useAuth } from '@/context/auth.context';
-
 import AnswerReply from './AnswerReply';
 
 type AnswerCommentsProps = {
@@ -17,7 +14,6 @@ type AnswerCommentsProps = {
 };
 
 const AnswerReplies = ({ commentId, replyCount, setReplyCount }: AnswerCommentsProps) => {
-  const { me } = useAuth();
   const pageParamList = [];
   for (let i = 0; replyCount - i * 5 > 0; i++) {
     pageParamList.push(i + 1);
