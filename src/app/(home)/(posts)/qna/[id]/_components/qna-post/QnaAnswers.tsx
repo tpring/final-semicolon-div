@@ -3,7 +3,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import NotFound from '@/app/not-found';
 import Loading from '@/app/(home)/loading';
 import { useInView } from 'react-intersection-observer';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 import { TqnaCommentsWithReplyCount } from '@/types/posts/qnaDetailTypes';
 import { useQnaDetailStore } from '@/store/qnaDetailStore';
 

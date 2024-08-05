@@ -3,10 +3,10 @@ import Image from 'next/image';
 import { Dispatch, MouseEventHandler, SetStateAction, useState } from 'react';
 import { TqnaCommentsWithReplyCount } from '@/types/posts/qnaDetailTypes';
 import Share from '@/assets/images/common/Share';
-import AnswerReplies from '../qnacomments/AnswerReplies';
+import AnswerReplies from '../qna-comments/AnswerReplies';
 import LikeButton from '@/components/common/LikeButton';
 import { useAuth } from '@/context/auth.context';
-import AnswerKebobBtn from './AnswerKebobBtn';
+import AnswerKebobBtn from '../kebob-btn/AnswerKebobBtn';
 import { timeForToday } from '@/utils/timeForToday';
 import BookmarkButton from '@/components/common/BookmarkButton';
 import CustomMDEditor from '@/app/(home)/(upsert)/_components/CustomMDEditor';
@@ -15,6 +15,7 @@ import BlueCheck from '@/assets/images/common/BlueCheck';
 import { revalidate } from '@/actions/revalidate';
 import { toast } from 'react-toastify';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { revalidatePostTag } from '@/actions/revalidatePostTag';
 
 type QnaAnswerProps = {
   qnaComment: TqnaCommentsWithReplyCount;
@@ -40,7 +41,7 @@ const QnaAnswer = ({ qnaComment, questioner, index, qnaCommentsCount, setQnaComm
   const handleSelectComment: MouseEventHandler<HTMLButtonElement> = async () => {
     const data = await selectMutate();
     toast.success('채택이 완료되었습니다!', { autoClose: 1500, hideProgressBar: true });
-    await revalidate('/', 'layout');
+    await revalidatePostTag(`qna-detail-${postId}`);
     setSeletedComment(qnaComment.id);
   };
 

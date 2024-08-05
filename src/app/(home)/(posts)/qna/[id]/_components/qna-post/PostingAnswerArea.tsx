@@ -1,6 +1,6 @@
 import CustomMDEditor from '@/app/(home)/(upsert)/_components/CustomMDEditor';
 import { Dispatch, MouseEventHandler, SetStateAction, useState } from 'react';
-import PostingAnswerModal from './PostingAnswerModal';
+import PostingAnswerModal from '../confirm-modal/PostingAnswerModal';
 import { useAuth } from '@/context/auth.context';
 import { toast } from 'react-toastify';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -81,7 +81,7 @@ const PostingAnswerArea = ({ content, setContent, setToggleAnswer, setQnaComment
       <div className="flex gap-6 h-12 w-[228px] ml-auto mt-6 ">
         <button
           type="button"
-          className="text-neutral-500 w-[102px] h-12 bg-neutral-50 rounded-md"
+          className="text-neutral-100 w-[102px] h-12 bg-neutral-50 rounded-md"
           onClick={handleCancleClick}
         >
           취소하기

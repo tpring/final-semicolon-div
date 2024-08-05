@@ -1,12 +1,9 @@
-import MDEditor from '@uiw/react-md-editor';
-import Image from 'next/image';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import NotFound from '@/app/not-found';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import Loading from '@/app/(home)/loading';
 import { TpostReply } from '@/types/posts/qnaDetailTypes';
 import QuestionReplyForm from './QuestionReplyForm';
-import { useAuth } from '@/context/auth.context';
 import { useQnaDetailStore } from '@/store/qnaDetailStore';
 import QuestionReply from './QuestionReply';
 
@@ -34,6 +31,7 @@ const QuestionReplies = ({ postReplyCount, setReplyCount }: AnswerCommentsProps)
     }
     return data;
   };
+
   useEffect(() => {
     for (let i = 0; postReplyCount - i * 5 > 0; i++) {
       pageParamList.push(i + 1);
@@ -99,34 +97,3 @@ const QuestionReplies = ({ postReplyCount, setReplyCount }: AnswerCommentsProps)
 };
 
 export default QuestionReplies;
-
-{
-  /* <div key={reply.id} className={`relative left-0 border-b`}>
-<div className="flex h-[86px] mt-6 mx-5 items-center gap-[16px] ">
-  <div className="relative w-12 h-12">
-    <Image
-      src={reply.users?.profile_image ?? ''}
-      alt="Profile"
-      layout="fill"
-      objectFit="cover"
-      className="rounded-full"
-    />
-  </div>
-  <div>
-    <div>{reply.users.nickname}</div>
-    <div>{timeForToday(reply.updated_at!)}</div>
-  </div>
-  {me?.id === reply.user_id ? (
-    <div className="flex ml-auto ">
-      <QuestionReplyKebobBtn replyId={reply.id} setReplyCount={setReplyCount} />
-    </div>
-  ) : (
-    ''
-  )}
-</div>
-<div className="flex flex-col h-[86px] mb-6 mx-5  gap-[16px]">
-  <MDEditor.Markdown source={reply.post_reply_content} />
-  <div>{reply.created_at.slice(0, 10)}</div>
-</div>
-</div> */
-}
