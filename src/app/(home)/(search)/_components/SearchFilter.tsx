@@ -218,7 +218,7 @@ const SearchFilter = ({
                 : 'text-subtitle1 font-medium text-neutral-700 border border-neutral-100 rounded-lg bg-white'
             }`}
           >
-            라이브러리
+            아카이브
           </button>
         </div>
         <button
