@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useAuth } from '@/context/auth.context';
 import OAuthButtons from './OAuthButtons';
 import { createClient } from '@/supabase/client';
+import Logo from '@/assets/images/header/Logo';
 
 function LoginForm() {
   const router = useRouter();
@@ -48,12 +49,10 @@ function LoginForm() {
       });
 
       if (error) {
-        // console.error(`${provider} 로그인 오류:`, error);
         setError(`Failed to log in with ${provider}. ${error.message}`);
         toast.error(`Failed to log in with ${provider}.`);
       }
     } catch (err) {
-      // console.error('OAuth 로그인 중 에러가 발생했습니다:', err);
       setError('OAuth 로그인 실패');
       toast.error('OAuth 로그인 중 에러가 발생했습니다.');
     }
@@ -63,7 +62,9 @@ function LoginForm() {
     <div className="flex items-center justify-center min-h-screen ">
       <ToastContainer />
       <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">로그인</h1>
+        <div className="flex items-center justify-center mb-16">
+          <Logo />
+        </div>
         {error && <p className="text-red-500 mb-4">{error}</p>}
         <form onSubmit={handleLogin}>
           <div className="mb-4">
@@ -84,7 +85,7 @@ function LoginForm() {
               className="w-full p-3 border rounded"
             />
           </div>
-          <button type="submit" className="w-full p-3 bg-blue-500 hover:bg-blue-600 text-white rounded">
+          <button type="submit" className="w-full p-3 bg-main-100 hover:bg-main-400 text-white rounded">
             로그인
           </button>
         </form>

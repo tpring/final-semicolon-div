@@ -13,6 +13,7 @@ import { useAuth } from '@/context/auth.context';
 import OAuthButtons from './OAuthButtons';
 import useOAuthLogin from '@/hooks/useOAuthLogin';
 import NicknameCheck from './NicknameCheck ';
+import Logo from '@/assets/images/header/Logo';
 
 const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY as string;
 
@@ -137,7 +138,9 @@ const SignupForm = () => {
     <div className="flex items-center justify-center min-h-screen">
       <ToastContainer />
       <div className="bg-white p-8 rounded shadow-md w-full max-w-lg">
-        <h1 className="text-2xl font-bold mb-6 text-center">회원가입</h1>
+        <div className="flex items-center justify-center mb-16">
+          <Logo />
+        </div>
         <OAuthButtons handleLogin={handleOAuthLogin} />
         <form onSubmit={handleSignup} className="mt-4">
           <InputField
