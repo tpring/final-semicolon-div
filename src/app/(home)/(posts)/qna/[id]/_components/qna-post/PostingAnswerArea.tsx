@@ -6,6 +6,8 @@ import { toast } from 'react-toastify';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useQnaDetailStore } from '@/store/qnaDetailStore';
 import { revalidatePostTag } from '@/actions/revalidatePostTag';
+import { TAG_LIST } from '@/constants/tags';
+import SelectTagInput from '@/components/common/SelectTagInput';
 
 type PostingAnswerAreaProps = {
   content: string;
@@ -17,6 +19,7 @@ const PostingAnswerArea = ({ content, setContent, setToggleAnswer, setQnaComment
   const { me } = useAuth();
   const { postId } = useQnaDetailStore();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [tagList, setTagList] = useState<Array<Ttag>>(TAG_LIST);
   const queryClient = useQueryClient();
   const handleCancleClick = () => {
     setIsModalOpen(true);
@@ -71,7 +74,11 @@ const PostingAnswerArea = ({ content, setContent, setToggleAnswer, setQnaComment
         <h2 className="h-[27px] text-h5 font-bold mb-4">본문</h2>
         <CustomMDEditor content={content} setContent={setContent} />
       </div>
-      <div className="flex gap-6 h-12 w-[228px] ml-auto mt-6">
+      <div className="h-[182px] mt-12 flex flex-col gap-4">
+        <h5 className="text-h5 font-bold text-neutral-900">태그</h5>
+        <SelectTagInput tagList={tagList} setTagList={setTagList} />
+      </div>
+      <div className="flex gap-6 h-12 w-[228px] ml-auto mt-6 ">
         <button
           type="button"
           className="text-neutral-100 w-[102px] h-12 bg-neutral-50 rounded-md"
