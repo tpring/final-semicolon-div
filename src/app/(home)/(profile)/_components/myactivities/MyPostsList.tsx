@@ -160,7 +160,7 @@ const MyPostsList = ({ onTotalsChange, selectedCategory, selectedForumCategory, 
 
       toast.success('삭제가 완료 되었습니다.');
     } catch (error) {
-      console.error('삭제 처리 중 오류 발생:', error);
+      // console.error('삭제 처리 중 오류 발생:', error);
     }
   };
 

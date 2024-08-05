@@ -39,7 +39,7 @@ export const PATCH = async (request: Request, { params }: Tparams) => {
   const post_reply_id = params.id;
 
   const qnaPostReplyData = await request.json();
-  console.log(qnaPostReplyData, post_reply_id);
+  // console.log(qnaPostReplyData, post_reply_id);
   const { data, error: loadError } = await supabase
     .from('qna_post_reply')
     .update(qnaPostReplyData)

@@ -19,7 +19,7 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
     .eq('post_id', params.id);
 
   if (error) {
-    console.error('Error fetching data:', error.message);
+    // console.error('Error fetching data:', error.message);
     return NextResponse.json({ data: [], count: 0, error: error.message });
   }
 

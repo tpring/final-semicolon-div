@@ -18,7 +18,7 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
     .select('*', { count: 'exact', head: true })
     .eq('post_id', params.id);
   if (error) {
-    console.error('error', error.message);
+    // console.error('error', error.message);
     return NextResponse.json({ data: [], count: 0, error: error.message });
   }
 

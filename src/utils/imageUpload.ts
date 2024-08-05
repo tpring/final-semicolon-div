@@ -7,7 +7,7 @@ export const upDateImage = async (file: File, path: string, oldPath: string) => 
   const { error: uploadError } = await supabase.storage.from('profile_images').upload(path, file);
 
   if (uploadError) {
-    console.error('이미지 업로드 실패: ' + uploadError.message);
+    // console.error('이미지 업로드 실패: ' + uploadError.message);
     return null;
   }
   // 이미지 업로드 전에 기존 이미지 삭제
@@ -29,7 +29,7 @@ export const uploadImage = async (file: File, path: string) => {
   const { error: uploadError } = await supabase.storage.from('profile_images').upload(path, file);
 
   if (uploadError) {
-    console.error('이미지 업로드 실패: ' + uploadError.message);
+    // console.error('이미지 업로드 실패: ' + uploadError.message);
     return null;
   }
 

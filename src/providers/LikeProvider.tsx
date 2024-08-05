@@ -33,10 +33,10 @@ const LikeProvider = ({ children }: { children: ReactNode }) => {
             archiveCommentLikes: result.archiveCommentLikes.map((like: { comment_id: string }) => like.comment_id)
           });
         } else {
-          console.error('like context error');
+          // console.error('like context error');
         }
       } catch (error) {
-        console.error('like context error 2', error);
+        // console.error('like context error 2', error);
       }
     };
     fetchLikes();
