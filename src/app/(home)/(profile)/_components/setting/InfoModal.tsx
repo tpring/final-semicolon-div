@@ -163,7 +163,7 @@ const InfoModal = ({ isOpen, onClose, currentInfo, onInfoUpdate }: InfoModalProp
         onConfirm={handleConfirmClose}
         message={`작성 중인 내용이 저장되지 않았습니다.\n정말 닫으시겠습니까?`}
       />
-      {/* <ToastContainer /> */}
+      <ToastContainer />
     </>
   );
 };
