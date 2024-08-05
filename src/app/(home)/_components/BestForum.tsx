@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Navigation } from 'swiper/modules';
+import { Navigation } from 'swiper/modules';
 import Link from 'next/link';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -12,7 +12,6 @@ import { handleRinkCopy } from '@/utils/handleRinkCopy';
 import Image from 'next/image';
 import Share from '@/assets/images/common/Share';
 import CommentBubble from '@/assets/images/common/CommentBubble';
-import FilledLike from '@/assets/images/like/FilledLike';
 import Star from '@/assets/images/main-page_image/Star';
 import MDEditor from '@uiw/react-md-editor';
 import { cutText, removeImageAndCodeBlocks } from '@/components/common/MarkdownCut';
@@ -69,7 +68,7 @@ const BestForum = () => {
   });
 
   return (
-    <div>
+    <>
       <ToastContainer />
       <div className="flex justify-start items-center mb-5">
         <h1 className="text-h4 font-bold ">오늘의 인기 포럼이에요</h1>
@@ -102,7 +101,7 @@ const BestForum = () => {
                       <span className="text-body font-regular text-neutral-300">▪</span>
                       <p className="text-body font-regular text-neutral-300">
                         {timeForToday(forum.updated_at ? forum.updated_at : forum.created_at)}
-                        <span className="text-xs">{forum.updated_at && '(수정됨)'}</span>
+                        <span className="text-xs">{forum.updated_at !== forum.created_at && '(수정됨)'}</span>
                       </p>
                     </div>
                   </div>
@@ -175,7 +174,7 @@ const BestForum = () => {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 };
 

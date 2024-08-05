@@ -60,7 +60,7 @@ const TodayQna = () => {
   });
 
   return (
-    <div>
+    <>
       <div className="flex justify-start gap-1">
         <p className="text-h4 font-bold mb-5 text-neutral-900">방금 올라온 질문이에요! 지식을 공유하러 가볼까요?</p>
         <Cap />
@@ -113,7 +113,7 @@ const TodayQna = () => {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 };
 

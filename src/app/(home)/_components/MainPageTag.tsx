@@ -46,7 +46,7 @@ const MainPageTag = () => {
   };
 
   return (
-    <div>
+    <>
       <div className="flex justify-start mb-5">
         <h1 className="text-h4 font-bold mb-5 text-neutral-900 ">태그로 간편하게 검색해 보세요!</h1>
         <Pc />
@@ -101,7 +101,7 @@ const MainPageTag = () => {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 };
 

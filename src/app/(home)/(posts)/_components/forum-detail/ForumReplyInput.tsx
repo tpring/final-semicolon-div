@@ -1,5 +1,7 @@
 'use client';
+
 import { useAuth } from '@/context/auth.context';
+import { CommentReply } from '@/types/posts/forumDetailTypes';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import MDEditor, { commands } from '@uiw/react-md-editor';
 import Image from 'next/image';
@@ -7,14 +9,20 @@ import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 
-const ForumReplyInput = ({ comment_id, toggle }: { comment_id: string; toggle: (id: string) => void }) => {
+type commentReplyProps = {
+  comment_id: string;
+  toggle: (id: string, count: number) => void;
+  count: number;
+};
+
+const ForumReplyInput = ({ comment_id, toggle, count }: commentReplyProps) => {
   const { me, userData } = useAuth();
   const params = useParams();
   const queryClient = useQueryClient();
   const [reply, setReply] = useState('');
 
   const handleReply = useMutation({
-    mutationFn: async (userReply: any) => {
+    mutationFn: async (userReply: CommentReply) => {
       const response = await fetch(`/api/posts/forum-detail/forum-reply/${params.id}`, {
         method: 'POST',
         body: JSON.stringify(userReply)
@@ -53,6 +61,7 @@ const ForumReplyInput = ({ comment_id, toggle }: { comment_id: string; toggle: (
 
   return (
     <div className=" border-l-4 border-[#C7DCF5] border-b-[1px] p-6">
+      <p>댓글 {count}</p>
       <div className="flex justify-center items-center gap-6" data-color-mode="light">
         <Image
           src={userData?.profile_image ?? ''}
@@ -75,7 +84,7 @@ const ForumReplyInput = ({ comment_id, toggle }: { comment_id: string; toggle: (
       </div>
       <div className="flex justify-end items-end gap-4 mt-4">
         <button
-          onClick={() => toggle(comment_id)}
+          onClick={() => toggle(comment_id, count)}
           className="bg-neutral-50 hover:bg-neutral-100 hover:text-neutral-600 text-neutral-100 px-5 py-3 rounded-lg"
         >
           취소
