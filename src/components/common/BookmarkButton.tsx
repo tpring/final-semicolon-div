@@ -41,12 +41,12 @@ const BookmarkButton = ({ id, type }: BookmarkButtonProps) => {
     }));
 
     try {
-      console.log('Sending request:', {
-        user_id: me.id,
-        post_id: type.includes('Comment') ? undefined : id,
-        comment_id: type.includes('Comment') ? id : undefined,
-        type
-      });
+      // console.log('Sending request:', {
+      //   user_id: me.id,
+      //   post_id: type.includes('Comment') ? undefined : id,
+      //   comment_id: type.includes('Comment') ? id : undefined,
+      //   type
+      // });
       const response = await fetch('/api/common/bookmark', {
         method: isBookmarked ? 'DELETE' : 'POST',
         headers: {
@@ -62,11 +62,11 @@ const BookmarkButton = ({ id, type }: BookmarkButtonProps) => {
 
       if (!response.ok) {
         const errorResult = await response.json();
-        console.error('Server response error:', errorResult);
+        // console.error('Server response error:', errorResult);
         throw new Error('Failed to update bookmark');
       }
     } catch (error) {
-      console.error('bookmark 2', error);
+      // console.error('bookmark 2', error);
       setBookmarks(previousBookmarks);
     }
   };

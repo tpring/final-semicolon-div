@@ -20,7 +20,7 @@ const getForumPosts = async (req: NextRequest) => {
     .order('updated_at', { ascending: false })
     .range(page * limit, (page + 1) * limit - 1);
   if (error) {
-    console.error('Forum Posts API Error', error);
+    // console.error('Forum Posts API Error', error);
   }
   if (!posts || posts.length === 0) {
     return NextResponse.json({ data: [], count: 0 });

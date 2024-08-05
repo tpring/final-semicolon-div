@@ -80,7 +80,7 @@ export const POST = async (request: NextRequest) => {
 
     return NextResponse.json(bookmark);
   } catch (error) {
-    console.error('bookmarkRoute12', error);
+    // console.error('bookmarkRoute12', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 };

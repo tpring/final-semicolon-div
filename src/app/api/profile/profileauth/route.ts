@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ likeCount, bookmarkCount });
   } catch (error) {
-    console.error('Error fetching activities:', error);
+    // console.error('Error fetching activities:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
@@ -74,13 +74,13 @@ export async function PUT(request: NextRequest) {
       .eq('id', user_id);
 
     if (error) {
-      console.error('Error updating user data:', error);
+      // console.error('Error updating user data:', error);
       return NextResponse.json({ message: '업데이트 실패' }, { status: 500 });
     }
 
     return NextResponse.json({ message: '업데이트 성공' }, { status: 200 });
   } catch (error) {
-    console.error('Error in PUT request:', error);
+    // console.error('Error in PUT request:', error);
     return NextResponse.json({ message: '서버 오류' }, { status: 500 });
   }
 }

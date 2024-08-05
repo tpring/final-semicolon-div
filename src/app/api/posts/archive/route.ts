@@ -21,7 +21,7 @@ const getArchivePosts = async (page: number, limit: number) => {
     .range(page * limit, (page + 1) * limit - 1);
 
   if (error) {
-    console.log('archive', error);
+    // console.log('archive', error);
     return { data: [], count: 0, error: error.message };
   }
 
@@ -46,7 +46,7 @@ const getPopularArchivePosts = async () => {
     .order('created_at', { ascending: false });
 
   if (error) {
-    console.error('error', error);
+    // console.error('error', error);
     return { data: [], error: error.message };
   }
 

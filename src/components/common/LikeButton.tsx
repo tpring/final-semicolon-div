@@ -64,11 +64,11 @@ const LikeButton = ({ id, type }: LikeButtonProps) => {
       });
       if (!response.ok) {
         const errorResult = await response.json();
-        console.error('likebutton', errorResult);
+        // console.error('likebutton', errorResult);
         throw new Error('Failed to update like');
       }
     } catch (error) {
-      console.error('like 2', error);
+      // console.error('like 2', error);
       setLikes(previousLikes);
       setLikeCount((prev) => (isLiked ? prev + 1 : prev - 1));
     }
