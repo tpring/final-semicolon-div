@@ -5,8 +5,8 @@ const RightButton = () => {
       <path
         d="M14 8L10.1414 11.8586C10.0633 11.9367 10.0633 12.0633 10.1414 12.1414L14 16"
         stroke="#0F0F0F"
-        stroke-width="1.4"
-        stroke-linecap="round"
+        strokeWidth="1.4"
+        strokeLinecap="round"
       />
     </svg>
   );

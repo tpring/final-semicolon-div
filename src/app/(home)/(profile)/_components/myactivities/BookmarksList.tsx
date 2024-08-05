@@ -150,7 +150,7 @@ const BookmarksList = ({ selectedCategory, selectedForumCategory, selectedType }
       // console.error('삭제 처리 중 오류 발생:', error);
     }
   };
-  console.log('paginatedItems:', paginatedItems);
+
   return (
     <div className="relative min-h-screen">
       <div className="flex mb-[40px] items-center">

@@ -5,8 +5,8 @@ const LeftButton = () => {
       <path
         d="M10 8L13.8586 11.8586C13.9367 11.9367 13.9367 12.0633 13.8586 12.1414L10 16"
         stroke="#0F0F0F"
-        stroke-width="1.4"
-        stroke-linecap="round"
+        strokeWidth="1.4"
+        strokeLinecap="round"
       />
     </svg>
   );
