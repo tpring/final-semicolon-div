@@ -80,28 +80,22 @@ export async function GET(request: NextRequest) {
       ...post,
       commentsCount: createCommentMap(archiveCommentCounts.data!)[post.id] || 0,
       likescount: createCommentMap(archiveLikesCounts.data!)[post.id] || 0
-      // archiveCommentsCount: archiveCommentCounts.data
     })),
     forumPosts: forumPosts.map((post) => ({
       ...post,
       commentsCount: createCommentMap(forumCommentCounts.data!)[post.id] || 0,
       likescount: createCommentMap(forumLikesCounts.data!)[post.id] || 0
-      // forumCommentsCount: forumCommentCounts.data
     })),
     qnaPosts: qnaPosts.map((post) => ({
       ...post,
       commentsCount: createCommentMap(qnaCommentCounts.data!)[post.id] || 0,
       likescount: createCommentMap(qnaLikesCounts.data!)[post.id] || 0
-      // qnaCommentsCount: qnaCommentCounts.data
     }))
   };
   const searchCombinedData = {
     archive: postData.archivePosts,
     forum: postData.forumPosts,
     qna: postData.qnaPosts
-    // archiveCommentsCount: archiveCommentCounts!.count,
-    // forumCommentsCount: forumCommentCounts!.count,
-    // qnaCommentsCount: qnaCommentCounts!.count
   };
   return NextResponse.json(searchCombinedData, { status: 200 });
 }

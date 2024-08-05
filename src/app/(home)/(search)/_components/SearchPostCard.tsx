@@ -50,7 +50,7 @@ const SearchPostCard = ({ post }: SearchPostCardProps) => {
         <div className="flex-1">
           <div className=" mb-7">
             <div className="flex items-center text-body1 font-regular text-neutral-500">
-              {post.category === 'qna' ? <p> Q&A </p> : post.category === 'forum' ? <p> 포럼</p> : <p> 라이브러리 </p>}
+              {post.category === 'qna' ? <p> Q&A </p> : post.category === 'forum' ? <p> 포럼</p> : <p> 아카이브 </p>}
               {formCategory && <p className="ml-4 text-body2">{formCategory}</p>}
             </div>
             <p className="text-body1 font-bold text-neutral-800 "> {post.title}</p>

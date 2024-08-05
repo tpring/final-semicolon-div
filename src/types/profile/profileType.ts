@@ -32,6 +32,8 @@ export type Comment = {
   created_at: string;
   category: string;
   forum_category: string;
+  likesCount: string;
+  commentsCount: string;
   user: {
     id: string;
     nickname: string;
@@ -65,6 +67,8 @@ export type MyComment = {
   created_at: string;
   category: string;
   forum_category: string;
+  likesCount: string;
+  commentsCount: string;
   user: {
     id: string;
     nickname: string;

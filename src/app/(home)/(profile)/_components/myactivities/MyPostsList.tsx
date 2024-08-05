@@ -230,6 +230,8 @@ const MyPostsList = ({ onTotalsChange, selectedCategory, selectedForumCategory, 
                 nickname={userData?.nickname || ''}
                 profile_image={userData?.profile_image || ''}
                 forum_category={item.forum_category}
+                likesCount={item.likesCount}
+                commentsCount={item.commentsCount}
                 created_at={item.created_at}
                 isSelected={selectedItems.has(item.id)}
                 onCheckboxChange={(id) => handleCheckboxChange(id, item.category, 'comment')}
