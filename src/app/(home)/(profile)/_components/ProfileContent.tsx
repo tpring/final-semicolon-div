@@ -33,10 +33,10 @@ const ProfileContent = () => {
             setLikeCount(data.likeCount ?? 0);
             setBookmarkCount(data.bookmarkCount ?? 0);
           } else {
-            console.error('error:', data.error);
+            // console.error('error:', data.error);
           }
         } catch (error) {
-          console.error('fetching error:', error);
+          // console.error('fetching error:', error);
         }
       };
       fetchActivityCounts();

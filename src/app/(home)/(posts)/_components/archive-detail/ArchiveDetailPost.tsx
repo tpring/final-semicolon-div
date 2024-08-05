@@ -13,8 +13,9 @@ import BookmarkButton from '@/components/common/BookmarkButton';
 import Share from '@/assets/images/common/Share';
 import KebabButton from '@/assets/images/common/KebabButton';
 import { handleRinkCopy } from '@/utils/handleRinkCopy';
+import { toast } from 'react-toastify';
 
-const ArchiveDetailPost = () => {
+const ArchiveDetailPost = ({ archiveDetail }: { archiveDetail: archiveDetailType[] }) => {
   const params = useParams();
   const router = useRouter();
   const { me } = useAuth();
@@ -47,12 +48,11 @@ const ArchiveDetailPost = () => {
       }
     },
     onSuccess: () => {
-      alert('게시글이 성공적으로 삭제되었습니다.');
+      toast.success('게시글이 성공적으로 삭제되었습니다.');
       router.back();
     },
     onError: (error: Error) => {
-      console.error(error);
-      alert('게시글 삭제에 실패했습니다. 다시 시도해 주세요.');
+      toast.error('게시글 삭제에 실패했습니다. 다시 시도해 주세요.');
     }
   });
 
@@ -96,7 +96,7 @@ const ArchiveDetailPost = () => {
                 <div className="flex justify-start items-center gap-3">
                   <p>
                     {timeForToday(post.updated_at ? post.updated_at : post.created_at)}
-                    <span className="text-xs">{post.updated_at && '(수정됨)'}</span>
+                    <span>{post.updated_at !== post.created_at && '(수정됨)'}</span>
                   </p>
                 </div>
               </div>

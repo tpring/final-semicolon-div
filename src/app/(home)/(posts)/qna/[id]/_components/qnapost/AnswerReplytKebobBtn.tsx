@@ -1,6 +1,5 @@
-import { revalidate } from '@/actions/revalidate';
+import { revalidatePostTag } from '@/actions/revalidatePostTag';
 import KebabButton from '@/assets/images/common/KebabButton';
-
 import { useQnaDetailStore } from '@/store/qnaDetailStore';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Dispatch, MouseEventHandler, SetStateAction, useState } from 'react';
@@ -14,6 +13,7 @@ type ReplytKebobBtnProps = {
 };
 
 const AnswerReplytKebobBtn = ({ commentId, replyId, setReplyCount, setIsEdit }: ReplytKebobBtnProps) => {
+  const { postId } = useQnaDetailStore();
   const [openKebab, setOpenKebab] = useState<boolean>(false);
   const queryClient = useQueryClient();
 
@@ -23,7 +23,7 @@ const AnswerReplytKebobBtn = ({ commentId, replyId, setReplyCount, setIsEdit }: 
     toast.success('댓글 삭제 완료', { autoClose: 1500, hideProgressBar: true });
     setOpenKebab(false);
     setReplyCount((prev) => prev - 1);
-    await revalidate('/', 'layout');
+    await revalidatePostTag(`qna-detail-${postId}`);
     return;
   };
 
@@ -60,7 +60,7 @@ const AnswerReplytKebobBtn = ({ commentId, replyId, setReplyCount, setIsEdit }: 
           className={`${openKebab ? 'border border-neutral-100 bg-white' : 'hidden'} rounded-lg flex flex-col absolute w-[105px] h-[88px] right-0 text-center hover:border-main-400 text-body2`}
         >
           <li
-            className={`h-[44px] content-center ${openKebab ? '' : 'hidden'} hover:bg-main-100 hover:text-main-400 rounded-t-lg `}
+            className={`h-[44px] content-center ${openKebab ? '' : 'hidden'} hover:bg-main-100 hover:text-main-400 rounded-t-lg cursor-pointer`}
             onClick={() => {
               setIsEdit(true);
               setOpenKebab(false);
@@ -69,7 +69,7 @@ const AnswerReplytKebobBtn = ({ commentId, replyId, setReplyCount, setIsEdit }: 
             댓글 수정
           </li>
           <li
-            className={`h-[44px]  content-center ${openKebab ? '' : 'hidden'}  hover:bg-main-100 hover:text-main-400 rounded-b-lg`}
+            className={`h-[44px]  content-center ${openKebab ? '' : 'hidden'}  hover:bg-main-100 hover:text-main-400 rounded-b-lg cursor-pointer`}
             onClick={handleDeleteReply}
           >
             댓글 삭제

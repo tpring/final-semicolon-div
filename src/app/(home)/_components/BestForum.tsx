@@ -102,7 +102,7 @@ const BestForum = () => {
                       <span className="text-body font-regular text-neutral-300">▪</span>
                       <p className="text-body font-regular text-neutral-300">
                         {timeForToday(forum.updated_at ? forum.updated_at : forum.created_at)}
-                        <span className="text-xs">{forum.updated_at !== forum.created_at && '(수정됨)'}</span>
+                        <span className="text-xs">{forum.updated_at && '(수정됨)'}</span>
                       </p>
                     </div>
                   </div>

@@ -48,19 +48,19 @@ function LoginForm() {
       });
 
       if (error) {
-        console.error(`${provider} 로그인 오류:`, error);
+        // console.error(`${provider} 로그인 오류:`, error);
         setError(`Failed to log in with ${provider}. ${error.message}`);
         toast.error(`Failed to log in with ${provider}.`);
       }
     } catch (err) {
-      console.error('OAuth 로그인 중 에러가 발생했습니다:', err);
+      // console.error('OAuth 로그인 중 에러가 발생했습니다:', err);
       setError('OAuth 로그인 실패');
       toast.error('OAuth 로그인 중 에러가 발생했습니다.');
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen ">
       <ToastContainer />
       <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
         <h1 className="text-2xl font-bold mb-6 text-center">로그인</h1>

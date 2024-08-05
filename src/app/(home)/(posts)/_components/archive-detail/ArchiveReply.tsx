@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { toast } from 'react-toastify';
 import PaginationButtons from './PaginationButton';
 import KebabButton from '@/assets/images/common/KebabButton';
+import ConfirmModal from '@/components/modal/ConfirmModal';
 
 type Reply = {
   id: string;
@@ -31,6 +32,7 @@ function ArchiveReply({ comment_id }: { comment_id: string }) {
   const [replyRetouch, setReplyRetouch] = useState('');
   const [replyEditor, setReplyEditor] = useState<{ [key: string]: boolean }>({});
   const [replyEditorToggle, setReplyEditorToggle] = useState<{ [key: string]: boolean }>({});
+  const [confirmModal, setConfirmModal] = useState<boolean>(false);
 
   const COMMENT_REPLY_PAGE = 5;
 
@@ -64,7 +66,7 @@ function ArchiveReply({ comment_id }: { comment_id: string }) {
       toast.success('댓글이 수정되었습니다!');
     },
     onError: (error: any) => {
-      console.error('Update Mutation Error:', error.message);
+      // console.error('Update Mutation Error:', error.message);
       toast.error('댓글 수정에 실패했습니다.');
     }
   });
@@ -101,7 +103,7 @@ function ArchiveReply({ comment_id }: { comment_id: string }) {
       toast.success('댓글이 삭제되었습니다.');
     },
     onError: (error: any) => {
-      console.error('Delete Mutation Error:', error.message);
+      // console.error('Delete Mutation Error:', error.message);
       toast.error('댓글 삭제에 실패했습니다.');
     }
   });
@@ -202,6 +204,14 @@ function ArchiveReply({ comment_id }: { comment_id: string }) {
                             >
                               댓글 삭제
                             </button>
+                            {confirmModal && (
+                              <ConfirmModal
+                                isOpen={confirmModal}
+                                onClose={() => setConfirmModal(false)}
+                                onConfirm={() => handleReplyDelete(reply.id, reply.user_id)}
+                                message={'댓글을 삭제 하겠습니까?'}
+                              />
+                            )}
                           </div>
                         )}
                       </>

@@ -59,7 +59,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       .single();
 
     if (error) {
-      console.error('Error fetching user data:', error);
+      // console.error('Error fetching user data:', error);
       return;
     }
 
@@ -150,7 +150,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
   useEffect(() => {
     const initializeAuth = async () => {
-      console.log('initializeAuth');
+      // console.log('initializeAuth');
       try {
         const response = await fetch('/api/auth/me');
         if (response.status === 200) {
@@ -161,7 +161,6 @@ export function AuthProvider({ children }: PropsWithChildren) {
           await fetchUserData(user.id);
         }
       } catch (error) {
-        console.error('Error initializing auth:', error);
       } finally {
         setIsInitialized(true);
       }

@@ -39,10 +39,10 @@ export const BookmarkProvider = ({ children }: { children: ReactNode }) => {
             )
           });
         } else {
-          console.error('context error');
+          // console.error('context error');
         }
       } catch (error) {
-        console.error('context', error);
+        // console.error('context', error);
       }
     };
     fetchBookmarks();

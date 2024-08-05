@@ -3,10 +3,9 @@ import { Dispatch, MouseEventHandler, SetStateAction, useState } from 'react';
 import PostingAnswerModal from './PostingAnswerModal';
 import { useAuth } from '@/context/auth.context';
 import { toast } from 'react-toastify';
-import { useRouter } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useQnaDetailStore } from '@/store/qnaDetailStore';
-import { revalidate } from '@/actions/revalidate';
+import { revalidatePostTag } from '@/actions/revalidatePostTag';
 
 type PostingAnswerAreaProps = {
   content: string;
@@ -15,7 +14,6 @@ type PostingAnswerAreaProps = {
   setQnaCommentsCount: Dispatch<SetStateAction<number>>;
 };
 const PostingAnswerArea = ({ content, setContent, setToggleAnswer, setQnaCommentsCount }: PostingAnswerAreaProps) => {
-  const router = useRouter();
   const { me } = useAuth();
   const { postId } = useQnaDetailStore();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -29,7 +27,7 @@ const PostingAnswerArea = ({ content, setContent, setToggleAnswer, setQnaComment
     await addMutate({ user_id: me.id, content });
     toast.success('답변 작성 완료!', { autoClose: 1500, hideProgressBar: true });
     setQnaCommentsCount((prev) => prev + 1);
-    await revalidate(`/`, 'layout');
+    await revalidatePostTag(`qna-detail-${postId}`);
     return;
   };
 

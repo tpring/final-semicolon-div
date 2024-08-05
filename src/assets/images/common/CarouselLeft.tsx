@@ -1,15 +1,15 @@
 const CarouselLeft = () => {
   return (
     <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <g clip-path="url(#clip0_2416_2084)">
+      <g clipPath="url(#clip0_2416_2084)">
         <g filter="url(#filter0_d_2416_2084)">
           <circle cx="32" cy="32" r="26" fill="#F5F5F5" />
         </g>
         <path
           d="M39 21L25.2002 31.8427C25.0982 31.9228 25.0982 32.0772 25.2002 32.1573L39 43"
           stroke="#8F8F8F"
-          stroke-width="3"
-          stroke-linecap="round"
+          strokeWidth="3"
+          strokeLinecap="round"
         />
       </g>
       <defs>
@@ -20,9 +20,9 @@ const CarouselLeft = () => {
           width="68"
           height="68"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
             in="SourceAlpha"
             type="matrix"

@@ -4,8 +4,8 @@ const Left = () => {
       <path
         d="M5 1L1.14142 4.85858C1.06332 4.93668 1.06332 5.06332 1.14142 5.14142L5 9"
         stroke="#0F0F0F"
-        stroke-width="1.5"
-        stroke-linecap="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
       />
     </svg>
   );

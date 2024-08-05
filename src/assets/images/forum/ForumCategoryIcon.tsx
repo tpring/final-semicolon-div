@@ -1,7 +1,7 @@
 const ForumCategoryIcon = () => {
   return (
     <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <g clip-path="url(#clip0_2482_20415)">
+      <g clipPath="url(#clip0_2482_20415)">
         <path
           d="M6.2939 6.50685C6.9245 6.50685 7.4357 5.98437 7.4357 5.33985C7.4357 4.69534 6.9245 4.17285 6.2939 4.17285C5.6633 4.17285 5.1521 4.69534 5.1521 5.33985C5.1521 5.98437 5.6633 6.50685 6.2939 6.50685Z"
           fill="#FFC84D"

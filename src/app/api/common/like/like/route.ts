@@ -82,7 +82,7 @@ export const POST = async (request: NextRequest) => {
 
     return NextResponse.json(like);
   } catch (error) {
-    console.error('likeRoute', error);
+    // console.error('likeRoute', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 };

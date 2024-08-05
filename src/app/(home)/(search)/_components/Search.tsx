@@ -48,7 +48,7 @@ const Search = () => {
           const data = await response.json();
           setData(data);
         } catch (error) {
-          console.error('Error fetching search data:', error);
+          // console.error('Error fetching search data:', error);
         }
       }
     };
