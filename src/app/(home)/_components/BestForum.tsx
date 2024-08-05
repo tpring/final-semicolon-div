@@ -102,7 +102,7 @@ const BestForum = () => {
                       <span className="text-body font-regular text-neutral-300">▪</span>
                       <p className="text-body font-regular text-neutral-300">
                         {timeForToday(forum.updated_at ? forum.updated_at : forum.created_at)}
-                        <span className="text-xs">{forum.updated_at !== forum.created_at && '(수정됨)'}</span>
+                        <span className="text-xs">{forum.updated_at && '(수정됨)'}</span>
                       </p>
                     </div>
                   </div>
@@ -113,15 +113,9 @@ const BestForum = () => {
                       <Image src={forum.thumbnail} alt="forumThumbnail" width={210} height={210} />
                     ) : null}
                     <h1 className="text-h5 font-bold ">{forum.title}</h1>
-                    {forum.thumbnail ? (
-                      <p className="text-body2 font-regular normal whitespace-pre-wrap break-words overflow-hidden  ">
-                        <MDEditor.Markdown source={cutText(removeImageAndCodeBlocks(forum.content), 100)} />
-                      </p>
-                    ) : (
-                      <p className="text-body2 font-regular normal whitespace-pre-wrap break-words overflow-hidden  ">
-                        <MDEditor.Markdown source={cutText(removeImageAndCodeBlocks(forum.content), 200)} />
-                      </p>
-                    )}
+                    <div className="text-body2 font-regular normal whitespace-pre-wrap break-words overflow-hidden  ">
+                      <MDEditor.Markdown source={cutText(removeImageAndCodeBlocks(forum.content), 300)} />
+                    </div>
                   </div>
                   <p className=" text-right text-body font-regular text-neutral-400 mt-4">
                     {forum.created_at.slice(0, 10).replace(/-/g, '.')}

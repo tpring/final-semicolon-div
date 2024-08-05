@@ -2,7 +2,7 @@ const GoToTop = () => {
   return (
     <svg width="112" height="112" viewBox="0 0 112 112" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g filter="url(#filter0_d_2457_11880)">
-        <rect x="8" y="6" width="96" height="96" rx="28" fill="#F5F5F5" shape-rendering="crispEdges" />
+        <rect x="8" y="6" width="96" height="96" rx="28" fill="#F5F5F5" shapeRendering="crispEdges" />
         <path
           d="M44 60L55.8586 48.1414C55.9367 48.0633 56.0633 48.0633 56.1414 48.1414L68 60"
           stroke="#5C5C5C"
