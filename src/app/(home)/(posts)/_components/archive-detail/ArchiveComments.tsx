@@ -15,6 +15,7 @@ import KebabButton from '@/assets/images/common/KebabButton';
 import ArchiveReplyInput from './ArchiveReplyInput';
 import ArchiveReply from './ArchiveReply';
 import { archiveCommentsType, commentRetouch } from '@/types/posts/archiveDetailTypes';
+import ConfirmModal from '@/components/modal/ConfirmModal';
 
 const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
   const { me } = useAuth();
@@ -26,6 +27,7 @@ const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
   const [editingToggleState, setEditingToggleState] = useState<{ [key: string]: boolean }>({});
   const [inputCommentToggle, setInputCommentToggle] = useState<{ [key: string]: boolean }>({});
   const [replyToggle, setReplyToggle] = useState<{ [key: string]: boolean }>({});
+  const [confirmModal, setConfirmModal] = useState<boolean>(false);
 
   const COMMENT_PAGE = 5;
 
@@ -128,9 +130,9 @@ const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
       {comments?.map((data) => (
         <div key={data.id}>
           {data.data.map((comment) => (
-            <div key={comment.id} className="w-full flex flex-col ">
+            <div key={comment.id} className="w-full flex flex-col">
               <div
-                className={`flex flex-col justify-around h-[228px] border-b-[1px] gap-4 p-4 ${comment.user_id === me?.id ? 'bg-slate-100' : 'bg-white'}`}
+                className={`flex flex-col justify-around h-[344px] border-b-[1px] gap-4 p-4 ${comment.user_id === me?.id ? 'bg-slate-100' : 'bg-white'}`}
               >
                 <div className="flex justify-start items-center gap-4 ">
                   <Image
@@ -159,13 +161,27 @@ const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
                             </div>
                           )}
                           {editingToggleState[comment.id] && (
-                            <div className="w-[105px] right-0 absolute flex flex-col justify-center items-center bg-white shadow-lg border rounded-lg">
-                              <button className="h-[44px]" onClick={() => toggleEditing(comment.id, comment.comment)}>
+                            <div className="w-[105px] right-0 absolute flex flex-col justify-center items-center border-main-400 bg-white shadow-lg border rounded-lg">
+                              <button
+                                className="h-[44px]  w-full rounded-t-lg hover:bg-main-50 hover:text-main-400"
+                                onClick={() => toggleEditing(comment.id, comment.comment)}
+                              >
                                 댓글 수정
                               </button>
-                              <button className="h-[44px]" onClick={() => handleDelete(comment.id, comment.user_id)}>
+                              <button
+                                className="h-[44px]  w-full rounded-b-lg hover:bg-main-50 hover:text-main-400"
+                                onClick={() => setConfirmModal(true)}
+                              >
                                 댓글 삭제
                               </button>
+                              {confirmModal && (
+                                <ConfirmModal
+                                  isOpen={confirmModal}
+                                  onClose={() => setConfirmModal(false)}
+                                  onConfirm={() => handleDelete(comment.id, comment.user_id)}
+                                  message={'댓글을 삭제 하겠습니까?'}
+                                />
+                              )}
                             </div>
                           )}
                         </>
@@ -184,11 +200,22 @@ const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
                         return command.name !== 'image';
                       })}
                       textareaProps={{ maxLength: 1000 }}
-                      className="w-full "
+                      className="w-full"
+                      height={'auto'}
                     />
-                    <div>
-                      <button onClick={() => toggleEditing(comment.id, comment.user_id)}>취소</button>
-                      <button onClick={() => commentRetouchHandle(comment.id, comment.user_id)}>수정</button>
+                    <div className="flex justify-end items-end gap-2">
+                      <button
+                        onClick={() => toggleEditing(comment.id, comment.user_id)}
+                        className="w-[71px] h-[48px] bg-neutral-100 py-2 px-4 rounded-lg mt-4"
+                      >
+                        취소
+                      </button>
+                      <button
+                        onClick={() => commentRetouchHandle(comment.id, comment.user_id)}
+                        className="w-[71px] h-[48px] bg-main-100 py-2 px-4 rounded-lg mt-4"
+                      >
+                        수정
+                      </button>
                     </div>
                   </div>
                 ) : (
