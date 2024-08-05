@@ -5,18 +5,57 @@ import mainPageForum from '@/assets/images/main-page_image/posts-list/forum.svg'
 import mainPageLibrary from '@/assets/images/main-page_image/posts-list/library.svg';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation } from 'swiper/modules';
+import { useEffect, useState } from 'react';
+import SwiperCore from 'swiper';
+import CarouselLeftHover from '@/assets/images/common/CarouselLeftHover';
+import CarouselLeft from '@/assets/images/common/CarouselLeft';
+import CarouselRightHover from '@/assets/images/common/CarouselRightHover';
+import CarouselRight from '@/assets/images/common/CarouselRight';
 
 const PostsLink = () => {
+  const [swiperInstance, setSwiperInstance] = useState<SwiperCore | null>(null);
+  const [isBeginning, setIsBeginning] = useState(true);
+  const [isEnd, setIsEnd] = useState(false);
+  const [isHoveringPrev, setIsHoveringPrev] = useState(false);
+  const [isHoveringNext, setIsHoveringNext] = useState(false);
+
+  useEffect(() => {
+    if (swiperInstance) {
+      const handleSlideChange = () => {
+        setIsBeginning(swiperInstance.isBeginning);
+        setIsEnd(swiperInstance.isEnd);
+        setIsHoveringPrev(false);
+        setIsHoveringNext(false);
+      };
+
+      swiperInstance.on('slideChange', handleSlideChange);
+      handleSlideChange();
+
+      return () => {
+        swiperInstance.off('slideChange', handleSlideChange);
+      };
+    }
+  }, [swiperInstance]);
+
+  const handlePrevClick = () => {
+    if (swiperInstance) swiperInstance.slidePrev();
+  };
+
+  const handleNextClick = () => {
+    if (swiperInstance) swiperInstance.slideNext();
+  };
+
   return (
-    <div className="flex justify-between items-center gap-5 mt-5">
+    <div className=" relative flex justify-between items-center gap-5 mt-5">
       <Swiper
+        onSwiper={setSwiperInstance}
         slidesPerView={1}
-        spaceBetween={500}
         modules={[Navigation, Autoplay]}
         autoplay={{
           delay: 5000,
           disableOnInteraction: false
         }}
+        loop={true}
         className="mySwiper"
       >
         <SwiperSlide>
@@ -41,6 +80,30 @@ const PostsLink = () => {
           ></Link>
         </SwiperSlide>
       </Swiper>
+      {!isBeginning && (
+        <div
+          className="absolute top-1/2 transform -translate-y-1/2 left-[-32px] z-50"
+          onClick={handlePrevClick}
+          onMouseEnter={() => setIsHoveringPrev(true)}
+          onMouseLeave={() => setIsHoveringPrev(false)}
+        >
+          <button className="swiper-button-prev-custom">
+            {isHoveringPrev ? <CarouselLeftHover /> : <CarouselLeft />}
+          </button>
+        </div>
+      )}
+      {!isEnd && (
+        <div
+          className="absolute top-1/2 transform -translate-y-1/2 right-[-32px] z-50"
+          onClick={handleNextClick}
+          onMouseEnter={() => setIsHoveringNext(true)}
+          onMouseLeave={() => setIsHoveringNext(false)}
+        >
+          <button className="swiper-button-prev-custom">
+            {isHoveringNext ? <CarouselRightHover /> : <CarouselRight />}
+          </button>
+        </div>
+      )}
     </div>
   );
 };
