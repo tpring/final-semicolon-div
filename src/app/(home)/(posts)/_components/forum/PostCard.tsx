@@ -3,7 +3,7 @@ import Dot from '@/assets/images/common/Dot';
 import Share from '@/assets/images/common/Share';
 import BookmarkButton from '@/components/common/BookmarkButton';
 import LikeButton from '@/components/common/LikeButton';
-import { cutText, filterSlang } from '@/utils/markdownCut';
+import { cutText, filterSlang, markdownCutText, markdownFilterSlang } from '@/utils/markdownCut';
 import TagBlock from '@/components/common/TagBlock';
 import { handleLinkCopy } from '@/components/handleLinkCopy';
 import { PostCardProps } from '@/types/posts/forumTypes';
@@ -58,7 +58,7 @@ const PostCard = ({ post }: PostCardProps) => {
         </div>
         <h2 className="text-h4 font-bold text-neutral-900 mt-3">{filterSlang(post.title)}</h2>
         <div className="post-content mt-2 custom-markdown" data-color-mode="light">
-          <MDEditor.Markdown source={cutText(processedContent, 500)} />
+          <MDEditor.Markdown source={markdownFilterSlang(markdownCutText(processedContent, 500))} />
         </div>
 
         <div className="post-tags mt-2">
