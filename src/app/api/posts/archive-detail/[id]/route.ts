@@ -1,15 +1,29 @@
 import { createClient } from '@/supabase/server';
 import { NextResponse } from 'next/server';
 
+const getCommentCount = async (postId: string) => {
+  const supabase = createClient();
+  const { count, error } = await supabase
+    .from('archive_comments')
+    .select('*', { count: 'exact', head: true })
+    .eq('post_id', postId);
+  if (error) {
+    return 0;
+  }
+  return count;
+};
+
 export const GET = async (request: Request, { params }: { params: { id: string } }) => {
   const supabase = createClient();
-  const { data, count } = await supabase
-    .from('archive_posts')
-    .select('*, user: users(*), comment: archive_comments(count) ')
-    .eq('id', params.id);
+  const { data, error } = await supabase.from('archive_posts').select(`*,user:users(*)`).eq('id', params.id);
+  if (error) {
+    console.error('error', error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+  const commentCount = await getCommentCount(params.id);
 
-  // return NextResponse.json(data);
-  return { data: data, count: count };
+  const responseData = { ...data, commentCount };
+  return NextResponse.json(responseData);
 };
 
 export const DELETE = async (request: Request, { params }: { params: { id: string } }) => {
