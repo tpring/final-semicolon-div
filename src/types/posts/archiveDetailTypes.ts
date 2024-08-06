@@ -60,5 +60,26 @@ export type archiveReplyType = {
   id: string;
   reply: reply[];
   created_at: string;
+  comment_id: string;
+  updated_at: string;
+  user: string[];
   count: number;
+  pageParams: number[];
+};
+
+export type archiveReplyInputProps = {
+  comment_id: string;
+  toggle: (id: string, count: number) => void;
+  count: number;
+};
+
+export type userReply = {
+  user_id: string | undefined;
+  comment_id: string;
+  reply: string;
+};
+
+export type archiveCommentInputProps = {
+  comment_id: string;
+  toggle: (id: string) => void;
 };

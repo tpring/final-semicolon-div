@@ -7,7 +7,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useAuth } from '@/context/auth.context';
 import OAuthButtons from './OAuthButtons';
 import { createClient } from '@/supabase/client';
-
+import Logo from '@/assets/images/header/Logo';
+import LoginInputField from './LoginInputField';
 function LoginForm() {
   const router = useRouter();
   const [email, setEmail] = useState<string>('');
@@ -15,9 +16,36 @@ function LoginForm() {
   const [error, setError] = useState<string | null>(null);
   const { logIn } = useAuth();
 
+  const [emailValid, setEmailValid] = useState<boolean>(true);
+  const [emailMessage, setEmailMessage] = useState<string>('');
+
+  const [passwordValid, setPasswordValid] = useState<boolean>(true);
+  const [passwordMessage, setPasswordMessage] = useState<string>('');
+
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     setError(null);
+
+    if (!validateEmail(email)) {
+      setEmailValid(false);
+      setEmailMessage('유효하지 않은 이메일 형식입니다.');
+      toast.error('유효하지 않은 이메일 형식입니다.');
+      return;
+    } else {
+      setEmailValid(true);
+      setEmailMessage('');
+    }
+
+    if (password.length < 6) {
+      setPasswordValid(false);
+      setPasswordMessage('비밀번호는 6자 이상이어야 합니다.');
+      toast.error('비밀번호는 6자 이상이어야 합니다.');
+      return;
+    } else {
+      setPasswordValid(true);
+      setPasswordMessage('');
+    }
+
     try {
       const response = await logIn(email, password);
 
@@ -36,6 +64,11 @@ function LoginForm() {
     }
   };
 
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleOAuthLogin = async (provider: 'google' | 'kakao' | 'github') => {
     setError(null);
     try {
@@ -48,14 +81,12 @@ function LoginForm() {
       });
 
       if (error) {
-        // console.error(`${provider} 로그인 오류:`, error);
         setError(`Failed to log in with ${provider}. ${error.message}`);
         toast.error(`Failed to log in with ${provider}.`);
       } else {
         localStorage.setItem('oauthProvider', provider);
       }
     } catch (err) {
-      // console.error('OAuth 로그인 중 에러가 발생했습니다:', err);
       setError('OAuth 로그인 실패');
       toast.error('OAuth 로그인 중 에러가 발생했습니다.');
     }
@@ -64,41 +95,47 @@ function LoginForm() {
   return (
     <div className="flex items-center justify-center min-h-screen ">
       <ToastContainer />
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">로그인</h1>
+      <div className="bg-white w-full max-w-sm">
+        <div className="flex items-center justify-center mb-16">
+          <Logo />
+        </div>
         {error && <p className="text-red-500 mb-4">{error}</p>}
         <form onSubmit={handleLogin}>
           <div className="mb-4">
-            <input
+            <LoginInputField
               type="email"
               value={email}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="이메일"
-              className="w-full p-3 border rounded"
+              valid={emailValid}
+              message={emailMessage}
             />
           </div>
           <div className="mb-4">
-            <input
+            <LoginInputField
               type="password"
               value={password}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="비밀번호"
-              className="w-full p-3 border rounded"
+              valid={passwordValid}
+              message={passwordMessage}
             />
           </div>
-          <button type="submit" className="w-full p-3 bg-blue-500 hover:bg-blue-600 text-white rounded">
+          <button type="submit" className="w-full p-3 bg-main-100 hover:bg-main-400 text-white rounded-md">
             로그인
           </button>
         </form>
         <div className="mt-4 text-center">
           <p className="mt-4 text-center">
-            혹시 계정이 없으신가요?{' '}
+            혹시 계정이 없으신가요?
             <Link className="text-blue-600 hover:underline" href="/signup">
               회원가입
             </Link>
           </p>
         </div>
-        <OAuthButtons handleLogin={handleOAuthLogin} />
+        <div className="border-t-4 mt-8">
+          <OAuthButtons handleLogin={handleOAuthLogin} />
+        </div>
       </div>
     </div>
   );

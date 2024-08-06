@@ -53,7 +53,7 @@ const CheckboxGroup = ({
   };
 
   return (
-    <div className="mb-4">
+    <div className="mb-4 ml-4">
       <div className="flex items-center mb-4">
         <input
           id="agreeAll"
