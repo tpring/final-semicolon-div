@@ -1,10 +1,8 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import Link from 'next/link';
-import { ToastContainer } from 'react-toastify';
 import { BestForumType } from '@/types/mainpage';
 import { timeForToday } from '@/utils/timeForToday';
 import { handleRinkCopy } from '@/utils/handleRinkCopy';
@@ -21,11 +19,6 @@ import CarouselLeft from '@/assets/images/common/CarouselLeft';
 import CarouselRightHover from '@/assets/images/common/CarouselRightHover';
 import CarouselRight from '@/assets/images/common/CarouselRight';
 import LikeButton from '@/components/common/LikeButton';
-import { Tables } from '@/types/supabase';
-
-type bestForumListType = Tables<'forum_posts'> & {
-  user: Tables<'users'>;
-};
 
 const BestForum = ({ forumList }: { forumList: BestForumType[] }) => {
   const [swiperInstance, setSwiperInstance] = useState<SwiperCore | null>(null);
@@ -62,7 +55,6 @@ const BestForum = ({ forumList }: { forumList: BestForumType[] }) => {
 
   return (
     <>
-      <ToastContainer />
       <div className="flex justify-start items-center mb-5">
         <h1 className="text-h4 font-bold ">오늘의 인기 포럼이에요</h1>
         <Star />

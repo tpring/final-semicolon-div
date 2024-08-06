@@ -1,6 +1,5 @@
 'use client';
 import { Tables } from '@/types/supabase';
-import { useQuery } from '@tanstack/react-query';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import qnaImage from '@/assets/images/main-page_image/qnaicom/qnaImage.svg';

@@ -23,6 +23,7 @@ const ForumReply = ({ comment_id, post_user_id }: { comment_id: string; post_use
   const [replyEditor, setReplyEditor] = useState<{ [key: string]: boolean }>({});
   const [replyEditorToggle, setReplyEditorToggle] = useState<{ [key: string]: boolean }>({});
   const [confirmModal, setConfirmModal] = useState<boolean>(false);
+  const [replyRetouchModal, setReplyRetouchModal] = useState<boolean>(false);
 
   //한 페이지 안에 reply 수
   const COMMENT_REPLY_PAGE = 5;
@@ -157,10 +158,18 @@ const ForumReply = ({ comment_id, post_user_id }: { comment_id: string; post_use
                         <div className="w-[105px] right-0 absolute flex flex-col justify-center items-center border-main-400 bg-white shadow-lg border rounded-lg">
                           <button
                             className="h-[44px] w-full rounded-t-lg hover:bg-main-50 hover:text-main-400"
-                            onClick={() => toggleReplyEditing(reply.id, reply.reply)}
+                            onClick={() => setReplyRetouchModal(true)}
                           >
                             댓글 수정
                           </button>
+                          {replyRetouchModal && (
+                            <ConfirmModal
+                              isOpen={replyRetouchModal}
+                              onClose={() => setReplyRetouchModal(false)}
+                              onConfirm={() => toggleReplyEditing(reply.id, reply.reply)}
+                              message={'댓글을 수정 하시겠습니까?'}
+                            />
+                          )}
                           <button
                             className="h-[44px] w-full rounded-b-lg hover:bg-main-50 hover:text-main-400"
                             onClick={() => setConfirmModal(true)}
