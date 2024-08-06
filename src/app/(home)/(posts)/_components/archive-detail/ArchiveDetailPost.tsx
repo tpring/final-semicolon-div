@@ -11,6 +11,7 @@ import { useAuth } from '@/context/auth.context';
 import { useParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import KebabButton from '@/assets/images/common/KebabButton';
+import ConfirmModal from '@/components/modal/ConfirmModal';
 import { archiveDetailType } from '@/types/posts/archiveDetailTypes';
 
 const ArchiveDetailPost = ({ archiveDetail }: { archiveDetail: archiveDetailType[] }) => {
@@ -18,12 +19,11 @@ const ArchiveDetailPost = ({ archiveDetail }: { archiveDetail: archiveDetailType
   const param = useParams();
   const router = useRouter();
   const [kebobToggle, setKebobToggle] = useState<boolean>(false);
+  const [confirmModal, setConfirmModal] = useState<boolean>(false);
 
-  // 상태로 archiveDetail 설정
   const [posts, setPosts] = useState<archiveDetailType[]>([]);
 
   useEffect(() => {
-    // archiveDetail이 배열일 경우만 설정
     if (Array.isArray(archiveDetail)) {
       setPosts(archiveDetail);
     }
@@ -80,10 +80,20 @@ const ArchiveDetailPost = ({ archiveDetail }: { archiveDetail: archiveDetailType
                     </button>
                     <button
                       className="h-[44px] w-full rounded-b-lg hover:bg-main-50 hover:text-main-400"
-                      onClick={handlePostDelete}
+                      onClick={() => setConfirmModal(true)}
                     >
                       게시글 삭제
                     </button>
+                  </div>
+                )}
+                {confirmModal && (
+                  <div>
+                    <ConfirmModal
+                      isOpen={confirmModal}
+                      onClose={() => setConfirmModal(false)}
+                      onConfirm={handlePostDelete}
+                      message={'게시글을 삭제하시겠습니까?'}
+                    />
                   </div>
                 )}
               </div>

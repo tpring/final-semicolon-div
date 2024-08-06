@@ -91,7 +91,14 @@ const ArchiveInputComments = () => {
           >
             취소
           </button>
-          <button className="bg-main-100 hover:bg-main-500 text-main-50 px-5 py-3 rounded-lg">등록</button>
+          <button
+            className={`px-5 py-3 rounded-lg ${
+              comment ? 'bg-main-500 hover:bg-main-600 text-main-50' : 'bg-main-100 text-main-50'
+            }`}
+            disabled={!comment}
+          >
+            등록
+          </button>
         </div>
       </form>
     </div>

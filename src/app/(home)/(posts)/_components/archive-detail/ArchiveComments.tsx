@@ -28,16 +28,24 @@ const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
   const [editingToggleState, setEditingToggleState] = useState<{ [key: string]: boolean }>({});
   const [inputReplyToggle, setInputReplyToggle] = useState<{ [key: string]: boolean }>({});
   const [replyToggle, setReplyToggle] = useState<{ [key: string]: boolean }>({});
-  const [confirmModal, setConfirmModal] = useState<boolean>(false);
+  const [confirmModal, setConfirmModal] = useState<{ [key: string]: boolean }>({});
 
   const COMMENT_PAGE = 5;
-  //댓글 수정
+
+  // 댓글 수정
   const commentRetouch = useMutation({
     mutationFn: async ({ id, user_id, mdEditorChange }: commentRetouch) => {
       const response = await fetch(`/api/posts/forum-detail/archive-comments/${param.id}`, {
         method: 'PATCH',
-        body: JSON.stringify({ id, user_id, mdEditorChange })
+        body: JSON.stringify({ id, user_id, mdEditorChange }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
+
+      if (!response.ok) {
+        throw new Error('Failed to update comment');
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['archiveComments'] });
@@ -45,14 +53,14 @@ const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
   });
 
   const commentRetouchHandle = async (id: string, user_id: string) => {
-    commentRetouch.mutate({ id, user_id, mdEditorChange });
-    setEditingState({ Boolean: false });
     if (!mdEditorChange) {
       toast.error('댓글을 입력해주세요!', {
         autoClose: 2000
       });
       return;
     }
+    commentRetouch.mutate({ id, user_id, mdEditorChange });
+    setEditingState({ [id]: false });
   };
 
   // 댓글 삭제
@@ -60,8 +68,15 @@ const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
     mutationFn: async ({ id, user_id }: { id: string; user_id: string }) => {
       const response = await fetch(`/api/posts/archive-detail/archive-comments/${param.id}`, {
         method: 'DELETE',
-        body: JSON.stringify({ id, user_id })
+        body: JSON.stringify({ id, user_id }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete comment');
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['archiveComments'] });
@@ -73,13 +88,30 @@ const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
     commentDelete.mutate({ id, user_id });
   };
 
-  //수정 취소버튼
+  // 댓글 수정 취소 버튼 핸들러
+  const handleCancelEdit = (id: string) => {
+    setConfirmModal((prev) => ({ ...prev, [id]: true })); // 수정 취소 모달 열기
+  };
+
+  // 수정 취소 모달 확인 버튼 핸들러
+  const handleConfirmCancelEdit = (id: string) => {
+    setEditingState({ [id]: false }); // 편집 모드 종료
+    setConfirmModal((prev) => ({ ...prev, [id]: false })); // 모달 닫기
+  };
+
+  // 모달 닫기 핸들러
+  const handleCloseModal = (id: string) => {
+    setConfirmModal((prev) => ({ ...prev, [id]: false })); // 모달 닫기
+  };
+
+  // 수정 취소 버튼
   const toggleEditing = (id: string, comment: string) => {
     setEditingState({ [id]: !editingState[id] });
     setEditingToggleState({ [id]: false });
     setMdEditorChange(comment);
   };
-  //댓글 Kebob
+
+  // 댓글 Kebob
   const toggleEditingOptions = (id: string) => {
     setEditingToggleState({ [id]: !editingToggleState[id] });
   };
@@ -96,7 +128,7 @@ const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
     setReplyToggle({ [id]: !replyToggle[id] });
   };
 
-  //댓글 가져오기
+  // 댓글 가져오기
   const {
     fetchNextPage,
     data: comments,
@@ -137,7 +169,9 @@ const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
           {data.data.map((comment) => (
             <div key={comment.id} className="w-full flex flex-col ">
               <div
-                className={`flex flex-col justify-around border-b-2 gap-4 p-6 ${comment.user_id === me?.id ? 'bg-sub-50' : 'bg-white'}`}
+                className={`flex flex-col justify-around border-b-2 gap-4 p-6 ${
+                  comment.user_id === me?.id ? 'bg-sub-50' : 'bg-white'
+                }`}
               >
                 <div className="flex justify-between ">
                   <div className="flex justify-start items-center gap-4 ">
@@ -177,15 +211,15 @@ const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
                               </button>
                               <button
                                 className="h-[44px]  w-full rounded-b-lg hover:bg-main-50 hover:text-main-400"
-                                onClick={() => setConfirmModal(true)}
+                                onClick={() => setConfirmModal((prev) => ({ ...prev, [comment.id]: true }))} // 삭제 모달 열기
                               >
                                 댓글 삭제
                               </button>
-                              {confirmModal && (
+                              {confirmModal[comment.id] && (
                                 <ConfirmModal
-                                  isOpen={confirmModal}
-                                  onClose={() => setConfirmModal(false)}
-                                  onConfirm={() => handleDelete(comment.id, comment.user_id)}
+                                  isOpen={confirmModal[comment.id]}
+                                  onClose={() => setConfirmModal((prev) => ({ ...prev, [comment.id]: false }))} // 삭제 모달 닫기
+                                  onConfirm={() => handleDelete(comment.id, comment.user_id)} // 삭제 확인
                                   message={'댓글을 삭제 하겠습니까?'}
                                 />
                               )}
@@ -211,7 +245,7 @@ const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
                     />
                     <div className="flex justify-end items-end mt-4 gap-6">
                       <button
-                        onClick={() => toggleEditing(comment.id, comment.user_id)}
+                        onClick={() => handleCancelEdit(comment.id)} // 수정 취소 버튼 클릭 시 모달 호출
                         className="bg-neutral-50 hover:bg-neutral-100 hover:text-neutral-600 text-neutral-100 px-5 py-3 rounded-lg"
                       >
                         취소
@@ -223,6 +257,14 @@ const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
                         수정
                       </button>
                     </div>
+                    {confirmModal[comment.id] && (
+                      <ConfirmModal
+                        isOpen={confirmModal[comment.id]}
+                        onClose={() => handleCloseModal(comment.id)} // 수정 취소 모달 닫기
+                        onConfirm={() => handleConfirmCancelEdit(comment.id)} // 수정 취소 확인
+                        message={'댓글 작성을 취소 하시겠습니까?'}
+                      />
+                    )}
                   </div>
                 ) : (
                   <p className="text-body1 font-regular whitespace-pre-wrap break-words">{comment.comment}</p>
