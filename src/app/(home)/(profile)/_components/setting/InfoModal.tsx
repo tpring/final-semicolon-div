@@ -1,5 +1,5 @@
 import Modal from '@/components/modal/Modal';
-import ConfirmModal from '@/components/modal/ConfirmModal'; // ConfirmModal을 import합니다.
+import ConfirmModal from '@/components/modal/ConfirmModal';
 import { useState, useEffect, ChangeEvent } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 import X from '@/assets/images/common/X';
@@ -31,7 +31,7 @@ const InfoModal = ({ isOpen, onClose, currentInfo, onInfoUpdate }: InfoModalProp
       onInfoUpdate(newInfo);
       onClose();
     } else {
-      toast.error('저장할 수 없습니다. 글자 수를 확인해주세요.');
+      alert('저장할 수 없습니다. 글자 수를 확인해주세요.');
     }
   };
 
@@ -161,7 +161,7 @@ const InfoModal = ({ isOpen, onClose, currentInfo, onInfoUpdate }: InfoModalProp
         isOpen={isConfirmModalOpen}
         onClose={handleCancelClose}
         onConfirm={handleConfirmClose}
-        message={`작성 중인 내용이 저장되지 않았습니다.\n정말 닫으시겠습니까?`}
+        message={`내용이 저장되지 않았습니다.\n정말 닫으시겠습니까?`}
       />
       <ToastContainer />
     </>

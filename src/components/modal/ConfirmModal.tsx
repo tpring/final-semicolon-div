@@ -12,9 +12,10 @@ const ConfirmModal = ({ isOpen, onClose, onConfirm, message }: ConfirmModalProps
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
     }
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
   }, [isOpen]);
 
   const handleConfirm = () => {
@@ -24,8 +25,8 @@ const ConfirmModal = ({ isOpen, onClose, onConfirm, message }: ConfirmModalProps
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="center-alignment w-[352px]">
-        <p className="text-center mb-4">
+      <div className="w-[352px] h-[191px] p-[40px]">
+        <p className="h-[77px] text-h5 font-bold text-center">
           {message.split('\n').map((line, index) => (
             <React.Fragment key={index}>
               {line}
@@ -33,12 +34,13 @@ const ConfirmModal = ({ isOpen, onClose, onConfirm, message }: ConfirmModalProps
             </React.Fragment>
           ))}
         </p>
-        <div className="bg-gray-400 w-full h-[1px] mb-4" />
-        <div className="flex justify-end gap-2">
-          <button onClick={onClose} className="border bg-main-100 text-white py-2 px-4 rounded">
+        <div className="bg-neutral-100 w-full h-[1px] mb-4" />
+        <div className="text-subtitle1 font-medium flex justify-between items-center">
+          <button onClick={onClose} className="text-neutral-600 w-[87px] mx-6">
             취소
           </button>
-          <button onClick={handleConfirm} className="border bg-main-100 text-white py-2 px-4 rounded">
+          <div className="w-[1px] h-[30px] bg-neutral-100" />
+          <button onClick={handleConfirm} className="text-main-400 w-[87px] mx-6">
             확인
           </button>
         </div>
