@@ -24,6 +24,7 @@ const QnaAnswers = ({ qnaCommentsCount, questioner, setQnaCommentsCount }: QnaAn
     if (message) {
       return <NotFound />;
     }
+
     return data;
   };
 
