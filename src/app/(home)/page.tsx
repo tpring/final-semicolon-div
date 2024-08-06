@@ -4,7 +4,6 @@ import MainPageTag from './_components/MainPageTag';
 import PostsLink from './_components/PostsLink';
 import TodayQna from './_components/TodayQna';
 import TopButton from '../../components/TopButton';
-import OAuthLoginStatus from './(auth)/_components/OAuthLoginStatus';
 
 const HomePage = () => {
   return (
