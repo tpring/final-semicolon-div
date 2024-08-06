@@ -4,15 +4,14 @@ import { NextResponse } from 'next/server';
 export const GET = async () => {
   const supabase = createClient();
 
-  const { data, error } = await supabase
+  //베스트 포럼 게시글
+  const { data: qna_posts } = await supabase
     .from('qna_posts')
     .select('*')
     .order('created_at', {
       ascending: false
     })
     .limit(8);
-  if (!data) {
-    return NextResponse.json([]);
-  }
-  return NextResponse.json(data);
+
+  return NextResponse.json(qna_posts);
 };

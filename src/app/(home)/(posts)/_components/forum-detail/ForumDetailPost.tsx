@@ -79,14 +79,12 @@ const ForumDetailPost = ({ forumDetail }: { forumDetail: forumDetailType[] }) =>
                       게시글 삭제
                     </button>
                     {retouchPostModal && (
-                      <div className=" z-50">
-                        <ConfirmModal
-                          isOpen={retouchPostModal}
-                          onClose={() => setRetouchPostModal(false)}
-                          onConfirm={() => handlePostDelete}
-                          message={'게시글을 삭제 하겠습니까?'}
-                        />
-                      </div>
+                      <ConfirmModal
+                        isOpen={retouchPostModal}
+                        onClose={() => setRetouchPostModal(false)}
+                        onConfirm={() => handlePostDelete}
+                        message={'게시글을 삭제 하겠습니까?'}
+                      />
                     )}
                   </div>
                 ) : null}

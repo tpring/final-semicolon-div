@@ -5,4 +5,5 @@ export type BestForumType = Tables<'forum_posts'> & {
   comments: { count: string }[];
   like: Tables<'forum_likes'>;
   like_count: { count: string }[];
+  tags: { id: string; tag: string }[];
 };
