@@ -22,5 +22,6 @@ export const GET = async () => {
     })
     .limit(8);
 
+  console.log({ bestForum, qna_posts });
   return NextResponse.json({ bestForum, qna_posts });
 };

@@ -99,23 +99,23 @@ const BestForum = ({ forumList }: { forumList: BestForumType[] }) => {
                     ) : null}
                     <h1 className="text-h5 font-bold ">{forum.title}</h1>
                     {forum.thumbnail ? (
-                      <p
+                      <div
                         className="text-body2 font-regular normal whitespace-pre-wrap break-words overflow-hidden  "
                         data-color-mode="light"
                       >
                         <MDEditor.Markdown source={cutText(removeImageAndCodeBlocks(forum.content), 100)} />
-                      </p>
+                      </div>
                     ) : (
-                      <p
+                      <div
                         className="text-body2 font-regular normal whitespace-pre-wrap break-words overflow-hidden   "
                         data-color-mode="light"
                       >
                         <MDEditor.Markdown source={cutText(removeImageAndCodeBlocks(forum.content), 200)} />
-                      </p>
+                      </div>
                     )}
                     <div className="flex justify-start items-start gap-2">
                       {forum.tags.map((tag) => (
-                        <>{tag && <TagBlock tag={tag.tag} />}</>
+                        <div key={tag.id}>{tag && <TagBlock tag={tag.tag} />}</div>
                       ))}
                     </div>
                   </div>
