@@ -8,7 +8,7 @@ const ForumDetailPage = async ({ params }: { params: { id: string } }) => {
 
   return (
     <div className="flex flex-col justify-center w-[1200px]  ">
-      <div className=" border rounded-xl p-6 ">
+      <div className=" border rounded-xl p-4 ">
         <ForumDetailPost forumDetail={data} />
         <InputComments />
       </div>

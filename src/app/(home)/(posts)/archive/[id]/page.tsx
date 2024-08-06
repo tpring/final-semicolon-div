@@ -14,7 +14,7 @@ const ArchiveDetailPage = async ({ params }: { params: { id: string } }) => {
         <ArchiveDetailPost archiveDetail={data} />
         <ArchiveInputComments />
       </div>
-      <ArchiveComments post_user_id={data[0]?.user_id} />
+      <ArchiveComments post_user_id={data[0].user_id} />
     </div>
   );
 };

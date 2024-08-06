@@ -9,7 +9,7 @@ import { handleRinkCopy } from '@/utils/handleRinkCopy';
 import Share from '@/assets/images/common/Share';
 import { useAuth } from '@/context/auth.context';
 import { useParams, useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import KebabButton from '@/assets/images/common/KebabButton';
 import ConfirmModal from '@/components/modal/ConfirmModal';
 import { archiveDetailType } from '@/types/posts/archiveDetailTypes';
@@ -20,14 +20,6 @@ const ArchiveDetailPost = ({ archiveDetail }: { archiveDetail: archiveDetailType
   const router = useRouter();
   const [kebobToggle, setKebobToggle] = useState<boolean>(false);
   const [confirmModal, setConfirmModal] = useState<boolean>(false);
-
-  const [posts, setPosts] = useState<archiveDetailType[]>([]);
-
-  useEffect(() => {
-    if (Array.isArray(archiveDetail)) {
-      setPosts(archiveDetail);
-    }
-  }, [archiveDetail]);
 
   const handlePostDelete = async () => {
     const response = await fetch(`/api/posts/archive-detail/${param.id}`, {
@@ -44,7 +36,7 @@ const ArchiveDetailPost = ({ archiveDetail }: { archiveDetail: archiveDetailType
 
   return (
     <div className="flex flex-col gap-4">
-      {posts.map((post: archiveDetailType) => (
+      {archiveDetail?.map((post: archiveDetailType) => (
         <div key={post.id} className="w-full flex flex-col gap-6 border-b-[1px] ">
           <div className="flex justify-between items-center">
             <div className="flex gap-4">
@@ -116,7 +108,7 @@ const ArchiveDetailPost = ({ archiveDetail }: { archiveDetail: archiveDetailType
               >
                 <Share />
               </button>
-              <p className="text-subtitle1 font-medium text-main-400">{post.comment[0]?.count}개의 댓글</p>
+              <p className="text-subtitle1 font-medium text-main-400">{post.comment[0].count}개의 댓글</p>
             </div>
           </div>
         </div>
