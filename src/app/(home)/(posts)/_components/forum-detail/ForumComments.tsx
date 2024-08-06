@@ -17,6 +17,7 @@ import BookmarkButton from '@/components/common/BookmarkButton';
 import KebabButton from '@/assets/images/common/KebabButton';
 import { revalidate } from '@/actions/revalidate';
 import ConfirmModal from '@/components/modal/ConfirmModal';
+import EndOfData from '@/components/common/EndOfData';
 
 const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
   const { me } = useAuth();
@@ -94,6 +95,8 @@ const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
     fetchNextPage,
     data: comments,
     isPending,
+    hasNextPage,
+    isFetchingNextPage,
     isError
   } = useInfiniteQuery({
     queryKey: ['forumComments', param.id],
@@ -295,6 +298,7 @@ const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
       ))}
 
       <div ref={ref}></div>
+      {!hasNextPage && !isFetchingNextPage && <EndOfData />}
     </>
   );
 };

@@ -13,6 +13,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import KebabButton from '@/assets/images/common/KebabButton';
 import ConfirmModal from '@/components/modal/ConfirmModal';
+import { filterSlang } from '@/utils/markdownCut';
 
 const ForumDetailPost = ({ forumDetail }: { forumDetail: forumDetailType[] }) => {
   const { me } = useAuth();
@@ -93,7 +94,7 @@ const ForumDetailPost = ({ forumDetail }: { forumDetail: forumDetailType[] }) =>
           </div>
           <div className="flex flex-col gap-6  whitespace-pre-wrap break-words" data-color-mode="light">
             <p className="text-h4 font-bold">{post.title}</p>
-            <MDEditor.Markdown source={post.content} className="text-body1 font-regular" />
+            <MDEditor.Markdown source={filterSlang(post.content)} className="text-body1 font-regular" />
           </div>
           <div className="flex justify-between items-center mb-6">
             <p className="text-body1 font-regular text-neutral-400">
