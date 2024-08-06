@@ -1,12 +1,8 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import Link from 'next/link';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { BestForumType } from '@/types/mainpage';
 import { timeForToday } from '@/utils/timeForToday';
 import { handleRinkCopy } from '@/utils/handleRinkCopy';
 import Image from 'next/image';
@@ -22,6 +18,9 @@ import CarouselLeft from '@/assets/images/common/CarouselLeft';
 import CarouselRightHover from '@/assets/images/common/CarouselRightHover';
 import CarouselRight from '@/assets/images/common/CarouselRight';
 import LikeButton from '@/components/common/LikeButton';
+import TagBlock from '@/components/common/TagBlock';
+import { BestForumType } from '@/types/mainpage';
+import { useQuery } from '@tanstack/react-query';
 
 const BestForum = () => {
   const [swiperInstance, setSwiperInstance] = useState<SwiperCore | null>(null);
@@ -60,7 +59,7 @@ const BestForum = () => {
     queryKey: ['bestForum'],
     queryFn: async () => {
       try {
-        const response = await fetch('/api/auth/main-page/best-forum');
+        const response = await fetch('/api/main-page/best-forum');
         const data = await response.json();
         return data;
       } catch (error) {}
@@ -68,8 +67,7 @@ const BestForum = () => {
   });
 
   return (
-    <>
-      <ToastContainer />
+    <div className="flex flex-col">
       <div className="flex justify-start items-center mb-5">
         <h1 className="text-h4 font-bold ">오늘의 인기 포럼이에요</h1>
         <Star />
@@ -113,20 +111,25 @@ const BestForum = () => {
                     ) : null}
                     <h1 className="text-h5 font-bold ">{forum.title}</h1>
                     {forum.thumbnail ? (
-                      <p
-                        className="text-body2 font-regular normal whitespace-pre-wrap break-words overflow-hidden  "
+                      <div
+                        className="text-body2 font-regular normal whitespace-pre-wrap break-words  "
                         data-color-mode="light"
                       >
                         <MDEditor.Markdown source={processMarkdown(forum.content, 100)} />
-                      </p>
+                      </div>
                     ) : (
-                      <p
+                      <div
                         className="text-body2 font-regular normal whitespace-pre-wrap break-words overflow-hidden   "
                         data-color-mode="light"
                       >
                         <MDEditor.Markdown source={processMarkdown(forum.content, 200)} />
-                      </p>
+                      </div>
                     )}
+                    <div className="flex justify-start items-start gap-2">
+                      {forum.tags.map((tag) => (
+                        <div key={tag.id}>{tag && <TagBlock tag={tag.tag} />}</div>
+                      ))}
+                    </div>
                   </div>
                   <p className=" text-right text-body font-regular text-neutral-400 mt-4">
                     {forum.created_at.slice(0, 10).replace(/-/g, '.')}
@@ -174,7 +177,7 @@ const BestForum = () => {
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 };
 
