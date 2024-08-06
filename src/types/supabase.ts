@@ -814,6 +814,42 @@ export type Database = {
           }
         ];
       };
+      qna_comment_tag: {
+        Row: {
+          comment_id: string;
+          id: string;
+          tag: string | null;
+          user_id: string;
+        };
+        Insert: {
+          comment_id: string;
+          id?: string;
+          tag?: string | null;
+          user_id?: string;
+        };
+        Update: {
+          comment_id?: string;
+          id?: string;
+          tag?: string | null;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'qna_comment_tag_comment_id_fkey';
+            columns: ['comment_id'];
+            isOneToOne: false;
+            referencedRelation: 'qna_comments';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'qna_comment_tag_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          }
+        ];
+      };
       qna_comments: {
         Row: {
           comment: string;
@@ -1068,19 +1104,19 @@ export type Database = {
           id: string;
           post_id: string;
           tag: string | null;
-          user_id: string | null;
+          user_id: string;
         };
         Insert: {
           id?: string;
           post_id: string;
           tag?: string | null;
-          user_id?: string | null;
+          user_id?: string;
         };
         Update: {
           id?: string;
           post_id?: string;
           tag?: string | null;
-          user_id?: string | null;
+          user_id?: string;
         };
         Relationships: [
           {

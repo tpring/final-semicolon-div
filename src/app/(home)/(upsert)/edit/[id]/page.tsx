@@ -8,9 +8,10 @@ type EditPageProps = {
 };
 
 const EditPage = async ({ params, searchParams }: EditPageProps) => {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/upsert/edit/${params.id}?category=${searchParams.category}`
-  );
+  const path = `/api/upsert/edit/${params.id}?category=${searchParams.category}`;
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}${path}`, {
+    next: { tags: [`${path}`] }
+  });
   const responseData = await response.json();
   const { data } = await responseData;
 
@@ -18,7 +19,7 @@ const EditPage = async ({ params, searchParams }: EditPageProps) => {
     return <NotFound />;
   }
 
-  return <EditForm data={data} path={`/api/upsert/edit/${params.id}?category=${searchParams.category}`} />;
+  return <EditForm data={data} path={path} />;
 };
 
 export default EditPage;

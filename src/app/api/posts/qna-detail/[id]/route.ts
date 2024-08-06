@@ -10,7 +10,7 @@ export const GET = async (request: NextRequest, { params }: Tparams) => {
 
   const { data: questionData, error: loadError } = await supabase
     .from('qna_posts')
-    .select(`*,users(*),qna_post_reply(count),qna_comments!qna_comments_post_id_fkey(count)`)
+    .select(`*,users(*),qna_post_reply(count),qna_comments!qna_comments_post_id_fkey(count),qna_tags(tag)`)
     .eq('id', post_id)
     .single();
 

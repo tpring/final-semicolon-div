@@ -3,6 +3,10 @@ import { createClient } from '@/supabase/server';
 import { NextRequest } from 'next/server';
 
 type Tparams = { params: { id: string } };
+type TanswerData = {
+  user_id: string;
+  comment: string;
+};
 
 export const GET = async (request: NextRequest, { params }: Tparams) => {
   const supabase = createClient();
@@ -13,7 +17,7 @@ export const GET = async (request: NextRequest, { params }: Tparams) => {
 
   const { data, error: loadError } = await supabase
     .from('qna_comments')
-    .select(`*,users(*),qna_reply(count)`)
+    .select(`*,users(*),qna_reply(count),qna_comment_tag(tag)`)
     .eq('post_id', post_id)
     .order('created_at', { ascending: false })
     .range(page * 3, (page + 1) * 3 - 1);
@@ -25,7 +29,7 @@ export const GET = async (request: NextRequest, { params }: Tparams) => {
   if (selete_comment_id && page === 0) {
     const { data: selectedComment, error: loadSelectedError } = await supabase
       .from('qna_comments')
-      .select(`*,users(*),qna_reply(count)`)
+      .select(`*,users(*),qna_reply(count),qna_comment_tag(tag)`)
       .eq('id', selete_comment_id);
 
     selectedComment?.forEach((selectedComment) => {
@@ -40,7 +44,7 @@ export const POST = async (request: Request, { params }: Tparams) => {
   const supabase = createClient();
   const post_id = params.id;
 
-  const answerData = await request.json();
+  const answerData: TanswerData = await request.json();
   const { data, error: loadError } = await supabase
     .from('qna_comments')
     .insert({ ...answerData, post_id })
@@ -54,10 +58,21 @@ export const PATCH = async (request: Request, { params }: Tparams) => {
   const comment_id = params.id;
 
   const answerData = await request.json();
-  // console.log(answerData);
-  const { data, error: loadError } = await supabase.from('qna_comments').update(answerData).eq('id', comment_id);
 
-  return loadError ? Response.json(EDIT_ERROR_MASSAGE) : Response.json({ data });
+  const { data, error: loadError } = await supabase
+    .from('qna_comments')
+    .update({ comment: answerData.comment })
+    .eq('id', comment_id);
+
+  const { error: deleteTagError } = await supabase.from(`qna_comment_tag`).delete().eq('comment_id', comment_id);
+
+  Promise.all(
+    answerData.tags.map(async (tag: Ttag) => {
+      await supabase.from(`qna_comment_tag`).insert({ comment_id, tag: tag.name, user_id: answerData.user_id });
+    })
+  );
+  console.log(loadError);
+  return loadError || deleteTagError ? Response.json(EDIT_ERROR_MASSAGE) : Response.json({ data });
 };
 
 export const DELETE = async (request: Request, { params }: Tparams) => {
