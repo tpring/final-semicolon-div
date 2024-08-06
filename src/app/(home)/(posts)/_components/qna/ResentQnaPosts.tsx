@@ -3,7 +3,7 @@
 import BlueCheck from '@/assets/images/common/BlueCheck';
 import CommentBubble from '@/assets/images/common/CommentBubble';
 import Dot from '@/assets/images/common/Dot';
-import { cutText, removeImageAndCodeBlocks } from '@/utils/markdownCut';
+import { cutText, processMarkdown } from '@/utils/markdownCut';
 import SortDropdown from '@/components/common/SortDropdownGrey';
 import useFetchQnaPosts from '@/hooks/qna/useFetchQnaPosts';
 import { Post, SortOption } from '@/types/posts/qnaTypes';
@@ -152,9 +152,9 @@ const ResentQnaPosts = () => {
                     <div className="ml-2">{post.selected_comment !== null && <BlueCheck />}</div>
                   </div>
                 </div>
-                <h2 className="text-h5 font-bold text-neutral-900">{post.title}</h2>
+                <h2 className="text-h5 font-bold text-neutral-900">{cutText(post.title, 50)}</h2>
                 <div className="mt-2 text-neutral-700 mb-4" data-color-mode="light">
-                  <MDEditor.Markdown source={cutText(removeImageAndCodeBlocks(post.content), 300)} />
+                  <MDEditor.Markdown source={processMarkdown(post.content, 300)} />
                 </div>
                 <div className="flex flex-wrap gap-1.5 mb-4 max-h-[40px] overflow-hidden">
                   {post.qna_tags.map((tag) => (

@@ -1,14 +1,10 @@
 'use client';
 
 import GradCap from '@/assets/images/qna/GradCap';
-import { cutText, removeImageAndCodeBlocks } from '@/utils/markdownCut';
+import { cutText, processMarkdown } from '@/utils/markdownCut';
 import useFetchQnaPosts from '@/hooks/qna/useFetchQnaPosts';
 import MDEditor from '@uiw/react-md-editor';
 import Link from 'next/link';
-
-const truncateTitle = (title: string, maxLength: number) => {
-  return title.length > maxLength ? title.substring(0, maxLength) + '...' : title;
-};
 
 const PopularQnaPosts = () => {
   const {
@@ -55,10 +51,10 @@ const PopularQnaPosts = () => {
               >
                 <div className="flex justify-start items-center mb-2">
                   <p className="text-xl font-bold text-left text-main-500">{startIndex + index + 1}</p>
-                  <p className="ml-2 text-xl font-bold text-left text-neutral-900">{truncateTitle(post.title, 30)}</p>
+                  <p className="ml-2 text-xl font-bold text-left text-neutral-900">{cutText(post.title, 30)}</p>
                 </div>
                 <div className="text-lg font-medium text-left text-neutral-300 mb-5" data-color-mode="light">
-                  <MDEditor.Markdown source={cutText(removeImageAndCodeBlocks(post.content), 30)} />
+                  <MDEditor.Markdown source={processMarkdown(post.content, 30)} />
                 </div>
                 <div className="mt-auto">
                   <div className="flex justify-start items-center gap-2 ">

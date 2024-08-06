@@ -1,18 +1,35 @@
 import { slangs } from './slangs';
 
-export const removeImageAndCodeBlocks = (markdown: string) => {
-  let modifiedContent = markdown.replace(/!\[.*?\]\(.*?\)/g, '');
-  modifiedContent = modifiedContent.replace(/```[\s\S]*?```/g, '');
-  modifiedContent = modifiedContent.replace(/``[\s\S]*?``/g, '');
-  modifiedContent = modifiedContent.replace(/`[\s\S]*?`/g, '');
-  return modifiedContent;
+export const processMarkdown = (markdown: string, limit: number) => {
+  let processContent = markdown.replace(/!\[.*?\]\(.*?\)/g, '');
+  processContent = processContent.replace(/```[\s\S]*?```/g, '');
+  processContent = processContent.replace(/``[\s\S]*?``/g, '');
+  processContent = processContent.replace(/`[\s\S]*?`/g, '');
+  processContent = markdownFilterSlang(processContent);
+  processContent = markdownCutText(processContent, limit);
+
+  return processContent;
+};
+
+const markdownFilterSlang = (text: string): string => {
+  let filteredSlang = text;
+  slangs.forEach((word) => {
+    const regex = new RegExp(word, 'gi');
+    filteredSlang = filteredSlang.replace(regex, '\\*\\*\\*\\*');
+  });
+  return filteredSlang;
+};
+
+const markdownCutText = (text: string, limit: number): string => {
+  let cutText = text.length > limit ? text.slice(0, limit) + '...' : text;
+  return cutText;
 };
 
 export const filterSlang = (text: string): string => {
   let filteredSlang = text;
   slangs.forEach((word) => {
     const regex = new RegExp(word, 'gi');
-    filteredSlang = filteredSlang.replace(regex, '**');
+    filteredSlang = filteredSlang.replace(regex, `****`);
   });
   return filteredSlang;
 };
