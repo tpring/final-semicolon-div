@@ -2,7 +2,7 @@ import { UserMenuProps } from '@/types/header/headerTypes';
 import Image from 'next/image';
 import Link from 'next/link';
 
-const UserMenu = ({ isLoggedIn, userData, handleLogout }: UserMenuProps) => {
+const UserMenu = ({ isLoggedIn, userData }: UserMenuProps) => {
   return (
     <div className="flex space-x-2 items-center mr-40 mt-10">
       {isLoggedIn ? (
@@ -24,7 +24,6 @@ const UserMenu = ({ isLoggedIn, userData, handleLogout }: UserMenuProps) => {
           <Link href={'/posting'}>
             <h1 className=" bg-main-500 border-0 rounded-md px-4 py-2 font-bold text-white ml-1">글쓰기</h1>
           </Link>
-          <button onClick={handleLogout}>로그아웃</button>
         </>
       ) : (
         <>

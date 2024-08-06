@@ -18,7 +18,7 @@ type QnaPostProps = {
 
 const QnaPost = ({ data }: QnaPostProps) => {
   const { me } = useAuth();
-  const { setPostId, seletedComment, setSeletedComment } = useQnaDetailStore();
+  const { setPostId, setSeletedComment } = useQnaDetailStore();
   const [content, setContent] = useState<string>('');
   const [qnaCommentsCount, setQnaCommentsCount] = useState<number>(data.qna_comments[0].count);
 
