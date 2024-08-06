@@ -12,12 +12,14 @@ import { useAuth } from '@/context/auth.context';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import KebabButton from '@/assets/images/common/KebabButton';
+import ConfirmModal from '@/components/modal/ConfirmModal';
 
 const ForumDetailPost = ({ forumDetail }: { forumDetail: forumDetailType[] }) => {
   const { me } = useAuth();
   const param = useParams();
   const router = useRouter();
   const [kebobToggle, setKebobToggle] = useState<boolean>(false);
+  const [retouchPostModal, setRetouchPostModal] = useState<boolean>(false);
 
   const handlePostDelete = async () => {
     const response = await fetch(`/api/posts/forum-detail/${param.id}`, {
@@ -72,10 +74,20 @@ const ForumDetailPost = ({ forumDetail }: { forumDetail: forumDetailType[] }) =>
                     </button>
                     <button
                       className="h-[44px]  w-full rounded-b-lg hover:bg-main-50 hover:text-main-400"
-                      onClick={handlePostDelete}
+                      onClick={() => setRetouchPostModal(true)}
                     >
                       게시글 삭제
                     </button>
+                    {retouchPostModal && (
+                      <div className=" z-50">
+                        <ConfirmModal
+                          isOpen={retouchPostModal}
+                          onClose={() => setRetouchPostModal(false)}
+                          onConfirm={() => handlePostDelete}
+                          message={'게시글을 삭제 하겠습니까?'}
+                        />
+                      </div>
+                    )}
                   </div>
                 ) : null}
               </div>

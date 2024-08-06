@@ -66,3 +66,9 @@ export type forumReplyType = {
   count: number;
   pageParams: number[];
 };
+
+export type CommentReply = {
+  user_id: string | undefined;
+  comment_id: string;
+  reply: string;
+};
