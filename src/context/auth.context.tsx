@@ -26,6 +26,7 @@ type AuthContextValue = {
   ) => Promise<{ status: number; message?: string }>;
   updateUserData: (updates: Partial<UserData>) => void;
   setUser: (user: User | null) => void;
+  deleteUser: () => Promise<{ status: number; message?: string }>;
 };
 
 const initialValue: AuthContextValue = {
@@ -37,7 +38,8 @@ const initialValue: AuthContextValue = {
   logOut: async () => ({ status: 0 }),
   signUp: async () => ({ status: 0 }),
   updateUserData: () => {},
-  setUser: () => {}
+  setUser: () => {},
+  deleteUser: async () => ({ status: 0 })
 };
 
 const AuthContext = createContext<AuthContextValue>(initialValue);
@@ -139,6 +141,29 @@ export function AuthProvider({ children }: PropsWithChildren) {
     return { status: 200 };
   };
 
+  const deleteUser: AuthContextValue['deleteUser'] = async () => {
+    if (!me) return { status: 401, message: '로그인하고 눌러주세요.' };
+
+    try {
+      const response = await fetch('/api/auth/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: me.id })
+      });
+
+      if (!response.ok) {
+        const result = await response.json();
+        return { status: response.status, message: result.error || '회원탈퇴에 실패했습니다.' };
+      }
+
+      setMe(null);
+      setUserData(null);
+      return { status: 200, message: '회원탈퇴가 완료되었습니다.' };
+    } catch (error) {
+      return { status: 500, message: '서버 에러가 발생했습니다.' };
+    }
+  };
+
   const setUser = (user: User | null) => {
     setMe(user);
     if (user) {
@@ -191,7 +216,8 @@ export function AuthProvider({ children }: PropsWithChildren) {
     logOut,
     signUp,
     updateUserData,
-    setUser
+    setUser,
+    deleteUser
   };
 
   if (!isInitialized) return null;
