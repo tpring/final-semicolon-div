@@ -1,4 +1,5 @@
 import VectorImageIcon from '@/assets/images/common/VectorImageIcon';
+import { filterSlang } from '@/utils/markdownCut';
 import Link from 'next/link';
 
 type PostCardProps = {
@@ -58,14 +59,16 @@ const PostCard = ({
         <Link href={`/${category}/${id}`}>
           <div className="">
             <div className="flex items-center mb-2">
-              <span className="text-neutral-900 text-subtitle1 font-bold line-clamp-1 max-w-[600px]">{title}</span>
+              <span className="text-neutral-900 text-subtitle1 font-bold line-clamp-1 max-w-[600px]">
+                {filterSlang(title)}
+              </span>
               <span className="flex items-center ml-3">
                 {thumbnail ? <VectorImageIcon /> : <div></div>}
                 <span className="text-main-400 text-subtitle1 font-medium ml-1"> [{commentsCount || '0'}] </span>
               </span>
             </div>
 
-            <p className="text-body1 font-regular text-neutral-400 line-clamp-1 mb-2">{content}</p>
+            <p className="text-body1 font-regular text-neutral-400 line-clamp-1 mb-2">{filterSlang(content)}</p>
             {forum_category && <p className="text-body2 font-regular text-neutral-400">{forum_category}</p>}
             <div className="mb-2">
               <span className="text-body2 font-regular text-neutral-400">

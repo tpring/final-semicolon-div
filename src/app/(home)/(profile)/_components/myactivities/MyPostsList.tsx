@@ -222,6 +222,7 @@ const MyPostsList = ({ onTotalsChange, selectedCategory, selectedForumCategory, 
             ) : (
               <CommentCard
                 id={item.id}
+                post_id={item.post_id}
                 title={item.title}
                 tags={item.tags}
                 comment={item.comment}

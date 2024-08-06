@@ -209,6 +209,7 @@ const LikesList = ({ selectedCategory, selectedForumCategory, selectedType }: Li
             ) : (
               <CommentCard
                 id={item.id}
+                post_id={item.post_id}
                 title={item.title}
                 comment={item.comment}
                 tags={item.tags}
