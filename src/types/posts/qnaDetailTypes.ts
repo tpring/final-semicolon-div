@@ -54,10 +54,12 @@ export type TqnaData = TqnaPosts & {
   qna_comments: Tcount[];
   qna_post_reply: Tcount[];
   users: TqnaUser;
+  qna_tags?: { tag: string }[];
 };
 export type TqnaCommentsWithReplyCount = TqnaComments & {
   users: TqnaUser;
   qna_reply: Tcount[];
+  qna_comment_tag: { tag: string }[];
 };
 
 export type Treply = TqnaReply & { users: TqnaUser };

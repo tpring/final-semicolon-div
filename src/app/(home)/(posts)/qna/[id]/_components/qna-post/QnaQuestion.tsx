@@ -4,12 +4,13 @@ import { TqnaData } from '@/types/posts/qnaDetailTypes';
 import Image from 'next/image';
 import Share from '@/assets/images/common/Share';
 import LikeButton from '@/components/common/LikeButton';
-import QuestionReplies from '../qnacomments/QuestionReplies';
+import QuestionReplies from '../qna-comments/QuestionReplies';
 import { useAuth } from '@/context/auth.context';
-import QuestionKebobBtn from './QuestionKebobBtn';
+import QuestionKebobBtn from '../kebob-btn/QuestionKebobBtn';
 import { timeForToday } from '@/utils/timeForToday';
 import BookmarkButton from '@/components/common/BookmarkButton';
-import { useQueryClient } from '@tanstack/react-query';
+import TagBlock from '@/components/common/TagBlock';
+import { TAG_LIST } from '@/constants/tags';
 
 type QnaQuestionProps = {
   questionData: TqnaData;
@@ -51,8 +52,13 @@ const QnaQuestion = ({ questionData }: QnaQuestionProps) => {
           <span className="text-body1 text-neutral-500">{timeForToday(questionData.updated_at ?? '')}</span>
         </div>
       </div>
-      <div className=" max-w-[1204px] flex  my-6">
+      <div className=" max-w-[1204px] flex my-6">
         <MDEditor.Markdown style={{ maxWidth: '1156px' }} source={questionData.content} />
+      </div>
+      <div className="flex gap-2">
+        {questionData.qna_tags
+          ? questionData.qna_tags.map((tag) => <TagBlock key={'question' + tag.tag} tag={tag.tag} />)
+          : null}
       </div>
       <div className="flex justify-between h-[59px] items-center">
         <span className="text-body1 text-neutral-400">{questionData.updated_at?.slice(0, 10)}</span>

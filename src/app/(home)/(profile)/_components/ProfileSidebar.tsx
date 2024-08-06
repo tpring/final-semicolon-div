@@ -23,6 +23,7 @@ const ProfileSidebar = () => {
   const handleLogout = async () => {
     const result = await logOut();
     if (result.status === 200) {
+      localStorage.removeItem('oauthProvider');
       router.push('/');
     } else {
       toast.error(result.message || '로그아웃에 실패했습니다.');

@@ -51,6 +51,8 @@ function LoginForm() {
         // console.error(`${provider} 로그인 오류:`, error);
         setError(`Failed to log in with ${provider}. ${error.message}`);
         toast.error(`Failed to log in with ${provider}.`);
+      } else {
+        localStorage.setItem('oauthProvider', provider);
       }
     } catch (err) {
       // console.error('OAuth 로그인 중 에러가 발생했습니다:', err);

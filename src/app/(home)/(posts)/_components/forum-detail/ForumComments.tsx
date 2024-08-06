@@ -28,7 +28,8 @@ const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
   const [editingToggleState, setEditingToggleState] = useState<{ [key: string]: boolean }>({});
   const [inputReplyToggle, setInputReplyToggle] = useState<{ [key: string]: boolean }>({});
   const [replyToggle, setReplyToggle] = useState<{ [key: string]: boolean }>({});
-  const [confirmModal, setConfirmModal] = useState<boolean>(false);
+  const [deleteConfirmModal, setDeleteConfirmModal] = useState<boolean>(false);
+  const [retouchConfirmModal, setRetouchConfirmModal] = useState<boolean>(false);
 
   const COMMENT_PAGE = 5;
   //댓글 수정
@@ -43,7 +44,7 @@ const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
       queryClient.invalidateQueries({ queryKey: ['forumComments'] });
     }
   });
-
+  // 수정 이벤트 버튼
   const commentRetouchHandle = async (id: string, user_id: string) => {
     commentRetouch.mutate({ id, user_id, mdEditorChange });
     setEditingState({ Boolean: false });
@@ -65,12 +66,12 @@ const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['forumComments'] });
-      revalidate('/', 'page');
     }
   });
-
+  // 삭제 이벤트 버튼
   const handleDelete = async (id: string, user_id: string) => {
     commentDelete.mutate({ id, user_id });
+    revalidate('/', 'page');
   };
 
   //수정 취소버튼
@@ -86,14 +87,6 @@ const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
 
   const changEditor = (value?: string) => {
     setMdEditorChange(value!);
-  };
-
-  const handleInputReplyToggle = (id: string) => {
-    setInputReplyToggle({ [id]: !inputReplyToggle[id] });
-  };
-
-  const replyOpenToggle = (id: string) => {
-    setReplyToggle({ [id]: !replyToggle[id] });
   };
 
   //댓글 가져오기
@@ -127,8 +120,21 @@ const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
     return <div>로딩..</div>;
   }
 
+  //reply 입력창 toggle
+  const handleInputReplyToggle = (id: string, count: number) => {
+    setInputReplyToggle({ [id]: !inputReplyToggle[id] });
+    if (count === 0) {
+      setReplyToggle({ [id]: !replyToggle[id] });
+    }
+  };
+  //reply 보기 toggle
+  const replyOpenToggle = (id: string) => {
+    setReplyToggle({ [id]: !replyToggle[id] });
+    setInputReplyToggle({ [id]: false });
+  };
+
   return (
-    <div>
+    <>
       <div className=" mt-10 mb-6 px-6 text-subtitle1 font-medium ">
         {comments && comments.length > 0 && <p>댓글 {comments[0].count}</p>}
       </div>
@@ -177,14 +183,14 @@ const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
                               </button>
                               <button
                                 className="h-[44px]  w-full rounded-b-lg hover:bg-main-50 hover:text-main-400"
-                                onClick={() => setConfirmModal(true)}
+                                onClick={() => setDeleteConfirmModal(true)}
                               >
                                 댓글 삭제
                               </button>
-                              {confirmModal && (
+                              {deleteConfirmModal && (
                                 <ConfirmModal
-                                  isOpen={confirmModal}
-                                  onClose={() => setConfirmModal(false)}
+                                  isOpen={deleteConfirmModal}
+                                  onClose={() => setDeleteConfirmModal(false)}
                                   onConfirm={() => handleDelete(comment.id, comment.user_id)}
                                   message={'댓글을 삭제 하겠습니까?'}
                                 />
@@ -217,11 +223,19 @@ const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
                         취소
                       </button>
                       <button
-                        onClick={() => commentRetouchHandle(comment.id, comment.user_id)}
+                        onClick={() => setRetouchConfirmModal(true)}
                         className="bg-main-100 hover:bg-main-500 text-main-50 px-5 py-3 rounded-lg"
                       >
                         수정
                       </button>
+                      {retouchConfirmModal && (
+                        <ConfirmModal
+                          isOpen={retouchConfirmModal}
+                          onClose={() => setRetouchConfirmModal(false)}
+                          onConfirm={() => commentRetouchHandle(comment.id, comment.user_id)}
+                          message={'댓글을 수정 하겠습니까?'}
+                        />
+                      )}
                     </div>
                   </div>
                 ) : (
@@ -244,7 +258,7 @@ const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
                         </button>
                         <button
                           className="text-subtitle1 font-medium text-neutral-400"
-                          onClick={() => handleInputReplyToggle(comment.id)}
+                          onClick={() => handleInputReplyToggle(comment.id, comment.reply[0].count)}
                         >
                           {inputReplyToggle[comment.id] ? '댓글 취소' : '댓글 쓰기'}
                         </button>
@@ -259,7 +273,7 @@ const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
                     ) : (
                       <button
                         className="text-subtitle1 font-medium text-neutral-400"
-                        onClick={() => handleInputReplyToggle(comment.id)}
+                        onClick={() => handleInputReplyToggle(comment.id, comment.reply[0].count)}
                       >
                         댓글 쓰기
                       </button>
@@ -268,7 +282,11 @@ const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
                 </div>
               </div>
               {inputReplyToggle[comment.id] ? (
-                <ForumReplyInput comment_id={comment.id} toggle={handleInputReplyToggle} />
+                <ForumReplyInput
+                  comment_id={comment.id}
+                  toggle={handleInputReplyToggle}
+                  count={comment.reply[0].count}
+                />
               ) : null}
               {replyToggle[comment.id] ? <ForumReply comment_id={comment.id} post_user_id={post_user_id} /> : null}
             </div>
@@ -277,7 +295,7 @@ const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
       ))}
 
       <div ref={ref}></div>
-    </div>
+    </>
   );
 };
 

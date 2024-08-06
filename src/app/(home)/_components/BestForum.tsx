@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Navigation } from 'swiper/modules';
+import { Navigation } from 'swiper/modules';
 import Link from 'next/link';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -12,7 +12,6 @@ import { handleRinkCopy } from '@/utils/handleRinkCopy';
 import Image from 'next/image';
 import Share from '@/assets/images/common/Share';
 import CommentBubble from '@/assets/images/common/CommentBubble';
-import FilledLike from '@/assets/images/like/FilledLike';
 import Star from '@/assets/images/main-page_image/Star';
 import MDEditor from '@uiw/react-md-editor';
 import { cutText, removeImageAndCodeBlocks } from '@/components/common/MarkdownCut';
@@ -69,7 +68,7 @@ const BestForum = () => {
   });
 
   return (
-    <div>
+    <>
       <ToastContainer />
       <div className="flex justify-start items-center mb-5">
         <h1 className="text-h4 font-bold ">오늘의 인기 포럼이에요</h1>
@@ -114,13 +113,21 @@ const BestForum = () => {
                     ) : null}
                     <h1 className="text-h5 font-bold ">{forum.title}</h1>
                     {forum.thumbnail ? (
-                      <div className="text-body2 font-regular normal whitespace-pre-wrap break-words overflow-hidden  ">
+
+                      <p
+                        className="text-body2 font-regular normal whitespace-pre-wrap break-words overflow-hidden  "
+                        data-color-mode="light"
+                      >
                         <MDEditor.Markdown source={cutText(removeImageAndCodeBlocks(forum.content), 100)} />
-                      </div>
+                      </p>
                     ) : (
-                      <div className="text-body2 font-regular normal whitespace-pre-wrap break-words overflow-hidden  ">
+                      <p
+                        className="text-body2 font-regular normal whitespace-pre-wrap break-words overflow-hidden   "
+                        data-color-mode="light"
+                      >
                         <MDEditor.Markdown source={cutText(removeImageAndCodeBlocks(forum.content), 200)} />
-                      </div>
+                      </p>
+
                     )}
                   </div>
                   <p className=" text-right text-body font-regular text-neutral-400 mt-4">
@@ -169,7 +176,7 @@ const BestForum = () => {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 };
 

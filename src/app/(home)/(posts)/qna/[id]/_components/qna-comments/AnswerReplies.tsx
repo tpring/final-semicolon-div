@@ -4,7 +4,6 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import Loading from '@/app/(home)/loading';
 import { Dispatch, SetStateAction, useState } from 'react';
 import AnswerReplyForm from './AnswerReplyForm';
-import { useAuth } from '@/context/auth.context';
 import AnswerReply from './AnswerReply';
 
 type AnswerCommentsProps = {

@@ -1,12 +1,12 @@
 import MDEditor from '@uiw/react-md-editor';
 import Image from 'next/image';
-import { Dispatch, MouseEventHandler, SetStateAction, useState } from 'react';
+import { Dispatch, MouseEventHandler, SetStateAction, useEffect, useState } from 'react';
 import { TqnaCommentsWithReplyCount } from '@/types/posts/qnaDetailTypes';
 import Share from '@/assets/images/common/Share';
-import AnswerReplies from '../qnacomments/AnswerReplies';
+import AnswerReplies from '../qna-comments/AnswerReplies';
 import LikeButton from '@/components/common/LikeButton';
 import { useAuth } from '@/context/auth.context';
-import AnswerKebobBtn from './AnswerKebobBtn';
+import AnswerKebobBtn from '../kebob-btn/AnswerKebobBtn';
 import { timeForToday } from '@/utils/timeForToday';
 import BookmarkButton from '@/components/common/BookmarkButton';
 import CustomMDEditor from '@/app/(home)/(upsert)/_components/CustomMDEditor';
@@ -15,6 +15,10 @@ import BlueCheck from '@/assets/images/common/BlueCheck';
 import { revalidate } from '@/actions/revalidate';
 import { toast } from 'react-toastify';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { revalidatePostTag } from '@/actions/revalidatePostTag';
+import TagBlock from '@/components/common/TagBlock';
+import SelectTagInput from '@/components/common/SelectTagInput';
+import { TAG_LIST } from '@/constants/tags';
 
 type QnaAnswerProps = {
   qnaComment: TqnaCommentsWithReplyCount;
@@ -31,6 +35,7 @@ const QnaAnswer = ({ qnaComment, questioner, index, qnaCommentsCount, setQnaComm
   const [isEdit, setIsEdit] = useState(false);
   const [content, setContent] = useState(qnaComment.comment);
   const [replyCount, setReplyCount] = useState<number>(qnaComment?.qna_reply[0].count);
+  const [tagList, setTagList] = useState<Array<Ttag>>(TAG_LIST);
   const queryClient = useQueryClient();
 
   const handleReplyClick = () => {
@@ -40,7 +45,7 @@ const QnaAnswer = ({ qnaComment, questioner, index, qnaCommentsCount, setQnaComm
   const handleSelectComment: MouseEventHandler<HTMLButtonElement> = async () => {
     const data = await selectMutate();
     toast.success('채택이 완료되었습니다!', { autoClose: 1500, hideProgressBar: true });
-    await revalidate('/', 'layout');
+    await revalidatePostTag(`qna-detail-${postId}`);
     setSeletedComment(qnaComment.id);
   };
 
@@ -68,21 +73,37 @@ const QnaAnswer = ({ qnaComment, questioner, index, qnaCommentsCount, setQnaComm
     if (content.length === 0) {
       return toast.error('내용을 입력해주세요!');
     }
-    const data = await editMutate({ commentId: qnaComment.id, comment: content });
+    const data = await editMutate({
+      commentId: qnaComment.id,
+      comment: content,
+      tags: tagList.filter((tag) => tag.selected),
+      user_id: me?.id ?? ''
+    });
     toast.success('수정 완료!', { autoClose: 1500, hideProgressBar: true });
     setIsEdit(false);
-    await revalidate('/', 'layout');
+    await revalidatePostTag(`qna-detail-${postId}`);
   };
 
-  const editComment = async ({ commentId, comment }: { commentId: string; comment: string }) => {
+  const editComment = async ({
+    commentId,
+    comment,
+    tags,
+    user_id
+  }: {
+    commentId: string;
+    comment: string;
+    tags: Ttag[];
+    user_id: string;
+  }) => {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/posts/qna-detail/comment/${commentId}`, {
       method: 'PATCH',
-      body: JSON.stringify({ comment })
+      body: JSON.stringify({ comment, tags, user_id })
     });
     const { data, message } = await response.json();
     if (message) {
       return toast.error(message);
     }
+
     return data;
   };
 
@@ -92,6 +113,16 @@ const QnaAnswer = ({ qnaComment, questioner, index, qnaCommentsCount, setQnaComm
       queryClient.invalidateQueries({ queryKey: ['qnaComments', postId] });
     }
   });
+
+  useEffect(() => {
+    const commentTagList = qnaComment.qna_comment_tag.map((tag) => tag.tag);
+
+    setTagList(
+      TAG_LIST.map((TAG) => {
+        return commentTagList.includes(TAG.name) ? { ...TAG, selected: !TAG.selected } : TAG;
+      })
+    );
+  }, [qnaComment.qna_comment_tag]);
 
   return (
     <div
@@ -150,7 +181,10 @@ const QnaAnswer = ({ qnaComment, questioner, index, qnaCommentsCount, setQnaComm
         {isEdit ? (
           <div className="flex flex-col">
             <CustomMDEditor content={content} setContent={setContent} />
-
+            <div className="h-[182px] mt-12 flex flex-col gap-4">
+              <h5 className="text-h5 font-bold text-neutral-900">태그</h5>
+              <SelectTagInput tagList={tagList} setTagList={setTagList} />
+            </div>
             <button
               className="w-[100px] h-[48px] ml-auto mt-4 bg-main-50 rounded-md text-main-400 text-subtitle1 font-bold"
               onClick={handleEditComment}
@@ -171,6 +205,11 @@ const QnaAnswer = ({ qnaComment, questioner, index, qnaCommentsCount, setQnaComm
             source={qnaComment.comment}
           />
         )}
+        <div className={`flex gap-[6px] my-6 ${isEdit ? 'hidden' : ''}`}>
+          {qnaComment.qna_comment_tag.map((tag) => (
+            <TagBlock key={'answer' + tag} tag={tag.tag} />
+          ))}
+        </div>
       </div>
       <div className="flex justify-between  h-[59px] items-center">
         <div className="flex gap-6 items-center ">

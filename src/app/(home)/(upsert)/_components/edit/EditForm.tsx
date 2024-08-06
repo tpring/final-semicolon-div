@@ -1,6 +1,6 @@
 'use client';
 import { FormEvent, FormEventHandler, useEffect, useState } from 'react';
-import { TarchivePost, TforumPost, TpostFormData, TqnaPost } from '@/types/upsert';
+import { TeditArchiveData, TeditForumData, TeditQnaData, TpostFormData } from '@/types/upsert';
 import Link from 'next/link';
 import {
   BOARD_LIST,
@@ -16,7 +16,6 @@ import FormTitleInput from './editform/FormTitleInput';
 import FormTagInput from './editform/FormTagInput';
 import FormContentArea from './editform/FormContentArea';
 import { useRouter } from 'next/navigation';
-import { revalidate } from '@/actions/revalidate';
 import { toast, ToastContainer } from 'react-toastify';
 import FormSubmitButton from '../FormSubmitButton';
 import { useAuth } from '@/context/auth.context';
@@ -25,18 +24,22 @@ import ThumbNailBox from '../ThumbNailBox';
 import { usePostingCategoryStore } from '@/store/postingCategoryStore';
 import PostingCategory from './editform/categorybox/PostingCategory';
 import { v4 as uuidv4 } from 'uuid';
+import { TAG_LIST } from '@/constants/tags';
+import { revalidatePostTag } from '@/actions/revalidatePostTag';
 
 type UpsertFormProps = {
-  data: TforumPost | TqnaPost | TarchivePost;
+  data: TeditForumData | TeditQnaData | TeditArchiveData;
   path: string;
 };
 
 const EditForm = ({ data, path }: UpsertFormProps) => {
+  const router = useRouter();
   const { me: user } = useAuth();
   const { categoryGroup, subCategory, setCategoryGroup, setSubCategory } = usePostingCategoryStore();
-  const router = useRouter();
   const [content, setContent] = useState<string>('');
   const [prevUrl, setPrevUrl] = useState<string>('');
+  const [tags, setTags] = useState<string[]>([]);
+  const [tagList, setTagList] = useState<Array<Ttag>>(TAG_LIST);
   const [isThumbnailUrlDeleted, setisThumbnailUrlDeleted] = useState<boolean>(false);
   const [FORUM, QNA, ARCHIVE] = BOARD_LIST;
 
@@ -99,7 +102,13 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
     //유효성 검사 통과시 업데이트 요청
     const response = await fetch(path, {
       method: 'PATCH',
-      body: JSON.stringify({ ...postData, path, thumbnail: thumbnailUrl })
+      body: JSON.stringify({
+        ...postData,
+        path,
+        thumbnail: thumbnailUrl,
+        tags: tagList.filter((tag) => tag.selected),
+        user_id: user?.id
+      })
     });
     const { data, message } = await response.json();
 
@@ -108,7 +117,7 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
       return;
     }
 
-    await revalidate('/', 'layout');
+    await revalidatePostTag(`edit-${path}`);
 
     toast.success(message, {
       autoClose: 1500,
@@ -131,22 +140,39 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
     switch (data.category) {
       case 'forum':
         setCategoryGroup(FORUM);
-        setSubCategory((data as TforumPost).forum_category);
+        setSubCategory((data as TeditForumData).forum_category);
+        (data as TeditForumData).forum_tags.length !== 0
+          ? setTags((data as TeditForumData).forum_tags.map((tag) => tag.tag ?? ''))
+          : null;
         setContent(data.content);
         setPrevUrl(data.thumbnail ?? '');
         break;
       case 'qna':
         setCategoryGroup(QNA);
+        (data as TeditQnaData).qna_tags.length !== 0
+          ? setTags((data as TeditQnaData).qna_tags.map((tag) => tag.tag ?? ''))
+          : null;
         setContent(data.content);
         setPrevUrl(data.thumbnail ?? '');
         break;
       case 'archive':
         setCategoryGroup(ARCHIVE);
+        (data as TeditArchiveData).archive_tags.length !== 0
+          ? setTags((data as TeditArchiveData)?.archive_tags.map((tag) => tag.tag ?? ''))
+          : null;
         setContent(data.content);
         setPrevUrl(data.thumbnail ?? '');
         break;
     }
   }, [data, user]);
+
+  useEffect(() => {
+    setTagList(
+      TAG_LIST.map((TAG) => {
+        return tags.includes(TAG.name) ? { ...TAG, selected: !TAG.selected } : TAG;
+      })
+    );
+  }, [tags]);
 
   return (
     <div className="w-[1204px] mx-auto flex flex-col gap-y-5 max-h-screen">
@@ -157,7 +183,7 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
       <form className="flex flex-col gap-y-10 h-full" onSubmit={handleSubmit}>
         <PostingCategory />
         <FormTitleInput title={data.title} />
-        <FormTagInput />
+        <FormTagInput tagList={tagList} setTagList={setTagList} />
         <ThumbNailBox prevUrl={prevUrl} setisThumbnailUrlDeleted={setisThumbnailUrlDeleted} />
         <FormContentArea content={content} setContent={setContent} />
         <FormSubmitButton />

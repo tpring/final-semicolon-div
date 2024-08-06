@@ -1,24 +1,22 @@
 import MDEditor, { commands } from '@uiw/react-md-editor';
 import { Dispatch, MouseEventHandler, SetStateAction, useState } from 'react';
-import { TpostReply } from '@/types/posts/qnaDetailTypes';
+import AnswerReplytKebobBtn from '../kebob-btn/AnswerReplytKebobBtn';
+import { Treply } from '@/types/posts/qnaDetailTypes';
 import Image from 'next/image';
 import { timeForToday } from '@/utils/timeForToday';
 import { useAuth } from '@/context/auth.context';
 import { toast } from 'react-toastify';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import QuestionReplyKebobBtn from '../qnapost/QuestionReplyKebobBtn';
-import { useQnaDetailStore } from '@/store/qnaDetailStore';
 
-type QuestionReplyProps = {
-  reply: TpostReply;
+type AnswerReplyProps = {
+  reply: Treply;
   setReplyCount: Dispatch<SetStateAction<number>>;
 };
 
-const QuestionReply = ({ reply, setReplyCount }: QuestionReplyProps) => {
+const AnswerReply = ({ reply, setReplyCount }: AnswerReplyProps) => {
+  const [content, setContent] = useState<string>(reply.reply);
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [content, setContent] = useState<string>(reply.post_reply_content);
   const { me } = useAuth();
-  const { postId } = useQnaDetailStore();
   const queryClient = useQueryClient();
 
   const handleContentChange = (value: string | undefined): void => {
@@ -29,22 +27,16 @@ const QuestionReply = ({ reply, setReplyCount }: QuestionReplyProps) => {
     setIsEdit(false);
   };
 
-  const handleEditQuestionReply: MouseEventHandler<HTMLButtonElement> = async () => {
-    const data = await editMutate({ replyId: reply.id, post_reply_content: content });
+  const handleEditReply: MouseEventHandler<HTMLButtonElement> = async () => {
+    const data = await editMutate({ replyId: reply.id, reply: content });
     toast.success('수정 완료!', { autoClose: 1500, hideProgressBar: true });
     setIsEdit(false);
   };
 
-  const editQuestionReply = async ({
-    replyId,
-    post_reply_content
-  }: {
-    replyId: string;
-    post_reply_content: string;
-  }) => {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/posts/qna-detail/qna-post-reply/${replyId}`, {
+  const editReply = async ({ replyId, reply }: { replyId: string; reply: string }) => {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/posts/qna-detail/qna-reply/${replyId}`, {
       method: 'PATCH',
-      body: JSON.stringify({ post_reply_content })
+      body: JSON.stringify({ reply })
     });
     const { data, message } = await response.json();
     if (message) {
@@ -54,9 +46,9 @@ const QuestionReply = ({ reply, setReplyCount }: QuestionReplyProps) => {
   };
 
   const { mutate: editMutate } = useMutation({
-    mutationFn: editQuestionReply,
+    mutationFn: editReply,
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['qnaReply', postId] });
+      queryClient.invalidateQueries({ queryKey: ['qnaReply', reply.comment_id] });
     }
   });
 
@@ -78,7 +70,12 @@ const QuestionReply = ({ reply, setReplyCount }: QuestionReplyProps) => {
         </div>
         {me?.id === reply.user_id ? (
           <div className="flex ml-auto ">
-            <QuestionReplyKebobBtn replyId={reply.id} setReplyCount={setReplyCount} setIsEdit={setIsEdit} />
+            <AnswerReplytKebobBtn
+              commentId={reply.comment_id}
+              replyId={reply.id}
+              setReplyCount={setReplyCount}
+              setIsEdit={setIsEdit}
+            />
           </div>
         ) : (
           ''
@@ -104,14 +101,14 @@ const QuestionReply = ({ reply, setReplyCount }: QuestionReplyProps) => {
             >
               취소
             </button>
-            <button className="w-[71px] h-[48px] bg-main-100 rounded-md text-main-50" onClick={handleEditQuestionReply}>
+            <button className="w-[71px] h-[48px] bg-main-100 rounded-md text-main-50" onClick={handleEditReply}>
               등록
             </button>
           </div>
         </div>
       ) : (
         <div className="flex flex-col h-[86px] mb-6 mx-5  gap-[16px]">
-          <MDEditor.Markdown source={reply.post_reply_content} />
+          <MDEditor.Markdown source={reply.reply} />
           <div>{reply.created_at.slice(0, 10)}</div>
         </div>
       )}
@@ -119,4 +116,4 @@ const QuestionReply = ({ reply, setReplyCount }: QuestionReplyProps) => {
   );
 };
 
-export default QuestionReply;
+export default AnswerReply;
