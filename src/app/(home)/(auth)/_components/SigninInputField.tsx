@@ -24,7 +24,7 @@ const SigninInputField = ({ type, value, onChange, placeholder, valid, message }
   };
 
   return (
-    <div className="relative mb-4">
+    <div className="relative mb-2">
       <input
         type={type}
         value={value}
@@ -33,7 +33,7 @@ const SigninInputField = ({ type, value, onChange, placeholder, valid, message }
         onBlur={() => setIsFocused(false)}
         placeholder={placeholder}
         ref={inputRef}
-        className={`w-full p-3 pr-10 border rounded ${borderColor} focus:outline-none focus:ring-2 focus:ring-blue-500`}
+        className={`w-full p-3 pr-10 border rounded ${borderColor} focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-sm`}
       />
       {(isFocused || value) && (
         <button
@@ -44,7 +44,7 @@ const SigninInputField = ({ type, value, onChange, placeholder, valid, message }
           <X />
         </button>
       )}
-      <p className={`mt-1 ${messageColor}`}>{message}</p>
+      <p className={`mt-1 text-xs ml-2 ${messageColor}`}>{message}</p>
     </div>
   );
 };

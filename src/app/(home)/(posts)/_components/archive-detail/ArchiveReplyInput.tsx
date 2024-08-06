@@ -8,14 +8,14 @@ import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import ConfirmModal from '@/components/modal/ConfirmModal'; // 모달 컴포넌트 import
+import ConfirmModal from '@/components/modal/ConfirmModal';
 
 const ArchiveReplyInput = ({ comment_id, toggle, count }: archiveReplyInputProps) => {
   const { me, userData } = useAuth();
   const params = useParams();
   const queryClient = useQueryClient();
-  const [reply, setReply] = useState('');
-  const [showModal, setShowModal] = useState(false); // 모달 상태 추가
+  const [reply, setReply] = useState(''); //
+  const [showModal, setShowModal] = useState(false);
 
   const handleReply = useMutation({
     mutationFn: async (userReply: userReply) => {
@@ -41,6 +41,7 @@ const ArchiveReplyInput = ({ comment_id, toggle, count }: archiveReplyInputProps
     }
   });
 
+  //
   const changeReply = (value?: string) => {
     setReply(value ?? '');
   };
@@ -68,18 +69,16 @@ const ArchiveReplyInput = ({ comment_id, toggle, count }: archiveReplyInputProps
   };
 
   const handleCancelClick = () => {
-    // 취소 버튼 클릭 시 모달을 보여줍니다.
     setShowModal(true);
   };
 
   const handleConfirmCancel = () => {
-    // 모달에서 확인을 눌렀을 때 실제로 취소 작업을 수행합니다.
     toggle(comment_id, count);
-    setShowModal(false); // 모달 닫기
+    setShowModal(false);
   };
 
   const handleCloseModal = () => {
-    setShowModal(false); // 모달 닫기
+    setShowModal(false);
   };
 
   return (
@@ -104,7 +103,7 @@ const ArchiveReplyInput = ({ comment_id, toggle, count }: archiveReplyInputProps
       </div>
       <div className="flex justify-end items-end gap-4 mt-4">
         <button
-          onClick={handleCancelClick} // 취소 버튼 클릭 시 모달을 열도록 설정
+          onClick={handleCancelClick}
           className="bg-neutral-50 hover:bg-neutral-100 hover:text-neutral-600 text-neutral-100 px-5 py-3 rounded-lg"
         >
           취소
@@ -122,8 +121,8 @@ const ArchiveReplyInput = ({ comment_id, toggle, count }: archiveReplyInputProps
       {showModal && (
         <ConfirmModal
           isOpen={showModal}
-          onClose={handleCloseModal} // 모달 닫기 핸들러
-          onConfirm={handleConfirmCancel} // 모달에서 확인 버튼 클릭 시 핸들러
+          onClose={handleCloseModal}
+          onConfirm={handleConfirmCancel}
           message={'댓글 작성을 취소 하시겠습니까?'}
         />
       )}

@@ -47,17 +47,14 @@ const EmailCheck = ({
         const result = await response.json();
 
         if (response.status === 409) {
-          // 이메일이 이미 사용 중일 때
           setEmailMessage('이미 사용 중인 이메일입니다.');
           setEmailValid(false);
           setIsCheckedEmail(false);
         } else if (response.ok) {
-          // 이메일 형식이 유효하고 중복되지 않았을 때
           setEmailMessage('사용 가능한 이메일입니다.');
           setEmailValid(true);
           setIsCheckedEmail(true);
         } else {
-          // 기타 오류
           setEmailMessage(result.error || '이메일 확인 중 오류가 발생했습니다.');
           setEmailValid(false);
           setIsCheckedEmail(false);

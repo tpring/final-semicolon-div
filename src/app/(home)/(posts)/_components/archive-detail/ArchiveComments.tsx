@@ -13,7 +13,7 @@ import LikeButton from '@/components/common/LikeButton';
 import BookmarkButton from '@/components/common/BookmarkButton';
 import KebabButton from '@/assets/images/common/KebabButton';
 import { revalidate } from '@/actions/revalidate';
-import ConfirmModal from '@/components/modal/ConfirmModal'; // 모달 컴포넌트 import
+import ConfirmModal from '@/components/modal/ConfirmModal';
 import ArchiveReplyInput from './ArchiveReplyInput';
 import ArchiveReply from './ArchiveReply';
 import { archiveCommentsType, commentRetouch } from '@/types/posts/archiveDetailTypes';

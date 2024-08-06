@@ -9,20 +9,19 @@ import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import ConfirmModal from '@/components/modal/ConfirmModal'; // ConfirmModal 컴포넌트 import
+import ConfirmModal from '@/components/modal/ConfirmModal';
 
 const ArchiveInputComments = () => {
   const params = useParams<{ id: string }>();
   const { me, userData } = useAuth();
   const queryClient = useQueryClient();
   const [comment, setComment] = useState<string>('');
-  const [showModal, setShowModal] = useState(false); // 모달 상태 추가
+  const [showModal, setShowModal] = useState(false);
 
   const handleCommentChange = (value?: string) => {
     setComment(value ?? '');
   };
 
-  // 댓글 입력
   const handleComment = useMutation({
     mutationFn: async (userComment: userComment) => {
       const response = await fetch(`/api/posts/archive-detail/archive-comments/${params.id}`, {
@@ -61,18 +60,15 @@ const ArchiveInputComments = () => {
   };
 
   const handleCancelClick = () => {
-    // 취소 버튼 클릭 시 모달을 열기
     setShowModal(true);
   };
 
   const handleConfirmCancel = () => {
-    // 모달에서 확인 버튼을 누르면 댓글을 비우고 모달을 닫기
     setComment('');
     setShowModal(false);
   };
 
   const handleCloseModal = () => {
-    // 모달 닫기
     setShowModal(false);
   };
 
@@ -103,7 +99,7 @@ const ArchiveInputComments = () => {
           <button
             type="button"
             className="bg-neutral-50 hover:bg-neutral-100 hover:text-neutral-600 text-neutral-100 px-5 py-3 rounded-lg"
-            onClick={handleCancelClick} // 취소 버튼 클릭 시 모달 열기
+            onClick={handleCancelClick}
           >
             취소
           </button>
@@ -120,8 +116,8 @@ const ArchiveInputComments = () => {
       {showModal && (
         <ConfirmModal
           isOpen={showModal}
-          onClose={handleCloseModal} // 모달 닫기 핸들러
-          onConfirm={handleConfirmCancel} // 모달에서 확인 버튼 클릭 시 핸들러
+          onClose={handleCloseModal}
+          onConfirm={handleConfirmCancel}
           message={'댓글 작성을 취소 하시겠습니까?'}
         />
       )}

@@ -22,8 +22,7 @@ const ArchiveReply = ({ comment_id, post_user_id }: { comment_id: string; post_u
   const [replyRetouch, setReplyRetouch] = useState<string>('');
   const [replyEditor, setReplyEditor] = useState<{ [key: string]: boolean }>({});
   const [replyEditorToggle, setReplyEditorToggle] = useState<{ [key: string]: boolean }>({});
-  const [confirmModal, setConfirmModal] = useState<{ [key: string]: boolean }>({}); // 댓글별 모달 상태 관리
-
+  const [confirmModal, setConfirmModal] = useState<{ [key: string]: boolean }>({});
   const COMMENT_REPLY_PAGE = 5;
 
   const replyRetouchMutation = useMutation({
@@ -139,20 +138,17 @@ const ArchiveReply = ({ comment_id, post_user_id }: { comment_id: string; post_u
     setReplyEditorToggle({ [id]: !replyEditorToggle[id] });
   };
 
-  // 댓글 수정 취소 버튼 핸들러
   const handleCancelEdit = (id: string) => {
-    setConfirmModal((prev) => ({ ...prev, [id]: true })); // 수정 취소 모달 열기
+    setConfirmModal((prev) => ({ ...prev, [id]: true }));
   };
 
-  // 수정 취소 모달 확인 버튼 핸들러
   const handleConfirmCancelEdit = (id: string) => {
-    setReplyEditor({ [id]: false }); // 편집 모드 종료
-    setConfirmModal((prev) => ({ ...prev, [id]: false })); // 모달 닫기
+    setReplyEditor({ [id]: false });
+    setConfirmModal((prev) => ({ ...prev, [id]: false }));
   };
 
-  // 모달 닫기 핸들러
   const handleCloseModal = (id: string) => {
-    setConfirmModal((prev) => ({ ...prev, [id]: false })); // 모달 닫기
+    setConfirmModal((prev) => ({ ...prev, [id]: false }));
   };
 
   return (
@@ -203,15 +199,15 @@ const ArchiveReply = ({ comment_id, post_user_id }: { comment_id: string; post_u
                           </button>
                           <button
                             className="h-[44px] w-full rounded-b-lg hover:bg-main-50 hover:text-main-400"
-                            onClick={() => setConfirmModal((prev) => ({ ...prev, [reply.id]: true }))} // 삭제 모달 열기
+                            onClick={() => setConfirmModal((prev) => ({ ...prev, [reply.id]: true }))}
                           >
                             댓글 삭제
                           </button>
                           {confirmModal[reply.id] && (
                             <ConfirmModal
                               isOpen={confirmModal[reply.id]}
-                              onClose={() => setConfirmModal((prev) => ({ ...prev, [reply.id]: false }))} // 삭제 모달 닫기
-                              onConfirm={() => handleReplyDelete(reply.id, reply.user_id)} // 삭제 확인
+                              onClose={() => setConfirmModal((prev) => ({ ...prev, [reply.id]: false }))}
+                              onConfirm={() => handleReplyDelete(reply.id, reply.user_id)}
                               message={'댓글을 삭제 하겠습니까?'}
                             />
                           )}
@@ -236,7 +232,7 @@ const ArchiveReply = ({ comment_id, post_user_id }: { comment_id: string; post_u
                   />
                   <div className="flex justify-end items-end mt-4 gap-6">
                     <button
-                      onClick={() => handleCancelEdit(reply.id)} // 수정 취소 버튼 클릭 시 모달 호출
+                      onClick={() => handleCancelEdit(reply.id)}
                       className="bg-neutral-50 text-neutral-100 px-5 py-3 rounded-lg"
                     >
                       취소
@@ -251,8 +247,8 @@ const ArchiveReply = ({ comment_id, post_user_id }: { comment_id: string; post_u
                   {confirmModal[reply.id] && (
                     <ConfirmModal
                       isOpen={confirmModal[reply.id]}
-                      onClose={() => handleCloseModal(reply.id)} // 수정 취소 모달 닫기
-                      onConfirm={() => handleConfirmCancelEdit(reply.id)} // 수정 취소 확인
+                      onClose={() => handleCloseModal(reply.id)}
+                      onConfirm={() => handleConfirmCancelEdit(reply.id)}
                       message={'댓글 작성을 취소 하시겠습니까?'}
                     />
                   )}

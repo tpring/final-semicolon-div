@@ -1,7 +1,7 @@
 import Down from '@/assets/images/common/Down';
 import Up from '@/assets/images/common/Up';
 import X from '@/assets/images/common/X';
-import { Dispatch, MouseEventHandler, SetStateAction, useState } from 'react';
+import { Dispatch, MouseEventHandler, SetStateAction, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 type SelectTagInputProps = {
@@ -14,6 +14,7 @@ const SelectTagInput = ({ tagList, setTagList }: SelectTagInputProps) => {
   const [selectedCount, setSelectedCount] = useState<number>(0);
 
   const handleOpenTag: MouseEventHandler<HTMLDivElement> = (event) => {
+    event.stopPropagation();
     setOpenTag((prev) => !prev);
   };
 
@@ -27,7 +28,6 @@ const SelectTagInput = ({ tagList, setTagList }: SelectTagInputProps) => {
         return TAG.name === tag.name ? { name: tag.name, selected: !tag.selected } : TAG;
       })
     );
-    setSelectedCount((prev) => prev + 1);
   };
 
   const handleRemoveTag = (tag: Ttag): void => {
@@ -37,6 +37,10 @@ const SelectTagInput = ({ tagList, setTagList }: SelectTagInputProps) => {
       })
     );
   };
+
+  useEffect(() => {
+    setSelectedCount(tagList.filter((tag) => tag.selected).length);
+  }, [tagList]);
 
   return (
     <div
@@ -51,8 +55,8 @@ const SelectTagInput = ({ tagList, setTagList }: SelectTagInputProps) => {
           .map((tag) => {
             return (
               <div
-                key={'selected' + tag.name}
-                className="flex items-center text-subtitle2 font-medium gap-1 bg-neutral-50 px-3 py-1 rounded"
+                key={'selectedTag' + tag.name}
+                className="flex items-center text-subtitle2 text-neutral-700 font-medium gap-1 bg-neutral-50 px-3 py-1 rounded"
               >
                 <span>#{tag.name}</span>
                 <button
@@ -61,7 +65,6 @@ const SelectTagInput = ({ tagList, setTagList }: SelectTagInputProps) => {
                   onClick={(event) => {
                     event.stopPropagation();
                     handleRemoveTag(tag);
-                    setSelectedCount((prev) => prev - 1);
                   }}
                 >
                   <X width={8} height={8} />
@@ -74,20 +77,20 @@ const SelectTagInput = ({ tagList, setTagList }: SelectTagInputProps) => {
 
       <div className="relative z-10">
         <ul
-          className={`${openTag ? '' : 'hidden '} w-full h-[271px] mt-2 px-6 flex flex-col gap-2 absolute overflow-y-auto bg-white py-3 border rounded-xl`}
+          className={`${openTag ? '' : 'hidden '} w-full h-[271px] mt-2 flex flex-col gap-2 absolute overflow-y-auto bg-white py-3 border rounded-xl `}
         >
           {tagList
             .filter((tag) => tag.selected === false)
             .map((tag) => {
               return (
                 <li
-                  className=""
+                  className="px-6 py-2"
                   key={tag.name}
                   onClick={() => {
                     handleSelect(tag);
                   }}
                 >
-                  {tag.name}
+                  <span className="h-[27px] text-body1 text-neutral-900">{tag.name}</span>
                 </li>
               );
             })}

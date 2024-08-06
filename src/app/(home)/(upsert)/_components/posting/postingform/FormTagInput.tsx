@@ -1,9 +1,12 @@
 import SelectTagInput from '@/components/common/SelectTagInput';
-import { TAG_LIST } from '@/constants/tags';
-import { useState } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 
-const FormTagInput = () => {
-  const [tagList, setTagList] = useState<Array<Ttag>>(TAG_LIST);
+type FormTagInputProps = {
+  tagList: Array<Ttag>;
+  setTagList: Dispatch<SetStateAction<Array<Ttag>>>;
+};
+
+const FormTagInput = ({ tagList, setTagList }: FormTagInputProps) => {
   return (
     <div>
       <label className="block mb-2  text-neutral-900 text-h5 font-bold" htmlFor="tag">

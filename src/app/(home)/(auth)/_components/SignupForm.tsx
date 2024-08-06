@@ -133,11 +133,13 @@ const SignupForm = () => {
   return (
     <div className="flex items-center justify-center min-h-screen">
       <ToastContainer />
-      <div className="bg-white p-8 rounded-md shadow-lg w-full max-w-lg">
+      <div className="bg-white w-full max-w-sm">
         <div className="flex items-center justify-center mb-16">
           <Logo />
         </div>
-        <OAuthButtons handleLogin={handleOAuthLogin} />
+        <div className="border-b-4 mb-8">
+          <OAuthButtons handleLogin={handleOAuthLogin} />
+        </div>
         <form onSubmit={handleSignup} className="mt-4">
           <EmailCheck
             email={email}

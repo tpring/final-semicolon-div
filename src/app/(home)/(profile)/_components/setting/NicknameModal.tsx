@@ -167,7 +167,7 @@ const NicknameModal = ({ isOpen, onClose, currentNickname, onNicknameUpdate }: N
         isOpen={isConfirmModalOpen}
         onClose={handleCancelClose}
         onConfirm={handleConfirmClose}
-        message={`작성 중인 내용이 저장되지 않았습니다.\n정말 닫으시겠습니까?`}
+        message={`내용이 저장되지 않았습니다.\n정말 닫으시겠습니까?`}
       />
     </>
   );

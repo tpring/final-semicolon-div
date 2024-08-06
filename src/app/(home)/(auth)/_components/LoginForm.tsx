@@ -85,6 +85,8 @@ function LoginForm() {
       if (error) {
         setError(`Failed to log in with ${provider}. ${error.message}`);
         toast.error(`Failed to log in with ${provider}.`);
+      } else {
+        localStorage.setItem('oauthProvider', provider);
       }
     } catch (err) {
       setError('OAuth 로그인 실패');
@@ -95,7 +97,7 @@ function LoginForm() {
   return (
     <div className="flex items-center justify-center min-h-screen ">
       <ToastContainer />
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
+      <div className="bg-white w-full max-w-sm">
         <div className="flex items-center justify-center mb-16">
           <Logo />
         </div>
@@ -127,13 +129,15 @@ function LoginForm() {
         </form>
         <div className="mt-4 text-center">
           <p className="mt-4 text-center">
-            혹시 계정이 없으신가요?{' '}
+            혹시 계정이 없으신가요?
             <Link className="text-blue-600 hover:underline" href="/signup">
               회원가입
             </Link>
           </p>
         </div>
-        <OAuthButtons handleLogin={handleOAuthLogin} />
+        <div className="border-t-4 mt-8">
+          <OAuthButtons handleLogin={handleOAuthLogin} />
+        </div>
       </div>
     </div>
   );
