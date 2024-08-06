@@ -1,5 +1,6 @@
 import React from 'react';
 import InputField from './InputField';
+import SigninInputField from './SigninInputField';
 
 type PasswordFieldsProps = {
   password: string;
@@ -24,7 +25,7 @@ const PasswordFields = ({
 }: PasswordFieldsProps) => {
   return (
     <div>
-      <InputField
+      <SigninInputField
         type="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
@@ -32,7 +33,7 @@ const PasswordFields = ({
         valid={passwordValid}
         message={passwordMessage}
       />
-      <InputField
+      <SigninInputField
         type="password"
         value={confirmPassword}
         onChange={(e) => setConfirmPassword(e.target.value)}

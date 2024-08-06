@@ -8,7 +8,7 @@ import { useAuth } from '@/context/auth.context';
 import OAuthButtons from './OAuthButtons';
 import { createClient } from '@/supabase/client';
 import Logo from '@/assets/images/header/Logo';
-
+import InputField from './InputField';
 function LoginForm() {
   const router = useRouter();
   const [email, setEmail] = useState<string>('');
@@ -16,9 +16,36 @@ function LoginForm() {
   const [error, setError] = useState<string | null>(null);
   const { logIn } = useAuth();
 
+  const [emailValid, setEmailValid] = useState<boolean>(true);
+  const [emailMessage, setEmailMessage] = useState<string>('');
+
+  const [passwordValid, setPasswordValid] = useState<boolean>(true);
+  const [passwordMessage, setPasswordMessage] = useState<string>('');
+
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     setError(null);
+
+    if (!validateEmail(email)) {
+      setEmailValid(false);
+      setEmailMessage('유효하지 않은 이메일 형식입니다.');
+      toast.error('유효하지 않은 이메일 형식입니다.');
+      return;
+    } else {
+      setEmailValid(true);
+      setEmailMessage('');
+    }
+
+    if (password.length < 6) {
+      setPasswordValid(false);
+      setPasswordMessage('비밀번호는 6자 이상이어야 합니다.');
+      toast.error('비밀번호는 6자 이상이어야 합니다.');
+      return;
+    } else {
+      setPasswordValid(true);
+      setPasswordMessage('');
+    }
+
     try {
       const response = await logIn(email, password);
 
@@ -37,6 +64,13 @@ function LoginForm() {
     }
   };
 
+  // 이메일 유효성 검사 함수
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  // OAuth 로그인 처리 함수
   const handleOAuthLogin = async (provider: 'google' | 'kakao' | 'github') => {
     setError(null);
     try {
@@ -68,21 +102,23 @@ function LoginForm() {
         {error && <p className="text-red-500 mb-4">{error}</p>}
         <form onSubmit={handleLogin}>
           <div className="mb-4">
-            <input
+            <InputField
               type="email"
               value={email}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="이메일"
-              className="w-full p-3 border rounded"
+              valid={emailValid}
+              message={emailMessage}
             />
           </div>
           <div className="mb-4">
-            <input
+            <InputField
               type="password"
               value={password}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="비밀번호"
-              className="w-full p-3 border rounded"
+              valid={passwordValid}
+              message={passwordMessage}
             />
           </div>
           <button type="submit" className="w-full p-3 bg-main-100 hover:bg-main-400 text-white rounded-md">

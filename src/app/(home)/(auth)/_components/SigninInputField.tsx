@@ -10,7 +10,7 @@ type InputFieldProps = {
   message: string;
 };
 
-const InputField = ({ type, value, onChange, placeholder, valid, message }: InputFieldProps) => {
+const SigninInputField = ({ type, value, onChange, placeholder, valid, message }: InputFieldProps) => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -32,13 +32,14 @@ const InputField = ({ type, value, onChange, placeholder, valid, message }: Inpu
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         placeholder={placeholder}
+        ref={inputRef}
         className={`w-full p-3 pr-10 border rounded ${borderColor} focus:outline-none focus:ring-2 focus:ring-blue-500`}
       />
       {(isFocused || value) && (
         <button
           type="button"
           onClick={handleClearInput}
-          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-black z-10"
+          className="absolute right-3 top-1/3 transform -translate-y-1/2 text-gray-400 hover:text-black z-10"
         >
           <X />
         </button>
@@ -48,4 +49,4 @@ const InputField = ({ type, value, onChange, placeholder, valid, message }: Inpu
   );
 };
 
-export default InputField;
+export default SigninInputField;

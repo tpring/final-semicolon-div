@@ -1,10 +1,8 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import SignupButton from './SignupButton';
-import InputField from './InputField';
 import CheckboxGroup from './CheckboxGroup';
 import { useRouter } from 'next/navigation';
 import PasswordFields from './PasswordFields';
@@ -12,8 +10,10 @@ import ReCAPTCHA from 'react-google-recaptcha';
 import { useAuth } from '@/context/auth.context';
 import OAuthButtons from './OAuthButtons';
 import useOAuthLogin from '@/hooks/useOAuthLogin';
-import NicknameCheck from './NicknameCheck ';
+import EmailCheck from './EmailCheck';
 import Logo from '@/assets/images/header/Logo';
+import NicknameCheck from './NicknameCheck ';
+import Link from 'next/link';
 
 const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY as string;
 
@@ -32,6 +32,7 @@ const SignupForm = () => {
   const [nicknameValid, setNicknameValid] = useState<boolean>(false);
   const [formValid, setFormValid] = useState<boolean>(false);
   const [isCheckedNickname, setIsCheckedNickname] = useState<boolean>(false);
+  const [isCheckedEmail, setIsCheckedEmail] = useState<boolean>(false);
 
   const [emailMessage, setEmailMessage] = useState<string>('');
   const [passwordMessage, setPasswordMessage] = useState<string>('');
@@ -45,11 +46,6 @@ const SignupForm = () => {
   const { handleOAuthLogin } = useOAuthLogin();
 
   useEffect(() => {
-    const validateEmail = (email: string) => {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return emailRegex.test(email);
-    };
-
     const validatePassword = (password: string) => {
       const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9]).{10,}$/;
       return passwordRegex.test(password);
@@ -59,13 +55,11 @@ const SignupForm = () => {
       return nickname.length >= 2 && nickname.length <= 12;
     };
 
-    setEmailValid(validateEmail(email));
     setPasswordValid(validatePassword(password));
     setConfirmPasswordValid(password === confirmPassword);
     const isValidNickname = validateNickname(nickname);
     setNicknameValid(isValidNickname);
 
-    setEmailMessage(validateEmail(email) ? '사용 가능한 이메일 주소입니다.' : '유효하지 않은 이메일 주소입니다.');
     setPasswordMessage(
       validatePassword(password)
         ? '사용 가능한 비밀번호입니다.'
@@ -75,7 +69,7 @@ const SignupForm = () => {
       password === confirmPassword ? '비밀번호가 일치합니다.' : '비밀번호가 일치하지 않습니다.'
     );
     setNicknameMessage(isValidNickname ? '사용 가능한 닉네임입니다.' : '닉네임은 2자 이상 12자 이하여야 합니다.');
-  }, [email, password, confirmPassword, nickname]);
+  }, [password, confirmPassword, nickname]);
 
   useEffect(() => {
     setFormValid(
@@ -86,6 +80,7 @@ const SignupForm = () => {
         agreeTerms &&
         agreePrivacy &&
         isCheckedNickname &&
+        isCheckedEmail &&
         recaptchaToken !== null
     );
   }, [
@@ -96,6 +91,7 @@ const SignupForm = () => {
     agreeTerms,
     agreePrivacy,
     isCheckedNickname,
+    isCheckedEmail,
     recaptchaToken
   ]);
 
@@ -143,13 +139,14 @@ const SignupForm = () => {
         </div>
         <OAuthButtons handleLogin={handleOAuthLogin} />
         <form onSubmit={handleSignup} className="mt-4">
-          <InputField
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="이메일을 입력해 주세요."
-            valid={emailValid}
-            message={emailMessage}
+          <EmailCheck
+            email={email}
+            setEmail={setEmail}
+            emailValid={emailValid}
+            setEmailValid={setEmailValid}
+            setIsCheckedEmail={setIsCheckedEmail}
+            emailMessage={emailMessage}
+            setEmailMessage={setEmailMessage}
           />
           <PasswordFields
             password={password}
