@@ -27,3 +27,27 @@ export const IMAGE_UPLOAD_TEXT = '![Image](이미지 업로드 중!)';
 
 //수파베이스 글 작성, 수정 이미지 경로
 export const POST_IMAGE_URL = 'https://jtorewqfshytdtgldztv.supabase.co/storage/v1/object/public/';
+
+//작성페이지 확인 메세지
+export const POST_CONFIRM_TEXT = '게시글을 등록 할까요?';
+
+//작성페이지 취소 메세지
+export const POST_CANCLE_TEXT = '게시글 작성을 중단할까요?';
+
+//수정 페이지 확인 메세지
+export const EDIT_COMFIRM_TEXT = '게시글을 수정 할까요?';
+
+//작성 페이지 취소 메세지
+export const EDIT_CANCLE_TEXT = '게시글 수정을 중단할까요?';
+
+//댓글 작성 확인 메세지
+export const POST_COMMENT_CONFIRM_TEXT = '댓글을 등록 할까요?';
+
+//댓글 작성 취소 메세지
+export const POST_COMMENT_CANCLE_TEXT = '댓글 작성을 중단할까요?';
+
+//댓글 수정  확인 메세지
+export const EDIT_COMMENT_COMFIRM_TEXT = '댓글을 수정 할까요?';
+
+//댓글 작성  취소 메세지
+export const EDIT_COMMENT_CANCLE_TEXT = '댓글 수정을 중단할까요?';

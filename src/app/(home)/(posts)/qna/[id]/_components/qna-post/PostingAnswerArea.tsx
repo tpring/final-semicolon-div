@@ -8,6 +8,7 @@ import { useQnaDetailStore } from '@/store/qnaDetailStore';
 import { revalidatePostTag } from '@/actions/revalidatePostTag';
 import { TAG_LIST } from '@/constants/tags';
 import SelectTagInput from '@/components/common/SelectTagInput';
+import ConfirmModal from '@/components/modal/ConfirmModal';
 
 type PostingAnswerAreaProps = {
   content: string;
@@ -65,19 +66,30 @@ const PostingAnswerArea = ({ content, setContent, setToggleAnswer, setQnaComment
     }
   });
 
-  if (isModalOpen) {
-    document.body.style.overflow = 'hidden';
-  }
+  // if (isModalOpen) {
+  //   document.body.style.overflow = 'hidden';
+  // }
 
   return (
     <>
       <div>
         {isModalOpen ? (
-          <PostingAnswerModal
-            isModalOpen={isModalOpen}
-            setIsModalOpen={setIsModalOpen}
-            setContent={setContent}
-            setToggleAnswer={setToggleAnswer}
+          // <PostingAnswerModal
+          //   isModalOpen={isModalOpen}
+          //   setIsModalOpen={setIsModalOpen}
+          //   setContent={setContent}
+          //   setToggleAnswer={setToggleAnswer}
+          // />
+          <ConfirmModal
+            isOpen={isModalOpen}
+            onClose={() => {
+              setIsModalOpen(false);
+            }}
+            onConfirm={() => {
+              setIsModalOpen(false);
+              setContent('');
+            }}
+            message="ee"
           />
         ) : null}
 
