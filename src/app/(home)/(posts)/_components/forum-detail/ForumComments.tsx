@@ -18,6 +18,7 @@ import KebabButton from '@/assets/images/common/KebabButton';
 import { revalidate } from '@/actions/revalidate';
 import ConfirmModal from '@/components/modal/ConfirmModal';
 import EndOfData from '@/components/common/EndOfData';
+import { cutText, filterSlang } from '@/utils/markdownCut';
 
 const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
   const { me } = useAuth();
@@ -31,6 +32,7 @@ const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
   const [replyToggle, setReplyToggle] = useState<{ [key: string]: boolean }>({});
   const [deleteConfirmModal, setDeleteConfirmModal] = useState<boolean>(false);
   const [retouchConfirmModal, setRetouchConfirmModal] = useState<boolean>(false);
+  const [commentLength, setCommentLength] = useState<boolean>(false);
 
   const COMMENT_PAGE = 5;
   //댓글 수정
@@ -53,6 +55,7 @@ const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
       toast.error('댓글을 입력해주세요!', {
         autoClose: 2000
       });
+      toast.success('댓글이 수정 되었습니다.', { autoClose: 1500 });
       return;
     }
   };
@@ -71,6 +74,7 @@ const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
   });
   // 삭제 이벤트 버튼
   const handleDelete = async (id: string, user_id: string) => {
+    toast.success('댓글이 삭제되었습니다.', { autoClose: 1500 });
     commentDelete.mutate({ id, user_id });
     revalidate('/', 'page');
   };
@@ -96,7 +100,6 @@ const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
     data: comments,
     isPending,
     hasNextPage,
-    isFetchingNextPage,
     isError
   } = useInfiniteQuery({
     queryKey: ['forumComments', param.id],
@@ -159,7 +162,7 @@ const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
                     />
                     <div className=" flex flex-col gap-1 ">
                       {post_user_id === comment.user_id && (
-                        <p className=" text-subtitle2 font-medium  px-[12px] py-[4px] text-white bg-main-500 text-center rounded-[4px]  ">
+                        <p className=" text-subtitle2 font-medium  px-[12px] py-[4px] text-white bg-main-400 text-center rounded-[4px]  ">
                           글쓴이
                         </p>
                       )}
@@ -221,13 +224,13 @@ const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
                     <div className="flex justify-end items-end mt-4 gap-6">
                       <button
                         onClick={() => toggleEditing(comment.id, comment.user_id)}
-                        className="bg-neutral-50 hover:bg-neutral-100 hover:text-neutral-600 text-neutral-100 px-5 py-3 rounded-lg"
+                        className="bg-neutral-50 text-neutral-500 hover:bg-neutral-100 hover:text-neutral-500 px-5 py-3 rounded-lg text-subtitle1 font-bold"
                       >
                         취소
                       </button>
                       <button
                         onClick={() => setRetouchConfirmModal(true)}
-                        className="bg-main-100 hover:bg-main-500 text-main-50 px-5 py-3 rounded-lg"
+                        className="bg-main-400 text-white hover:bg-main-500 hover:text-white' px-5 py-3 rounded-lg text-subtitle1 font-bold"
                       >
                         수정
                       </button>
@@ -241,8 +244,24 @@ const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
                       )}
                     </div>
                   </div>
+                ) : commentLength ? (
+                  <p className="text-body1 font-regular whitespace-pre-wrap break-words">
+                    {filterSlang(comment.comment)}
+                  </p>
                 ) : (
-                  <p className="text-body1 font-regular whitespace-pre-wrap break-words">{comment.comment}</p>
+                  <div>
+                    <p className="text-body1 font-regular whitespace-pre-wrap break-words">
+                      {cutText(filterSlang(comment.comment), 370)}
+                    </p>
+                    {comment.comment.length >= 370 && (
+                      <button
+                        className="text-subtitle2 font-bold text-neutral-700"
+                        onClick={() => setCommentLength(true)}
+                      >
+                        ...더보기
+                      </button>
+                    )}
+                  </div>
                 )}
                 <div className=" flex justify-between gap-4">
                   <p className="text-body1 font-regular text-neutral-400">
@@ -298,7 +317,7 @@ const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
       ))}
 
       <div ref={ref}></div>
-      {!hasNextPage && !isFetchingNextPage && <EndOfData />}
+      {!hasNextPage && !isPending && <EndOfData />}
     </>
   );
 };
