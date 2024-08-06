@@ -6,16 +6,17 @@ import TodayQna from './_components/TodayQna';
 import TopButton from '../../components/TopButton';
 
 const HomePage = async () => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/main-page`, {
-    next: {
-      revalidate: 3600
-    }
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch data');
-  }
-  const data = await response.json();
+  const mainPagePosts = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/main-page`, {
+        next: {
+          revalidate: 3600
+        }
+      });
+      const data = await response.json();
+      return data;
+    } catch (error) {}
+  };
 
   return (
     <div className="flex flex-col justify-center items-center relative">
