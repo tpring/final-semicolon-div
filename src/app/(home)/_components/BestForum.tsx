@@ -67,7 +67,7 @@ const BestForum = () => {
   });
 
   return (
-    <>
+    <div className="flex flex-col">
       <div className="flex justify-start items-center mb-5">
         <h1 className="text-h4 font-bold ">오늘의 인기 포럼이에요</h1>
         <Star />
@@ -112,7 +112,7 @@ const BestForum = () => {
                     <h1 className="text-h5 font-bold ">{forum.title}</h1>
                     {forum.thumbnail ? (
                       <div
-                        className="text-body2 font-regular normal whitespace-pre-wrap break-words overflow-hidden  "
+                        className="text-body2 font-regular normal whitespace-pre-wrap break-words  "
                         data-color-mode="light"
                       >
                         <MDEditor.Markdown source={processMarkdown(forum.content, 100)} />
@@ -177,7 +177,7 @@ const BestForum = () => {
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 };
 

@@ -5,35 +5,35 @@ import nodejs from '@/assets/images/main-page_image/tag-list/nodejs.svg';
 
 export const tagList = [
   {
-    tagName: 'Css',
+    tagName: 'css',
     img: css
   },
   {
-    tagName: 'JavaScript',
+    tagName: 'javaScript',
     img: javascript
   },
   {
-    tagName: 'Redux',
+    tagName: 'redux',
     img: redux
   },
   {
-    tagName: 'Node.js',
+    tagName: 'node.js',
     img: nodejs
   },
   {
-    tagName: 'React',
+    tagName: 'react',
     img: css
   },
   {
-    tagName: 'Next.js',
+    tagName: 'next.js',
     img: javascript
   },
   {
-    tagName: 'TanstackQuery',
+    tagName: 'tanstackQuery',
     img: nodejs
   },
   {
-    tagName: 'Zustand',
+    tagName: 'zustand',
     img: css
   }
 ];
