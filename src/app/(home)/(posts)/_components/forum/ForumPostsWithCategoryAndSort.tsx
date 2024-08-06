@@ -10,6 +10,7 @@ import { useInView } from 'react-intersection-observer';
 import SortDropdown from '@/components/common/SortDropdownGrey';
 import CategoryTabs from './CategoryTabs';
 import WriteButton from '@/assets/images/forum/WriteButton';
+import EndOfData from '@/components/common/EndOfData';
 
 const ForumPostsWithCategoryAndSort = () => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isPending, error } = useFetchForumPosts();
@@ -84,6 +85,7 @@ const ForumPostsWithCategoryAndSort = () => {
         )}
         {isFetchingNextPage && <div>추가 게시물 로딩중...</div>}
         <div ref={ref}></div>
+        {!hasNextPage && !isFetchingNextPage && <EndOfData />}
       </div>
     </div>
   );
