@@ -1,6 +1,7 @@
 import { createClient } from '@/supabase/server';
+import { NextResponse } from 'next/server';
 
-export const getMainPageData = async () => {
+export const GET = async () => {
   const supabase = createClient();
 
   //베스트 포럼 게시글
@@ -11,16 +12,5 @@ export const getMainPageData = async () => {
     );
   const dataLikeSort = forum_posts?.sort((a, b) => (b.like_count[0]?.count || 0) - (a.like_count[0]?.count || 0));
   const bestForum = dataLikeSort?.slice(0, 6);
-
-  //Q&A 게시글
-  const { data: qna_posts } = await supabase
-    .from('qna_posts')
-    .select('*')
-    .order('created_at', {
-      ascending: false
-    })
-    .limit(8);
-
-  console.log({ bestForum, qna_posts });
-  return { bestForum, qna_posts };
+  return NextResponse.json(bestForum);
 };

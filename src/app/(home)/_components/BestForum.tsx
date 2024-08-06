@@ -3,7 +3,6 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import Link from 'next/link';
-import { BestForumType } from '@/types/mainpage';
 import { timeForToday } from '@/utils/timeForToday';
 import { handleRinkCopy } from '@/utils/handleRinkCopy';
 import Image from 'next/image';
@@ -20,8 +19,10 @@ import CarouselRightHover from '@/assets/images/common/CarouselRightHover';
 import CarouselRight from '@/assets/images/common/CarouselRight';
 import LikeButton from '@/components/common/LikeButton';
 import TagBlock from '@/components/common/TagBlock';
+import { BestForumType } from '@/types/mainpage';
+import { useQuery } from '@tanstack/react-query';
 
-const BestForum = ({ forumList }: { forumList: BestForumType[] }) => {
+const BestForum = () => {
   const [swiperInstance, setSwiperInstance] = useState<SwiperCore | null>(null);
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
@@ -53,6 +54,17 @@ const BestForum = ({ forumList }: { forumList: BestForumType[] }) => {
   const handleNextClick = () => {
     if (swiperInstance) swiperInstance.slideNext();
   };
+
+  const { data: forumList } = useQuery<BestForumType[]>({
+    queryKey: ['bestForum'],
+    queryFn: async () => {
+      try {
+        const response = await fetch('/api/main-page/best-forum');
+        const data = await response.json();
+        return data;
+      } catch (error) {}
+    }
+  });
 
   return (
     <>

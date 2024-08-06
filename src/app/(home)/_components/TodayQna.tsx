@@ -12,8 +12,9 @@ import CarouselLeftHover from '@/assets/images/common/CarouselLeftHover';
 import CarouselLeft from '@/assets/images/common/CarouselLeft';
 import CarouselRightHover from '@/assets/images/common/CarouselRightHover';
 import CarouselRight from '@/assets/images/common/CarouselRight';
+import { useQuery } from '@tanstack/react-query';
 
-const TodayQna = ({ todayQna }: { todayQna: Tables<'qna_posts'>[] }) => {
+const TodayQna = () => {
   const [swiperInstance, setSwiperInstance] = useState<SwiperCore | null>(null);
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
@@ -45,6 +46,17 @@ const TodayQna = ({ todayQna }: { todayQna: Tables<'qna_posts'>[] }) => {
   const handleNextClick = () => {
     if (swiperInstance) swiperInstance.slideNext();
   };
+
+  const { data: todayQna } = useQuery<Tables<'qna_posts'>[]>({
+    queryKey: ['todayQna'],
+    queryFn: async () => {
+      try {
+        const response = await fetch('/api/main-page/today-qna');
+        const data = await response.json();
+        return data;
+      } catch (error) {}
+    }
+  });
 
   return (
     <>
