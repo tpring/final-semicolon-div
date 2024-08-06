@@ -7,5 +7,4 @@ export type UserMenuProps = {
   userData: {
     profile_image?: string | null;
   } | null;
-  handleLogout: () => void;
 };
