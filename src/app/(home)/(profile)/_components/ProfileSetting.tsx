@@ -12,6 +12,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import EditIcon from '@/assets/images/common/EditIcon';
 import Right from '@/assets/images/common/Right';
 import PasswordModal from './setting/PasswordModal';
+import OAuthLoginStatus from '../../(auth)/_components/OAuthLoginStatus';
 
 const ProfileSetting = () => {
   const { userData, me, updateUserData } = useAuth();
@@ -118,7 +119,7 @@ const ProfileSetting = () => {
       <p className="text-body1 font-regular text-neutral-600 mb-[36px]">
         서비스에서 사용하는 내 계정 정보를 관리할 수 있습니다.
       </p>
-      <div className="center-alignment p-[20px_80px] border border-neutral-50 rounded-lg shadow-custom-light">
+      <div className="center-alignment p-[20px_80px] border border-neutral-50 rounded-3xl shadow-custom-light">
         <div className="w-[588px]">
           <div className="mb-4 center-alignment">
             <div
@@ -155,15 +156,7 @@ const ProfileSetting = () => {
             <span className="text-neutral-700 text-body1 font-regular">{me?.email}</span>
           </div>
           <p className="border-b border-neutral-50 " />
-          <div className="flex justify-between p-[16px_0]">
-            <span className="text-neutral-900 text-subtitle1 font-medium">닉네임</span>
-            <div className="flex">
-              <span className="text-neutral-800 text-body1 font-regular">{nickname}</span>
-              <div className="mt-[5px] ml-3 cursor-pointer" onClick={() => setNicknameModalOpen(true)}>
-                <Right width={10} height={18} />
-              </div>
-            </div>
-          </div>
+          <OAuthLoginStatus />
           <p className="border-b border-neutral-50 " />
           <div className="flex justify-between p-[16px_0]">
             <span className="text-neutral-900 text-subtitle1 font-medium">깃허브 링크</span>
@@ -182,6 +175,16 @@ const ProfileSetting = () => {
                 </div>
               </div>
             )}
+          </div>
+          <p className="border-b border-neutral-50 " />
+          <div className="flex justify-between p-[16px_0]">
+            <span className="text-neutral-900 text-subtitle1 font-medium">닉네임</span>
+            <div className="flex">
+              <span className="text-neutral-800 text-body1 font-regular">{nickname}</span>
+              <div className="mt-[5px] ml-3 cursor-pointer" onClick={() => setNicknameModalOpen(true)}>
+                <Right width={10} height={18} />
+              </div>
+            </div>
           </div>
           <p className="border-b border-neutral-50 " />
           <div className="flex justify-between p-[16px_0]">
