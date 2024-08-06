@@ -113,6 +113,7 @@ const BestForum = () => {
                     ) : null}
                     <h1 className="text-h5 font-bold ">{forum.title}</h1>
                     {forum.thumbnail ? (
+
                       <p
                         className="text-body2 font-regular normal whitespace-pre-wrap break-words overflow-hidden  "
                         data-color-mode="light"
@@ -126,6 +127,7 @@ const BestForum = () => {
                       >
                         <MDEditor.Markdown source={cutText(removeImageAndCodeBlocks(forum.content), 200)} />
                       </p>
+
                     )}
                   </div>
                   <p className=" text-right text-body font-regular text-neutral-400 mt-4">

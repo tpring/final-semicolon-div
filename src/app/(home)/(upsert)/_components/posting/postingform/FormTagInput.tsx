@@ -1,15 +1,15 @@
+import SelectTagInput from '@/components/common/SelectTagInput';
+import { TAG_LIST } from '@/constants/tags';
+import { useState } from 'react';
+
 const FormTagInput = () => {
+  const [tagList, setTagList] = useState<Array<Ttag>>(TAG_LIST);
   return (
     <div>
       <label className="block mb-2  text-neutral-900 text-h5 font-bold" htmlFor="tag">
         태그
       </label>
-      <input
-        className="px-1 w-full  text-neutral-900 text-body1 border h-[51px] rounded-xl border-neutral-100 focus:border-main-400 outline-none"
-        type="text"
-        name="tag"
-        id="tag"
-      />
+      <SelectTagInput tagList={tagList} setTagList={setTagList} />
     </div>
   );
 };
