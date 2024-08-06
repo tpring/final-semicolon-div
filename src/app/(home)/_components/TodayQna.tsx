@@ -14,7 +14,7 @@ import CarouselLeft from '@/assets/images/common/CarouselLeft';
 import CarouselRightHover from '@/assets/images/common/CarouselRightHover';
 import CarouselRight from '@/assets/images/common/CarouselRight';
 
-const TodayQna = () => {
+const TodayQna = ({ todayQna }: { todayQna: Tables<'qna_posts'>[] }) => {
   const [swiperInstance, setSwiperInstance] = useState<SwiperCore | null>(null);
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
@@ -46,18 +46,6 @@ const TodayQna = () => {
   const handleNextClick = () => {
     if (swiperInstance) swiperInstance.slideNext();
   };
-
-  //실시간 Q&A가져오기
-  const { data: todayQna } = useQuery<Tables<'qna_posts'>[]>({
-    queryKey: ['todayQna'],
-    queryFn: async () => {
-      try {
-        const response = await fetch('/api/auth/main-page/today-qna');
-        const data = await response.json();
-        return data;
-      } catch (error) {}
-    }
-  });
 
   return (
     <>

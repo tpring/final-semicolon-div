@@ -5,7 +5,6 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import Link from 'next/link';
 import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { BestForumType } from '@/types/mainpage';
 import { timeForToday } from '@/utils/timeForToday';
 import { handleRinkCopy } from '@/utils/handleRinkCopy';
@@ -22,8 +21,13 @@ import CarouselLeft from '@/assets/images/common/CarouselLeft';
 import CarouselRightHover from '@/assets/images/common/CarouselRightHover';
 import CarouselRight from '@/assets/images/common/CarouselRight';
 import LikeButton from '@/components/common/LikeButton';
+import { Tables } from '@/types/supabase';
 
-const BestForum = () => {
+type bestForumListType = Tables<'forum_posts'> & {
+  user: Tables<'users'>;
+};
+
+const BestForum = ({ forumList }: { forumList: BestForumType[] }) => {
   const [swiperInstance, setSwiperInstance] = useState<SwiperCore | null>(null);
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
@@ -55,17 +59,6 @@ const BestForum = () => {
   const handleNextClick = () => {
     if (swiperInstance) swiperInstance.slideNext();
   };
-
-  const { data: forumList } = useQuery<BestForumType[]>({
-    queryKey: ['bestForum'],
-    queryFn: async () => {
-      try {
-        const response = await fetch('/api/auth/main-page/best-forum');
-        const data = await response.json();
-        return data;
-      } catch (error) {}
-    }
-  });
 
   return (
     <>
@@ -113,7 +106,6 @@ const BestForum = () => {
                     ) : null}
                     <h1 className="text-h5 font-bold ">{forum.title}</h1>
                     {forum.thumbnail ? (
-
                       <p
                         className="text-body2 font-regular normal whitespace-pre-wrap break-words overflow-hidden  "
                         data-color-mode="light"
@@ -127,7 +119,6 @@ const BestForum = () => {
                       >
                         <MDEditor.Markdown source={cutText(removeImageAndCodeBlocks(forum.content), 200)} />
                       </p>
-
                     )}
                   </div>
                   <p className=" text-right text-body font-regular text-neutral-400 mt-4">
