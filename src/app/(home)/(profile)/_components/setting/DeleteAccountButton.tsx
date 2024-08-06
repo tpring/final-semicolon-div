@@ -1,11 +1,8 @@
 'use client';
 
 import { useAuth } from '@/context/auth.context';
-import { createClient } from '@/supabase/client';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
-
-const supabase = createClient();
 
 const DeleteAccountButton = () => {
   const { deleteUser } = useAuth();
@@ -23,8 +20,8 @@ const DeleteAccountButton = () => {
   };
 
   return (
-    <button onClick={handleDeleteUser} className="p-2 rounded">
-      Delete Account
+    <button onClick={handleDeleteUser} className="text-subtitle1 font-medium mt-6 hover:underline decoration-2 ">
+      회원탈퇴
     </button>
   );
 };

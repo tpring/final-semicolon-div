@@ -11,7 +11,7 @@ import Share from '@/assets/images/common/Share';
 import CommentBubble from '@/assets/images/common/CommentBubble';
 import Star from '@/assets/images/main-page_image/Star';
 import MDEditor from '@uiw/react-md-editor';
-import { cutText, removeImageAndCodeBlocks } from '@/components/common/MarkdownCut';
+import { cutText, removeImageAndCodeBlocks } from '@/utils/markdownCut';
 import { useEffect, useState } from 'react';
 import SwiperCore from 'swiper';
 import CarouselLeftHover from '@/assets/images/common/CarouselLeftHover';

@@ -3,7 +3,7 @@
 import BlueCheck from '@/assets/images/common/BlueCheck';
 import CommentBubble from '@/assets/images/common/CommentBubble';
 import Dot from '@/assets/images/common/Dot';
-import { cutText, removeImageAndCodeBlocks } from '@/components/common/MarkdownCut';
+import { cutText, removeImageAndCodeBlocks } from '@/utils/markdownCut';
 import SortDropdown from '@/components/common/SortDropdownGrey';
 import useFetchQnaPosts from '@/hooks/qna/useFetchQnaPosts';
 import { Post, SortOption } from '@/types/posts/qnaTypes';
