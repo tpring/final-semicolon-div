@@ -10,7 +10,7 @@ type InputFieldProps = {
   message: string;
 };
 
-const InputField = ({ type, value, onChange, placeholder, valid, message }: InputFieldProps) => {
+const LoginInputField = ({ type, value, onChange, placeholder, valid, message }: InputFieldProps) => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -48,4 +48,4 @@ const InputField = ({ type, value, onChange, placeholder, valid, message }: Inpu
   );
 };
 
-export default InputField;
+export default LoginInputField;

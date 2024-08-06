@@ -8,7 +8,7 @@ import { useAuth } from '@/context/auth.context';
 import OAuthButtons from './OAuthButtons';
 import { createClient } from '@/supabase/client';
 import Logo from '@/assets/images/header/Logo';
-import InputField from './InputField';
+import LoginInputField from './LoginInputField';
 function LoginForm() {
   const router = useRouter();
   const [email, setEmail] = useState<string>('');
@@ -64,13 +64,11 @@ function LoginForm() {
     }
   };
 
-  // 이메일 유효성 검사 함수
   const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
 
-  // OAuth 로그인 처리 함수
   const handleOAuthLogin = async (provider: 'google' | 'kakao' | 'github') => {
     setError(null);
     try {
@@ -104,7 +102,7 @@ function LoginForm() {
         {error && <p className="text-red-500 mb-4">{error}</p>}
         <form onSubmit={handleLogin}>
           <div className="mb-4">
-            <InputField
+            <LoginInputField
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -114,7 +112,7 @@ function LoginForm() {
             />
           </div>
           <div className="mb-4">
-            <InputField
+            <LoginInputField
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

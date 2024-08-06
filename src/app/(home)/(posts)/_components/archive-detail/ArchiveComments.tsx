@@ -1,5 +1,4 @@
 'use client';
-
 import { useAuth } from '@/context/auth.context';
 import { timeForToday } from '@/utils/timeForToday';
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -319,7 +318,6 @@ const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
           ))}
         </div>
       ))}
-
       <div ref={ref}></div>
     </div>
   );
