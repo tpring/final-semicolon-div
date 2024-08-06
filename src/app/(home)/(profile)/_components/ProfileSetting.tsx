@@ -13,6 +13,7 @@ import EditIcon from '@/assets/images/common/EditIcon';
 import Right from '@/assets/images/common/Right';
 import PasswordModal from './setting/PasswordModal';
 import OAuthLoginStatus from '../../(auth)/_components/OAuthLoginStatus';
+import { filterSlang } from '@/utils/markdownCut';
 
 const ProfileSetting = () => {
   const { userData, me, updateUserData } = useAuth();
@@ -203,7 +204,9 @@ const ProfileSetting = () => {
               <Right width={10} height={18} />
             </div>
           </div>
-          <p className="text-neutral-700 h-[143px] text-body1 font-regular line-clamp-5 whitespace-pre-wrap">{info}</p>
+          <p className="text-neutral-700 h-[143px] text-body1 font-regular line-clamp-5 whitespace-pre-wrap ">
+            {filterSlang(info)}
+          </p>
         </div>
       </div>
 

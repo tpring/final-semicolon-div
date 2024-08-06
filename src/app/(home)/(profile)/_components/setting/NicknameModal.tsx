@@ -3,6 +3,7 @@ import Modal from '@/components/modal/Modal';
 import ConfirmModal from '@/components/modal/ConfirmModal';
 import { toast } from 'react-toastify';
 import X from '@/assets/images/common/X';
+import { isNicknameValid } from '@/utils/validateNickname';
 
 type NicknameModalProps = {
   isOpen: boolean;
@@ -12,18 +13,18 @@ type NicknameModalProps = {
 };
 
 const NicknameModal = ({ isOpen, onClose, currentNickname, onNicknameUpdate }: NicknameModalProps) => {
-  const [newNickname, setNewNickname] = useState<string>(currentNickname); // 새로운 정보 상태
-  const [nicknameCount, setNicknameCount] = useState(currentNickname.length); // 입력된 텍스트의 길이
-  const [nicknameMessage, setNicknameMessage] = useState(''); // 실시간 닉네임 검사
-  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false); // 확인 모달의 열림 여부
+  const [newNickname, setNewNickname] = useState<string>(currentNickname);
+  const [nicknameCount, setNicknameCount] = useState(currentNickname.length);
+  const [nicknameMessage, setNicknameMessage] = useState('');
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
   useEffect(() => {
-    setNewNickname(currentNickname);
-    setNicknameCount(currentNickname.length);
-  }, [currentNickname]);
+    const validateNickname = async (nickname: string) => {
+      if (!isNicknameValid(nickname)) {
+        setNicknameMessage('사용할 수 없는 닉네임입니다.');
+        return;
+      }
 
-  useEffect(() => {
-    const handleValidateNickname = async (nickname: string) => {
       try {
         const response = await fetch('/api/auth/check-nickname', {
           method: 'POST',
@@ -47,16 +48,16 @@ const NicknameModal = ({ isOpen, onClose, currentNickname, onNicknameUpdate }: N
       }
     };
 
-    handleValidateNickname(newNickname);
-  }, [newNickname]);
+    validateNickname(newNickname);
+  }, [newNickname, nicknameMessage]);
 
   const onNicknameHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+    // 띄어쓰기를 제거한 입력값을 설정
+    const value = e.target.value.replace(/\s+/g, '');
     setNicknameCount(value.length);
     setNewNickname(value);
   };
 
-  // 모달을 닫으려고 할 때 호출되는 함수
   const handleClose = () => {
     if (newNickname !== currentNickname) {
       setIsConfirmModalOpen(true);
@@ -65,25 +66,28 @@ const NicknameModal = ({ isOpen, onClose, currentNickname, onNicknameUpdate }: N
     }
   };
 
-  // 확인 모달에서 확인을 클릭했을 때 호출되는 함수
   const handleConfirmClose = () => {
     setIsConfirmModalOpen(false);
     onClose();
     setNewNickname(currentNickname);
   };
 
-  // 확인 모달에서 취소를 클릭했을 때 호출되는 함수
   const handleCancelClose = () => {
     setIsConfirmModalOpen(false);
   };
 
-  // 저장 버튼 클릭 시 호출되는 함수
   const handleSave = () => {
-    if (currentNickname !== newNickname && nicknameCount > 1 && nicknameCount <= 12) {
+    if (
+      currentNickname !== newNickname &&
+      nicknameCount > 1 &&
+      nicknameCount <= 12 &&
+      isNicknameValid(newNickname) &&
+      nicknameMessage === '사용 가능한 닉네임입니다.'
+    ) {
       onNicknameUpdate(newNickname);
       onClose();
     } else {
-      toast.error('저장할 수 없습니다. 글자 수를 확인해주세요.');
+      toast.error('저장할 수 없습니다. 닉네임 유효성을 확인해주세요.');
     }
   };
 
@@ -117,7 +121,9 @@ const NicknameModal = ({ isOpen, onClose, currentNickname, onNicknameUpdate }: N
             onChange={onNicknameHandler}
             className={`block w-[421px] h-[56px] p-[16px] border rounded ${
               currentNickname !== newNickname
-                ? nicknameCount > 13 || nicknameMessage === '이미 사용중인 닉네임입니다.'
+                ? nicknameCount > 13 ||
+                  nicknameMessage === '이미 사용중인 닉네임입니다.' ||
+                  nicknameMessage === '사용할 수 없는 닉네임입니다.'
                   ? 'text-red outline-red border border-red'
                   : nicknameCount > 1
                     ? 'text-neutral-900 outline-main-400 border border-main-400'
@@ -131,7 +137,8 @@ const NicknameModal = ({ isOpen, onClose, currentNickname, onNicknameUpdate }: N
             nicknameCount > 13 ? (
               <span className="text-red">글자수를 초과했어요!</span>
             ) : nicknameCount > 1 ? (
-              nicknameMessage === '이미 사용중인 닉네임입니다.' ? (
+              nicknameMessage === '이미 사용중인 닉네임입니다.' ||
+              nicknameMessage === '사용할 수 없는 닉네임입니다.' ? (
                 <span className="text-red">{nicknameMessage}</span>
               ) : (
                 <span className="text-main-400">{nicknameMessage}</span>
@@ -149,7 +156,9 @@ const NicknameModal = ({ isOpen, onClose, currentNickname, onNicknameUpdate }: N
               className={`borde py-2 px-4 rounded
     ${
       currentNickname !== newNickname
-        ? nicknameCount > 13 || nicknameMessage === '이미 사용중인 닉네임입니다.'
+        ? nicknameCount > 13 ||
+          nicknameMessage === '이미 사용중인 닉네임입니다.' ||
+          nicknameMessage === '사용할 수 없는 닉네임입니다.'
           ? 'bg-main-100 text-white'
           : nicknameCount > 1
             ? 'bg-main-400 text-white'
