@@ -1,9 +1,9 @@
 'use client';
 
-import Div from '@/assets/images/auth/Div';
-import Github from '@/assets/images/auth/Github';
-import Google from '@/assets/images/auth/Google';
-import Kakao from '@/assets/images/auth/Kakao';
+import Div40X40 from '@/assets/images/auth/Div40X40';
+import Github40X40 from '@/assets/images/auth/Github40X40';
+import Google40X40 from '@/assets/images/auth/Google40X40';
+import Kakao40X40 from '@/assets/images/auth/Kakao40X40';
 import { useEffect, useState } from 'react';
 
 const OAuthLoginStatus = () => {
@@ -17,20 +17,22 @@ const OAuthLoginStatus = () => {
   const getProviderMessage = (provider: string | null) => {
     switch (provider) {
       case 'kakao':
-        return <Kakao />;
+        return <Kakao40X40 />;
       case 'google':
-        return <Google />;
+        return <Google40X40 />;
       case 'github':
-        return <Github />;
+        return <Github40X40 />;
       default:
-        return <Div />;
+        return <Div40X40 /* fillBg="#FFFFFF" fill="#0F0F0F" */ />;
     }
   };
 
   return (
-    <div className="flex items-center text-mt-4 text-center">
-      <p className="flex items-center">로그인 계정</p>
-      <p>{getProviderMessage(provider)}</p>
+    <div className="flex items-center justify-between p-[16px_0]">
+      <span className="text-neutral-900 text-subtitle1 font-medium">로그인 계정</span>
+      <span className="center-alignment w-[40px] h-[40px] border border-main-50 rounded-full">
+        {getProviderMessage(provider)}
+      </span>
     </div>
   );
 };

@@ -14,7 +14,7 @@ import Share from '@/assets/images/common/Share';
 import CommentBubble from '@/assets/images/common/CommentBubble';
 import Star from '@/assets/images/main-page_image/Star';
 import MDEditor from '@uiw/react-md-editor';
-import { cutText, removeImageAndCodeBlocks } from '@/components/common/MarkdownCut';
+import { processMarkdown } from '@/utils/markdownCut';
 import { useEffect, useState } from 'react';
 import SwiperCore from 'swiper';
 import CarouselLeftHover from '@/assets/images/common/CarouselLeftHover';
@@ -113,21 +113,19 @@ const BestForum = () => {
                     ) : null}
                     <h1 className="text-h5 font-bold ">{forum.title}</h1>
                     {forum.thumbnail ? (
-
                       <p
                         className="text-body2 font-regular normal whitespace-pre-wrap break-words overflow-hidden  "
                         data-color-mode="light"
                       >
-                        <MDEditor.Markdown source={cutText(removeImageAndCodeBlocks(forum.content), 100)} />
+                        <MDEditor.Markdown source={processMarkdown(forum.content, 100)} />
                       </p>
                     ) : (
                       <p
                         className="text-body2 font-regular normal whitespace-pre-wrap break-words overflow-hidden   "
                         data-color-mode="light"
                       >
-                        <MDEditor.Markdown source={cutText(removeImageAndCodeBlocks(forum.content), 200)} />
+                        <MDEditor.Markdown source={processMarkdown(forum.content, 200)} />
                       </p>
-
                     )}
                   </div>
                   <p className=" text-right text-body font-regular text-neutral-400 mt-4">

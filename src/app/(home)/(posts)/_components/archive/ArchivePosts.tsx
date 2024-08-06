@@ -4,6 +4,7 @@ import BookmarkButton from '@/components/common/BookmarkButton';
 import SortDropdown from '@/components/common/SortDropdownGrey';
 import { useArchivePosts } from '@/hooks/archive/useFetchArchivePosts';
 import { Post, SortOption } from '@/types/posts/archiveTypes';
+import { cutText } from '@/utils/markdownCut';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -96,9 +97,7 @@ const ArchivePosts = () => {
                 </div>
               </div>
               <div className="flex flex-col justify-center items-start self-stretch flex-grow-0 flex-shrink-0 relative gap-2 px-5 py-2">
-                <h2 className="text-body1 font-bold text-neutral-900">
-                  {post.title.length > 20 ? `${post.title.slice(0, 20)}...` : post.title}
-                </h2>
+                <h2 className="text-body1 font-bold text-neutral-900">{cutText(post.title, 20)}</h2>
                 <p className="text-base text-body2 font-regular text-neutral-700">
                   {post.user.nickname
                     ? post.user.nickname.length > 20
