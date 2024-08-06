@@ -13,7 +13,7 @@ import LikeButton from '@/components/common/LikeButton';
 import BookmarkButton from '@/components/common/BookmarkButton';
 import KebabButton from '@/assets/images/common/KebabButton';
 import { revalidate } from '@/actions/revalidate';
-import ConfirmModal from '@/components/modal/ConfirmModal';
+import ConfirmModal from '@/components/modal/ConfirmModal'; // 모달 컴포넌트 import
 import ArchiveReplyInput from './ArchiveReplyInput';
 import ArchiveReply from './ArchiveReply';
 import { archiveCommentsType, commentRetouch } from '@/types/posts/archiveDetailTypes';
@@ -88,44 +88,31 @@ const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
     commentDelete.mutate({ id, user_id });
   };
 
-  // 댓글 수정 취소 버튼 핸들러
   const handleCancelEdit = (id: string) => {
-    setConfirmModal((prev) => ({ ...prev, [id]: true })); // 수정 취소 모달 열기
+    setConfirmModal((prev) => ({ ...prev, [id]: true }));
   };
 
-  // 수정 취소 모달 확인 버튼 핸들러
   const handleConfirmCancelEdit = (id: string) => {
-    setEditingState({ [id]: false }); // 편집 모드 종료
-    setConfirmModal((prev) => ({ ...prev, [id]: false })); // 모달 닫기
+    setEditingState({ [id]: false });
+    setConfirmModal((prev) => ({ ...prev, [id]: false }));
   };
 
-  // 모달 닫기 핸들러
   const handleCloseModal = (id: string) => {
-    setConfirmModal((prev) => ({ ...prev, [id]: false })); // 모달 닫기
+    setConfirmModal((prev) => ({ ...prev, [id]: false }));
   };
 
-  // 수정 취소 버튼
   const toggleEditing = (id: string, comment: string) => {
     setEditingState({ [id]: !editingState[id] });
     setEditingToggleState({ [id]: false });
     setMdEditorChange(comment);
   };
 
-  // 댓글 Kebob
   const toggleEditingOptions = (id: string) => {
     setEditingToggleState({ [id]: !editingToggleState[id] });
   };
 
   const changEditor = (value?: string) => {
     setMdEditorChange(value!);
-  };
-
-  const handleInputReplyToggle = (id: string) => {
-    setInputReplyToggle({ [id]: !inputReplyToggle[id] });
-  };
-
-  const replyOpenToggle = (id: string) => {
-    setReplyToggle({ [id]: !replyToggle[id] });
   };
 
   // 댓글 가져오기
@@ -158,6 +145,17 @@ const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
   if (isPending) {
     return <div>로딩..</div>;
   }
+  const handleInputReplyToggle = (id: string, count: number) => {
+    setInputReplyToggle({ [id]: !inputReplyToggle[id] });
+    if (count === 0) {
+      setReplyToggle({ [id]: !replyToggle[id] });
+    }
+  };
+
+  const replyOpenToggle = (id: string) => {
+    setReplyToggle({ [id]: !replyToggle[id] });
+    setInputReplyToggle({ [id]: false });
+  };
 
   return (
     <div>
@@ -211,15 +209,15 @@ const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
                               </button>
                               <button
                                 className="h-[44px]  w-full rounded-b-lg hover:bg-main-50 hover:text-main-400"
-                                onClick={() => setConfirmModal((prev) => ({ ...prev, [comment.id]: true }))} // 삭제 모달 열기
+                                onClick={() => setConfirmModal((prev) => ({ ...prev, [comment.id]: true }))}
                               >
                                 댓글 삭제
                               </button>
                               {confirmModal[comment.id] && (
                                 <ConfirmModal
                                   isOpen={confirmModal[comment.id]}
-                                  onClose={() => setConfirmModal((prev) => ({ ...prev, [comment.id]: false }))} // 삭제 모달 닫기
-                                  onConfirm={() => handleDelete(comment.id, comment.user_id)} // 삭제 확인
+                                  onClose={() => setConfirmModal((prev) => ({ ...prev, [comment.id]: false }))}
+                                  onConfirm={() => handleDelete(comment.id, comment.user_id)}
                                   message={'댓글을 삭제 하겠습니까?'}
                                 />
                               )}
@@ -245,7 +243,7 @@ const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
                     />
                     <div className="flex justify-end items-end mt-4 gap-6">
                       <button
-                        onClick={() => handleCancelEdit(comment.id)} // 수정 취소 버튼 클릭 시 모달 호출
+                        onClick={() => handleCancelEdit(comment.id)}
                         className="bg-neutral-50 hover:bg-neutral-100 hover:text-neutral-600 text-neutral-100 px-5 py-3 rounded-lg"
                       >
                         취소
@@ -256,15 +254,15 @@ const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
                       >
                         수정
                       </button>
+                      {confirmModal[comment.id] && (
+                        <ConfirmModal
+                          isOpen={confirmModal[comment.id]}
+                          onClose={() => handleCloseModal(comment.id)}
+                          onConfirm={() => handleConfirmCancelEdit(comment.id)}
+                          message={'댓글 작성을 취소 하시겠습니까?'}
+                        />
+                      )}
                     </div>
-                    {confirmModal[comment.id] && (
-                      <ConfirmModal
-                        isOpen={confirmModal[comment.id]}
-                        onClose={() => handleCloseModal(comment.id)} // 수정 취소 모달 닫기
-                        onConfirm={() => handleConfirmCancelEdit(comment.id)} // 수정 취소 확인
-                        message={'댓글 작성을 취소 하시겠습니까?'}
-                      />
-                    )}
                   </div>
                 ) : (
                   <p className="text-body1 font-regular whitespace-pre-wrap break-words">{comment.comment}</p>
@@ -286,7 +284,7 @@ const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
                         </button>
                         <button
                           className="text-subtitle1 font-medium text-neutral-400"
-                          onClick={() => handleInputReplyToggle(comment.id)}
+                          onClick={() => handleInputReplyToggle(comment.id, comment.reply[0].count)}
                         >
                           {inputReplyToggle[comment.id] ? '댓글 취소' : '댓글 쓰기'}
                         </button>
@@ -301,7 +299,7 @@ const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
                     ) : (
                       <button
                         className="text-subtitle1 font-medium text-neutral-400"
-                        onClick={() => handleInputReplyToggle(comment.id)}
+                        onClick={() => handleInputReplyToggle(comment.id, comment.reply[0].count)}
                       >
                         댓글 쓰기
                       </button>
@@ -310,7 +308,11 @@ const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
                 </div>
               </div>
               {inputReplyToggle[comment.id] ? (
-                <ArchiveReplyInput comment_id={comment.id} toggle={handleInputReplyToggle} />
+                <ArchiveReplyInput
+                  comment_id={comment.id}
+                  toggle={handleInputReplyToggle}
+                  count={comment.reply[0].count}
+                />
               ) : null}
               {replyToggle[comment.id] ? <ArchiveReply comment_id={comment.id} post_user_id={post_user_id} /> : null}
             </div>

@@ -69,7 +69,8 @@ export type archiveReplyType = {
 
 export type archiveReplyInputProps = {
   comment_id: string;
-  toggle: (id: string) => void;
+  toggle: (id: string, count: number) => void;
+  count: number;
 };
 
 export type userReply = {

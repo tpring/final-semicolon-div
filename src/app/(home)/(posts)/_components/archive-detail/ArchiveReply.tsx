@@ -24,12 +24,9 @@ const ArchiveReply = ({ comment_id, post_user_id }: { comment_id: string; post_u
   const [replyEditorToggle, setReplyEditorToggle] = useState<{ [key: string]: boolean }>({});
   const [confirmModal, setConfirmModal] = useState<{ [key: string]: boolean }>({}); // 댓글별 모달 상태 관리
 
-  // 한 페이지에 표시할 대댓글 수
   const COMMENT_REPLY_PAGE = 5;
 
-  // 대댓글 수정 뮤테이션
   const replyRetouchMutation = useMutation({
-    // 대댓글 수정 요청
     mutationFn: async ({ id, user_id, replyRetouch }: replyRetouch) => {
       const response = await fetch(`/api/posts/archive-detail/archive-reply/${params.id}`, {
         method: 'PATCH',
@@ -45,7 +42,6 @@ const ArchiveReply = ({ comment_id, post_user_id }: { comment_id: string; post_u
 
       return response.json();
     },
-    // 뮤테이션 성공 시 쿼리를 무효화하여 데이터를 새로고침
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['archiveCommentReply', comment_id] });
     }
@@ -63,9 +59,7 @@ const ArchiveReply = ({ comment_id, post_user_id }: { comment_id: string; post_u
     setReplyEditor({ [id]: false });
   };
 
-  // 대댓글 삭제 뮤테이션
   const commentDelete = useMutation({
-    // 대댓글 삭제 요청
     mutationFn: async ({ id, user_id }: { id: string; user_id: string }) => {
       const response = await fetch(`/api/posts/archive-detail/archive-reply/${params.id}`, {
         method: 'DELETE',
@@ -81,7 +75,6 @@ const ArchiveReply = ({ comment_id, post_user_id }: { comment_id: string; post_u
 
       return response.json();
     },
-    // 삭제 후 쿼리를 무효화하여 데이터를 새로고침
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['archiveCommentReply', comment_id] });
       revalidate('/', 'page');
@@ -112,14 +105,12 @@ const ArchiveReply = ({ comment_id, post_user_id }: { comment_id: string; post_u
       const data = await response.json();
       return data as archiveReplyType;
     },
-    // 다음 페이지에 대한 페이지 매개변수를 계산하는 함수
     getNextPageParam: (lastPage, allPages) => {
       const nextPage = allPages.length;
       return nextPage * COMMENT_REPLY_PAGE < lastPage.count ? nextPage : undefined;
     }
   });
 
-  // reply 페이지 수
   const replyCount = reply?.pages[0].count;
   const totalPage = Math.ceil((replyCount as number) / COMMENT_REPLY_PAGE);
 

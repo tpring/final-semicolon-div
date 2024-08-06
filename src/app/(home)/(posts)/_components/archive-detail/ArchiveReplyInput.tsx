@@ -8,12 +8,14 @@ import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import ConfirmModal from '@/components/modal/ConfirmModal'; // 모달 컴포넌트 import
 
-const ArchiveReplyInput = ({ comment_id, toggle }: archiveReplyInputProps) => {
+const ArchiveReplyInput = ({ comment_id, toggle, count }: archiveReplyInputProps) => {
   const { me, userData } = useAuth();
   const params = useParams();
   const queryClient = useQueryClient();
   const [reply, setReply] = useState('');
+  const [showModal, setShowModal] = useState(false); // 모달 상태 추가
 
   const handleReply = useMutation({
     mutationFn: async (userReply: userReply) => {
@@ -49,7 +51,7 @@ const ArchiveReplyInput = ({ comment_id, toggle }: archiveReplyInputProps) => {
     const archiveCommentReply: userReply = { user_id: me?.id, comment_id, reply };
 
     if (!me?.id) {
-      toast.error('로그인 후 입력가능합니다.', {
+      toast.error('로그인 후 입력 가능합니다.', {
         autoClose: 2000
       });
       return;
@@ -63,6 +65,21 @@ const ArchiveReplyInput = ({ comment_id, toggle }: archiveReplyInputProps) => {
 
     setReply('');
     handleReply.mutate(archiveCommentReply);
+  };
+
+  const handleCancelClick = () => {
+    // 취소 버튼 클릭 시 모달을 보여줍니다.
+    setShowModal(true);
+  };
+
+  const handleConfirmCancel = () => {
+    // 모달에서 확인을 눌렀을 때 실제로 취소 작업을 수행합니다.
+    toggle(comment_id, count);
+    setShowModal(false); // 모달 닫기
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false); // 모달 닫기
   };
 
   return (
@@ -87,7 +104,7 @@ const ArchiveReplyInput = ({ comment_id, toggle }: archiveReplyInputProps) => {
       </div>
       <div className="flex justify-end items-end gap-4 mt-4">
         <button
-          onClick={() => toggle(comment_id)}
+          onClick={handleCancelClick} // 취소 버튼 클릭 시 모달을 열도록 설정
           className="bg-neutral-50 hover:bg-neutral-100 hover:text-neutral-600 text-neutral-100 px-5 py-3 rounded-lg"
         >
           취소
@@ -102,6 +119,14 @@ const ArchiveReplyInput = ({ comment_id, toggle }: archiveReplyInputProps) => {
           등록
         </button>
       </div>
+      {showModal && (
+        <ConfirmModal
+          isOpen={showModal}
+          onClose={handleCloseModal} // 모달 닫기 핸들러
+          onConfirm={handleConfirmCancel} // 모달에서 확인 버튼 클릭 시 핸들러
+          message={'댓글 작성을 취소 하시겠습니까?'}
+        />
+      )}
     </div>
   );
 };
