@@ -83,15 +83,13 @@ const ArchivePosts = () => {
             >
               <div className="post-image">
                 <div className="flex-grow-0 flex-shrink-0 relative rounded-xl">
-                  {post.thumbnail && (
-                    <Image
-                      src={post.thumbnail}
-                      alt="Post Thumbnail"
-                      width={388}
-                      height={280}
-                      className="w-[366px] h-[264px] object-cover rounded-xl"
-                    />
-                  )}
+                  <Image
+                    src={post.thumbnail || '/images/archive/default_thumbnail.webp'}
+                    alt="Post Thumbnail"
+                    width={388}
+                    height={280}
+                    className="w-[366px] h-[264px] object-cover rounded-xl"
+                  />
                   <div className="absolute top-4 right-4">
                     <BookmarkButton id={post.id} type="archive" />
                   </div>
