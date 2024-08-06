@@ -2,7 +2,7 @@
 import { Tables } from '@/types/supabase';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
-import qnaImage from '@/assets/images/main-page_image/qnaicom/qnaImage.svg';
+import qnaImage from '/public/images/mainPageImages/qnaImage.webp';
 import Link from 'next/link';
 import Image from 'next/image';
 import Cap from '@/assets/images/main-page_image/qnaicom/Cap';

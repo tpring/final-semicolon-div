@@ -19,6 +19,7 @@ import CarouselLeft from '@/assets/images/common/CarouselLeft';
 import CarouselRightHover from '@/assets/images/common/CarouselRightHover';
 import CarouselRight from '@/assets/images/common/CarouselRight';
 import LikeButton from '@/components/common/LikeButton';
+import TagBlock from '@/components/common/TagBlock';
 
 const BestForum = ({ forumList }: { forumList: BestForumType[] }) => {
   const [swiperInstance, setSwiperInstance] = useState<SwiperCore | null>(null);
@@ -112,6 +113,11 @@ const BestForum = ({ forumList }: { forumList: BestForumType[] }) => {
                         <MDEditor.Markdown source={cutText(removeImageAndCodeBlocks(forum.content), 200)} />
                       </p>
                     )}
+                    <div className="flex justify-start items-start gap-2">
+                      {forum.tags.map((tag) => (
+                        <>{tag && <TagBlock tag={tag.tag} />}</>
+                      ))}
+                    </div>
                   </div>
                   <p className=" text-right text-body font-regular text-neutral-400 mt-4">
                     {forum.created_at.slice(0, 10).replace(/-/g, '.')}
