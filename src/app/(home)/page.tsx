@@ -4,7 +4,6 @@ import MainPageTag from './_components/MainPageTag';
 import PostsLink from './_components/PostsLink';
 import TodayQna from './_components/TodayQna';
 import TopButton from '../../components/TopButton';
-import OAuthLoginStatus from './(auth)/_components/OAuthLoginStatus';
 
 const HomePage = async () => {
   const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/main-page`, {
@@ -12,6 +11,10 @@ const HomePage = async () => {
       revalidate: 3600
     }
   });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch data');
+  }
   const data = await response.json();
 
   return (
