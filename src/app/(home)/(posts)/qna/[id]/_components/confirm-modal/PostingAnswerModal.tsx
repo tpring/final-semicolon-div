@@ -20,13 +20,14 @@ const PostingAnswerModal = ({ setIsModalOpen, setContent, setToggleAnswer }: Pos
   };
   return (
     <div className={`fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 `}>
-      <div className="w-[412px] h-[234px] px-6 py-10 bg-white p-6 rounded shadow-lg  max-w-md relative flex flex-col items-center justify-center gap-y-6">
-        <p className=" w-[208px] h-[57px] text-h-5 font-bold text-center">게시글 작성을 중단할까요?</p>
-        <div className="w-[364px] h-[57px] flex gap-[50px] border-t">
-          <button type="button" className="w-[157px] h-[57px]" onClick={handleModalCancle}>
+      <div className="w-[352px] h-[191px] px-6 py-10 bg-white p-6 rounded-2xl shadow-lg  max-w-md relative flex flex-col items-center justify-center gap-y-6">
+        <p className=" w-[272px] h-[27px] text-h5 font-bold text-center">게시글 작성을 중단할까요?</p>
+        <div className="w-[272px] h-[44px] flex border-t justify-around pt-5">
+          <button type="button" className="w-[87px] h-[24px]" onClick={handleModalCancle}>
             취소
           </button>
-          <button type="button" className="w-[157px] h-[57px] text-main-400" onClick={handleModalConfirm}>
+          <p className="border-r-2 "></p>
+          <button type="button" className="w-[87px] h-[24px] text-main-400" onClick={handleModalConfirm}>
             확인
           </button>
         </div>

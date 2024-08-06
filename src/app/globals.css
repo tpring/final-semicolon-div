@@ -60,7 +60,7 @@
 .w-md-editor-input {
   -ms-overflow-style: none;
 }
-::-webkit-scrollbar {
+.w-md-editor-input::-webkit-scrollbar {
   display: none;
 }
 
