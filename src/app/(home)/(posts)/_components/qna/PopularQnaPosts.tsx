@@ -1,7 +1,7 @@
 'use client';
 
 import GradCap from '@/assets/images/qna/GradCap';
-import { cutText, removeImageAndCodeBlocks } from '@/components/common/MarkdownCut';
+import { cutText, removeImageAndCodeBlocks } from '@/utils/markdownCut';
 import useFetchQnaPosts from '@/hooks/qna/useFetchQnaPosts';
 import MDEditor from '@uiw/react-md-editor';
 import Link from 'next/link';
