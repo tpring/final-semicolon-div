@@ -14,7 +14,7 @@ import {
 
 import FormTitleInput from '../FormTitleInput';
 import FormTagInput from './editform/FormTagInput';
-import FormContentArea from './editform/FormContentArea';
+import FormContentArea from '../FormContentArea';
 import { useRouter } from 'next/navigation';
 import { toast, ToastContainer } from 'react-toastify';
 import FormSubmitButton from '../FormSubmitButton';

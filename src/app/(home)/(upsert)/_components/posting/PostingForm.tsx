@@ -3,7 +3,7 @@ import { MouseEventHandler, useState } from 'react';
 import { TpostFormData } from '@/types/upsert';
 import FormTitleInput from '../FormTitleInput';
 import FormTagInput from './postingform/FormTagInput';
-import FormContentArea from './postingform/FormContentArea';
+import FormContentArea from '../FormContentArea';
 import {
   CATEGORY_LIST_EN,
   CATEGORY_LIST_KR,
