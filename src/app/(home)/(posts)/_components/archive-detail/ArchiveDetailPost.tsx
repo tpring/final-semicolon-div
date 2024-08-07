@@ -121,7 +121,7 @@ const ArchiveDetailPost = () => {
         </div>
         <div className="flex justify-between items-center mb-6">
           <p className="text-body1 font-regular text-neutral-400">
-            {dayjs(archiveDetail.created_at).format('YYYY-MM-DD HH:mm')}
+            {dayjs(archiveDetail.created_at).format('YYYY.MM.DD')}
           </p>
           <div className="flex gap-5">
             <LikeButton id={archiveDetail.id} type="archive" />
