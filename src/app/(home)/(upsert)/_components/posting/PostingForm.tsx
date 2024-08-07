@@ -1,8 +1,7 @@
 'use client';
 import { MouseEventHandler, useState } from 'react';
-import Link from 'next/link';
-import { Tcategory, TpostFormData } from '@/types/upsert';
-import FormTitleInput from './postingform/FormTitleInput';
+import { TpostFormData } from '@/types/upsert';
+import FormTitleInput from '../FormTitleInput';
 import FormTagInput from './postingform/FormTagInput';
 import FormContentArea from './postingform/FormContentArea';
 import {
@@ -22,8 +21,8 @@ import { usePostingCategoryStore } from '@/store/postingCategoryStore';
 import PostingCategoryBox from './postingform/PostingCategoryBox';
 import UpsertTheme from '../UpsertTheme';
 import ThumbNailBox from '../ThumbNailBox';
-import { v4 as uuidv4 } from 'uuid';
 import { TAG_LIST } from '@/constants/tags';
+import { uploadThumbnail } from '../../_utils/thumbnail';
 
 const PostingForm = () => {
   const router = useRouter();
@@ -31,34 +30,13 @@ const PostingForm = () => {
   const { me: user } = useAuth();
   const [title, setTitle] = useState<string>('');
   const [tagList, setTagList] = useState<Array<Ttag>>(TAG_LIST);
-  const [thumbNail, setThumbNail] = useState<File>();
+  const [thumbnail, setThumbnail] = useState<File>();
   const [content, setContent] = useState<string>('');
 
   if (!user?.id) {
     toast.error(LOGIN_ALERT, { hideProgressBar: false, autoClose: 1500, onClose: () => router.push(`/login`) });
     return;
   }
-
-  const submitThumbnail = async (thumbNail: File, category: Tcategory): Promise<string | null> => {
-    const thumbnailFormData = new FormData();
-    thumbnailFormData.append('category', category);
-    thumbnailFormData.append('name', uuidv4());
-    thumbnailFormData.append('thumbnail', thumbNail);
-
-    const response = await fetch('/api/upsert/thumbnail', {
-      method: 'POST',
-      body: thumbnailFormData
-    });
-
-    const { url, message: thumbnailMessage } = await response.json();
-
-    if (thumbnailMessage) {
-      toast.error(thumbnailMessage);
-      return null;
-    } else {
-      return url;
-    }
-  };
 
   const handleSubmit = async (): Promise<void> => {
     const category = CATEGORY_LIST_EN[CATEGORY_LIST_KR.indexOf(categoryGroup.category ?? '')];
@@ -94,7 +72,7 @@ const PostingForm = () => {
 
     // 유효성 검사 통과시 업로드 썸네일-글-태그순서로 업로드
 
-    const thumbnailUrl = thumbNail ? await submitThumbnail(thumbNail, category) : null;
+    const thumbnailUrl = thumbnail ? await uploadThumbnail(thumbnail, category) : null;
 
     const response = await fetch('/api/upsert/posting', {
       method: 'POST',
@@ -128,11 +106,11 @@ const PostingForm = () => {
       <UpsertTheme />
       <form className="flex flex-col gap-y-10 h-full">
         <PostingCategoryBox />
-        <FormTitleInput setTitle={setTitle} />
+        <FormTitleInput title={title} setTitle={setTitle} />
         <FormTagInput tagList={tagList} setTagList={setTagList} />
-        <ThumbNailBox setThumbNail={setThumbNail} />
+        <ThumbNailBox setThumbnail={setThumbnail} />
         <FormContentArea content={content} setContent={setContent} />
-        <FormSubmitButton content={content} handleSubmit={handleSubmit} />
+        <FormSubmitButton content={content} handleSubmit={handleSubmit} isEdit={false} />
       </form>
     </div>
   );

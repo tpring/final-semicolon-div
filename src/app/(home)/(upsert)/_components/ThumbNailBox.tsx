@@ -15,10 +15,10 @@ import {
 type ThumbNailBoxProps = {
   prevUrl?: string | null;
   setisThumbnailUrlDeleted?: Dispatch<SetStateAction<boolean>>;
-  setThumbNail: Dispatch<SetStateAction<File | undefined>>;
+  setThumbnail: Dispatch<SetStateAction<File | undefined>>;
 };
 
-const ThumbNailBox = ({ prevUrl, setisThumbnailUrlDeleted, setThumbNail }: ThumbNailBoxProps) => {
+const ThumbNailBox = ({ prevUrl, setisThumbnailUrlDeleted, setThumbnail }: ThumbNailBoxProps) => {
   const thumbnailInput = useRef<HTMLInputElement>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string>('');
   const [thumbnailName, setThumbnailName] = useState<string>('');
@@ -26,7 +26,7 @@ const ThumbNailBox = ({ prevUrl, setisThumbnailUrlDeleted, setThumbNail }: Thumb
   const handleThumbnailChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     if (event.target.files?.length === 0) return;
     else if (event.target.files) {
-      setThumbNail(event.target.files[0]);
+      setThumbnail(event.target.files[0]);
       setThumbnailName(event.target.files[0].name);
       setisThumbnailUrlDeleted ? setisThumbnailUrlDeleted(true) : null;
       const reader = new FileReader();
@@ -55,7 +55,7 @@ const ThumbNailBox = ({ prevUrl, setisThumbnailUrlDeleted, setThumbNail }: Thumb
     if (event.dataTransfer.files.length > 0) {
       thumbnailInput.current ? (thumbnailInput.current.files = event.dataTransfer.files) : null;
       setisThumbnailUrlDeleted ? setisThumbnailUrlDeleted(true) : null;
-      setThumbNail(event.dataTransfer.files[0]);
+      setThumbnail(event.dataTransfer.files[0]);
       setThumbnailName(event.dataTransfer.files[0].name);
       const reader = new FileReader();
       reader.readAsDataURL(event.dataTransfer.files[0]);

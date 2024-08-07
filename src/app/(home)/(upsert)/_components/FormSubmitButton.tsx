@@ -1,12 +1,12 @@
 import Chip from '@/components/common/Chip';
 import ConfirmModal from '@/components/modal/ConfirmModal';
-import { POST_CANCLE_TEXT, POST_APPROVE_TEXT } from '@/constants/upsert';
+import { POST_CANCLE_TEXT, POST_APPROVE_TEXT, EDIT_APPROVE_TEXT, EDIT_CANCLE_TEXT } from '@/constants/upsert';
 import { useRouter } from 'next/navigation';
-import { MouseEventHandler, useEffect, useRef, useState } from 'react';
+import { MouseEventHandler, useRef, useState } from 'react';
 
-type FormSubmitButtonProps = { content: string; handleSubmit: () => Promise<void> };
+type FormSubmitButtonProps = { content: string; handleSubmit: () => Promise<void>; isEdit: boolean };
 
-const FormSubmitButton = ({ content, handleSubmit }: FormSubmitButtonProps) => {
+const FormSubmitButton = ({ content, handleSubmit, isEdit }: FormSubmitButtonProps) => {
   const router = useRouter();
   const approveButton = useRef<HTMLButtonElement>(null);
   const [isCancleConfirmOpen, setIsCancleConfirmOpen] = useState<boolean>(false);
@@ -14,13 +14,13 @@ const FormSubmitButton = ({ content, handleSubmit }: FormSubmitButtonProps) => {
   const [confirmText, setConfirmText] = useState<string>('');
 
   const handleCancleConfirmClick: MouseEventHandler = () => {
-    setConfirmText(POST_CANCLE_TEXT);
+    setConfirmText(isEdit ? EDIT_CANCLE_TEXT : POST_CANCLE_TEXT);
     setIsCancleConfirmOpen(true);
   };
 
   const handlePostConfirmClick: MouseEventHandler = (event) => {
     event.preventDefault();
-    setConfirmText(POST_APPROVE_TEXT);
+    setConfirmText(isEdit ? EDIT_APPROVE_TEXT : POST_APPROVE_TEXT);
     setIsPostConfirmOpen(true);
   };
 
