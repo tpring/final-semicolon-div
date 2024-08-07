@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import SearchPostCard from './SearchPostCard';
 import SearchFilter from './SearchFilter';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 
 type Post = {
   id: string;

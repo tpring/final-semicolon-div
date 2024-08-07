@@ -3,7 +3,7 @@ import Modal from '@/components/modal/Modal';
 import ConfirmModal from '@/components/modal/ConfirmModal';
 import { toast } from 'react-toastify';
 import X from '@/assets/images/common/X';
-import { isNicknameValid } from '@/utils/validateNickname';
+import { isNicknameValid } from '@/utils/validateBannedWords';
 
 type NicknameModalProps = {
   isOpen: boolean;
