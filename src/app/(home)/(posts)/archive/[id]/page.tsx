@@ -10,7 +10,7 @@ const ArchiveDetailPage = async ({ params }: { params: { id: string } }) => {
   return (
     <div className="flex flex-col justify-center w-[1200px]  ">
       <BackClick />
-      <div className=" border rounded-xl p-4 ">
+      <div className=" border rounded-xl p-6 ">
         <ArchiveDetailPost archiveDetail={data} />
         <ArchiveInputComments />
       </div>

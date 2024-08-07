@@ -100,8 +100,8 @@ const OAuthNicknameModal = ({ isOpen, currentNickname, onNicknameUpdate, userId 
 
   return (
     <Modal isOpen={isOpen}>
-      <div className="h-[406px]">
-        <h2 className="mb-4">닉네임 변경</h2>
+      <div className="w-[581px] h-[398px] p-[40px_80px]">
+        <h2 className="mb-10 text-h4 font-bold text-neutral-900">닉네임 변경</h2>
         <h2 className="mb-4">새로운 닉네임</h2>
         <input
           type="text"

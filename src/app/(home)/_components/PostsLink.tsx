@@ -1,8 +1,8 @@
 'use client';
 import Link from 'next/link';
-import mainPageQna from '@/assets/images/main-page_image/posts-list/qna.svg';
-import mainPageForum from '@/assets/images/main-page_image/posts-list/forum.svg';
-import mainPageLibrary from '@/assets/images/main-page_image/posts-list/library.svg';
+import qna from '/public/images/mainPageImages/postList/qna.webp';
+import forum from '/public/images/mainPageImages/postList/forum.webp';
+import library from '/public/images/mainPageImages/postList/library.webp';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation } from 'swiper/modules';
 import { useEffect, useState } from 'react';
@@ -62,21 +62,21 @@ const PostsLink = () => {
           <Link
             href={'/qna'}
             className="bg-slate-200 w-full h-[234px] flex flex-col justify-end p-5 rounded-2xl gap-1 text-white  "
-            style={{ backgroundImage: `url(${mainPageQna.src})` }}
+            style={{ backgroundImage: `url(${qna.src})` }}
           ></Link>
         </SwiperSlide>
         <SwiperSlide className="swiper-slide">
           <Link
             href={'/forum'}
             className="bg-slate-200 w-full h-[234px] flex flex-col justify-end p-5 rounded-2xl gap-1 text-white "
-            style={{ backgroundImage: `url(${mainPageForum.src})` }}
+            style={{ backgroundImage: `url(${forum.src})` }}
           ></Link>
         </SwiperSlide>
         <SwiperSlide className="swiper-slide">
           <Link
             href={'/archive'}
             className="bg-slate-200 w-full h-[234px] flex flex-col justify-end p-5 rounded-2xl gap-1 text-white "
-            style={{ backgroundImage: `url(${mainPageLibrary.src})` }}
+            style={{ backgroundImage: `url(${library.src})` }}
           ></Link>
         </SwiperSlide>
       </Swiper>

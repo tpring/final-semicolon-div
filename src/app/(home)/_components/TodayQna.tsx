@@ -1,9 +1,8 @@
 'use client';
 import { Tables } from '@/types/supabase';
-import { useQuery } from '@tanstack/react-query';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
-import qnaImage from '@/assets/images/main-page_image/qnaicom/qnaImage.svg';
+import qnaImage from '/public/images/mainPageImages/qnaImage.webp';
 import Link from 'next/link';
 import Image from 'next/image';
 import Cap from '@/assets/images/main-page_image/qnaicom/Cap';
@@ -13,6 +12,9 @@ import CarouselLeftHover from '@/assets/images/common/CarouselLeftHover';
 import CarouselLeft from '@/assets/images/common/CarouselLeft';
 import CarouselRightHover from '@/assets/images/common/CarouselRightHover';
 import CarouselRight from '@/assets/images/common/CarouselRight';
+import { useQuery } from '@tanstack/react-query';
+import { cutText, filterSlang } from '@/utils/markdownCut';
+import { slangs } from '@/utils/slangs';
 
 const TodayQna = () => {
   const [swiperInstance, setSwiperInstance] = useState<SwiperCore | null>(null);
@@ -47,12 +49,11 @@ const TodayQna = () => {
     if (swiperInstance) swiperInstance.slideNext();
   };
 
-  //실시간 Q&A가져오기
   const { data: todayQna } = useQuery<Tables<'qna_posts'>[]>({
     queryKey: ['todayQna'],
     queryFn: async () => {
       try {
-        const response = await fetch('/api/auth/main-page/today-qna');
+        const response = await fetch('/api/main-page/today-qna');
         const data = await response.json();
         return data;
       } catch (error) {}
@@ -60,7 +61,7 @@ const TodayQna = () => {
   });
 
   return (
-    <>
+    <div className="flex flex-col">
       <div className="flex justify-start gap-1">
         <p className="text-h4 font-bold mb-5 text-neutral-900">방금 올라온 질문이에요! 지식을 공유하러 가볼까요?</p>
         <Cap />
@@ -81,7 +82,9 @@ const TodayQna = () => {
                   <div className="flex flex-col justify-start gap-4 items-start">
                     <Image src={qnaImage} alt="iconList" width={67} height={64} />
                     <p className="text-subtitle1 font-medium text-neutral-300">오늘의 질문</p>
-                    <p className="text-body1 font-medium text-neutral-900">{[post.title]}</p>
+                    <p className="text-body1 font-medium text-neutral-900 text-wrap break-all ">
+                      {cutText(filterSlang(post.title), 70)}
+                    </p>
                   </div>
                 </div>
               </Link>
@@ -113,7 +116,7 @@ const TodayQna = () => {
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 };
 

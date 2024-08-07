@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import mainPageLanding from '@/assets/images/main-page_image/mainPageLanding.svg';
+import mainPageLanding from '/public/images/mainPageImages/mainPageLanding.webp';
 
 const LandingPage = () => {
   return (
@@ -8,9 +8,9 @@ const LandingPage = () => {
         <Image
           src={mainPageLanding}
           alt="Landing"
-          width={1200}
+          width={2400}
           height={235}
-          style={{ width: '100%', height: '100%' }}
+          style={{ width: '1204px', height: '235px' }}
           className=" rounded-2xl"
         />
       </a>

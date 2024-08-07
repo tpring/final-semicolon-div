@@ -13,6 +13,7 @@ import { toast } from 'react-toastify';
 import ReplyPageButton from './ReplyPageButton';
 import { revalidate } from '@/actions/revalidate';
 import ConfirmModal from '@/components/modal/ConfirmModal';
+import { cutText, filterSlang } from '@/utils/markdownCut';
 
 const ForumReply = ({ comment_id, post_user_id }: { comment_id: string; post_user_id: string }) => {
   const { me } = useAuth();
@@ -23,6 +24,8 @@ const ForumReply = ({ comment_id, post_user_id }: { comment_id: string; post_use
   const [replyEditor, setReplyEditor] = useState<{ [key: string]: boolean }>({});
   const [replyEditorToggle, setReplyEditorToggle] = useState<{ [key: string]: boolean }>({});
   const [confirmModal, setConfirmModal] = useState<boolean>(false);
+  const [replyRetouchModal, setReplyRetouchModal] = useState<boolean>(false);
+  const [replyLength, setReplyLength] = useState<boolean>(false);
 
   //한 페이지 안에 reply 수
   const COMMENT_REPLY_PAGE = 5;
@@ -157,10 +160,18 @@ const ForumReply = ({ comment_id, post_user_id }: { comment_id: string; post_use
                         <div className="w-[105px] right-0 absolute flex flex-col justify-center items-center border-main-400 bg-white shadow-lg border rounded-lg">
                           <button
                             className="h-[44px] w-full rounded-t-lg hover:bg-main-50 hover:text-main-400"
-                            onClick={() => toggleReplyEditing(reply.id, reply.reply)}
+                            onClick={() => setReplyRetouchModal(true)}
                           >
                             댓글 수정
                           </button>
+                          {replyRetouchModal && (
+                            <ConfirmModal
+                              isOpen={replyRetouchModal}
+                              onClose={() => setReplyRetouchModal(false)}
+                              onConfirm={() => toggleReplyEditing(reply.id, reply.reply)}
+                              message={'댓글을 수정 하시겠습니까?'}
+                            />
+                          )}
                           <button
                             className="h-[44px] w-full rounded-b-lg hover:bg-main-50 hover:text-main-400"
                             onClick={() => setConfirmModal(true)}
@@ -211,7 +222,24 @@ const ForumReply = ({ comment_id, post_user_id }: { comment_id: string; post_use
                 </div>
               ) : (
                 <div className="flex flex-col  gap-4">
-                  <p className="text-body1 font-regular  ">{reply.reply}</p>
+                  {replyLength ? (
+                    <p className="text-body1 font-regular text-wrap break-all  ">{filterSlang(reply.reply)}</p>
+                  ) : (
+                    <div className="flex flex-col justify-start items-start">
+                      <p className="text-body1 font-regular text-wrap break-all  ">
+                        {cutText(filterSlang(reply.reply), 140)}
+                      </p>
+                      {reply.reply.length > 145 ? (
+                        <button
+                          className="text-subtitle2 font-bold text-neutral-700"
+                          onClick={() => setReplyLength(true)}
+                        >
+                          ...더보기
+                        </button>
+                      ) : null}
+                    </div>
+                  )}
+
                   <p className="text-body1 font-regular text-neutral-400">
                     {reply.created_at.slice(0, 10).replace(/-/g, '.')}
                   </p>
