@@ -1,8 +1,15 @@
 import { Tables } from '../supabase';
 
 export type archiveDetailType = Tables<'archive_posts'> & {
-  user: Tables<'users'>;
-  comment: { count: number }[];
+  user: {
+    email: string;
+    github_url: string | null;
+    id: string;
+    info: string | null;
+    nickname: string | null;
+    profile_image: string;
+  } | null;
+  commentsCount: number;
 };
 
 type comments = {

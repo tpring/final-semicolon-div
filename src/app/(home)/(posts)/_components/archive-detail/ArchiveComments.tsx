@@ -16,6 +16,7 @@ import ConfirmModal from '@/components/modal/ConfirmModal';
 import ArchiveReplyInput from './ArchiveReplyInput';
 import ArchiveReply from './ArchiveReply';
 import { archiveCommentsType, commentRetouch } from '@/types/posts/archiveDetailTypes';
+import EndOfData from '@/components/common/EndOfData';
 
 const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
   const { me } = useAuth();
@@ -119,7 +120,8 @@ const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
     fetchNextPage,
     data: comments,
     isPending,
-    isError
+    isError,
+    hasNextPage
   } = useInfiniteQuery({
     queryKey: ['archiveComments', param.id],
     initialPageParam: 0,
@@ -319,6 +321,7 @@ const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
         </div>
       ))}
       <div ref={ref}></div>
+      {!hasNextPage && !isPending && <EndOfData />}
     </div>
   );
 };
