@@ -1,11 +1,75 @@
-import React from 'react';
+import Chip from '@/components/common/Chip';
+import ConfirmModal from '@/components/modal/ConfirmModal';
+import { POST_CANCLE_TEXT, POST_APPROVE_TEXT } from '@/constants/upsert';
+import { useRouter } from 'next/navigation';
+import { MouseEventHandler, useEffect, useRef, useState } from 'react';
 
-const FormSubmitButton = () => {
+type FormSubmitButtonProps = { content: string };
+
+const FormSubmitButton = ({ content }: FormSubmitButtonProps) => {
+  const router = useRouter();
+  const approveButton = useRef<HTMLButtonElement>(null);
+  const [isCancleConfirmOpen, setIsCancleConfirmOpen] = useState<boolean>(false);
+  const [isPostConfirmOpen, setIsPostConfirmOpen] = useState<boolean>(false);
+  const [confirmText, setConfirmText] = useState<string>('');
+
+  const handleCancleConfirmClick: MouseEventHandler = () => {
+    setConfirmText(POST_CANCLE_TEXT);
+    setIsCancleConfirmOpen(true);
+  };
+
+  const handlePostConfirmClick: MouseEventHandler = (event) => {
+    event.preventDefault();
+    setConfirmText(POST_APPROVE_TEXT);
+    setIsPostConfirmOpen(true);
+  };
+
+  const approveCancleConfirm = (): void => {
+    router.back();
+  };
+
+  const closeCancleConfirm = (): void => {
+    setIsCancleConfirmOpen(false);
+  };
+
+  const approvePostConfirm = (): void => {
+    approveButton.current?.click();
+  };
+
+  const closePostConfirmClose = (): void => {
+    setIsPostConfirmOpen(false);
+  };
+
   return (
     <div className="flex gap-5 justify-end">
-      <button className=" border px-2 py-1 w-[85px] border-gray-500 text-gray-700  mb-10 font-bold hover:bg-blue-500 hover:text-white hover:border-gray-300">
-        등록
-      </button>
+      <ConfirmModal
+        isOpen={isCancleConfirmOpen}
+        message={confirmText}
+        onConfirm={approveCancleConfirm}
+        onClose={closeCancleConfirm}
+      />
+
+      <Chip type="button" intent={'gray'} size={'large'} label="취소" onClick={handleCancleConfirmClick} />
+
+      <ConfirmModal
+        isOpen={isPostConfirmOpen}
+        message={confirmText}
+        onConfirm={approvePostConfirm}
+        onClose={closePostConfirmClose}
+      />
+
+      {content.length === 0 ? (
+        <Chip type="button" intent={'primary_disabled'} size="large" label="등록" />
+      ) : (
+        <Chip
+          type={`${isPostConfirmOpen ? 'submit' : 'button'}`}
+          intent={'primary'}
+          size="large"
+          label="등록"
+          onClick={handlePostConfirmClick}
+        />
+      )}
+      <button ref={approveButton}></button>
     </div>
   );
 };
