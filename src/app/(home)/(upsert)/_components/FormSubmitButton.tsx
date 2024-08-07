@@ -1,8 +1,14 @@
+import Chip from '@/components/common/Chip';
 import ConfirmModal from '@/components/modal/ConfirmModal';
-import { POST_CANCLE_TEXT, POST_CONFIRM_TEXT } from '@/constants/upsert';
-import { MouseEventHandler, useRef, useState } from 'react';
+import { POST_CANCLE_TEXT, POST_APPROVE_TEXT } from '@/constants/upsert';
+import { useRouter } from 'next/navigation';
+import { MouseEventHandler, useEffect, useRef, useState } from 'react';
 
-const FormSubmitButton = () => {
+type FormSubmitButtonProps = { content: string };
+
+const FormSubmitButton = ({ content }: FormSubmitButtonProps) => {
+  const router = useRouter();
+  const approveButton = useRef<HTMLButtonElement>(null);
   const [isCancleConfirmOpen, setIsCancleConfirmOpen] = useState<boolean>(false);
   const [isPostConfirmOpen, setIsPostConfirmOpen] = useState<boolean>(false);
   const [confirmText, setConfirmText] = useState<string>('');
@@ -12,18 +18,23 @@ const FormSubmitButton = () => {
     setIsCancleConfirmOpen(true);
   };
 
-  const handlePostConfirmClick: MouseEventHandler = () => {
-    setConfirmText(POST_CONFIRM_TEXT);
+  const handlePostConfirmClick: MouseEventHandler = (event) => {
+    event.preventDefault();
+    setConfirmText(POST_APPROVE_TEXT);
     setIsPostConfirmOpen(true);
   };
 
-  const approveCancleConfirm = (): void => {};
+  const approveCancleConfirm = (): void => {
+    router.back();
+  };
 
   const closeCancleConfirm = (): void => {
     setIsCancleConfirmOpen(false);
   };
 
-  const approvePostConfirm = (): void => {};
+  const approvePostConfirm = (): void => {
+    approveButton.current?.click();
+  };
 
   const closePostConfirmClose = (): void => {
     setIsPostConfirmOpen(false);
@@ -37,26 +48,28 @@ const FormSubmitButton = () => {
         onConfirm={approveCancleConfirm}
         onClose={closeCancleConfirm}
       />
-      <button
-        type="button"
-        onClick={handleCancleConfirmClick}
-        className=" border px-2 py-1 w-[85px] border-gray-500 text-gray-700  mb-10 font-bold hover:bg-blue-500 hover:text-white hover:border-gray-300"
-      >
-        취소
-      </button>
+
+      <Chip type="button" intent={'gray'} size={'large'} label="취소" onClick={handleCancleConfirmClick} />
+
       <ConfirmModal
         isOpen={isPostConfirmOpen}
         message={confirmText}
         onConfirm={approvePostConfirm}
         onClose={closePostConfirmClose}
       />
-      <button
-        type="button"
-        onClick={handlePostConfirmClick}
-        className=" border px-2 py-1 w-[85px] border-gray-500 text-gray-700  mb-10 font-bold hover:bg-blue-500 hover:text-white hover:border-gray-300"
-      >
-        등록
-      </button>
+
+      {content.length === 0 ? (
+        <Chip type="button" intent={'primary_disabled'} size="large" label="등록" />
+      ) : (
+        <Chip
+          type={`${isPostConfirmOpen ? 'submit' : 'button'}`}
+          intent={'primary'}
+          size="large"
+          label="등록"
+          onClick={handlePostConfirmClick}
+        />
+      )}
+      <button ref={approveButton}></button>
     </div>
   );
 };

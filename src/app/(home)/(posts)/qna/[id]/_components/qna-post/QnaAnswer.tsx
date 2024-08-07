@@ -1,6 +1,6 @@
 import MDEditor from '@uiw/react-md-editor';
 import Image from 'next/image';
-import { Dispatch, MouseEventHandler, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { TqnaCommentsWithReplyCount } from '@/types/posts/qnaDetailTypes';
 import Share from '@/assets/images/common/Share';
 import AnswerReplies from '../qna-comments/AnswerReplies';
@@ -12,13 +12,18 @@ import BookmarkButton from '@/components/common/BookmarkButton';
 import CustomMDEditor from '@/app/(home)/(upsert)/_components/CustomMDEditor';
 import { useQnaDetailStore } from '@/store/qnaDetailStore';
 import BlueCheck from '@/assets/images/common/BlueCheck';
-import { revalidate } from '@/actions/revalidate';
 import { toast } from 'react-toastify';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { revalidatePostTag } from '@/actions/revalidatePostTag';
 import TagBlock from '@/components/common/TagBlock';
 import SelectTagInput from '@/components/common/SelectTagInput';
 import { TAG_LIST } from '@/constants/tags';
+import ConfirmModal from '@/components/modal/ConfirmModal';
+import { EDIT_APPROVE_TEXT, EDIT_CANCLE_TEXT, SELECT_COMMENT_TEXT } from '@/constants/upsert';
+import SelectAnswer from '@/assets/images/qna/SelectAnswer';
+import Chip from '@/components/common/Chip';
+import Tag from '@/components/common/Tag';
+import { filterSlang } from '@/utils/markdownCut';
 
 type QnaAnswerProps = {
   qnaComment: TqnaCommentsWithReplyCount;
@@ -36,20 +41,35 @@ const QnaAnswer = ({ qnaComment, questioner, index, qnaCommentsCount, setQnaComm
   const [content, setContent] = useState(qnaComment.comment);
   const [replyCount, setReplyCount] = useState<number>(qnaComment?.qna_reply[0].count);
   const [tagList, setTagList] = useState<Array<Ttag>>(TAG_LIST);
+  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
+  const [isCancleModalOpen, setIsCancleModalOpen] = useState<boolean>(false);
+  const [isSelectModalOpen, setIsSelectModalOpen] = useState<boolean>(false);
   const queryClient = useQueryClient();
 
   const handleReplyClick = () => {
     setOpenAnswerReply((prev) => !prev);
   };
 
-  const handleSelectComment: MouseEventHandler<HTMLButtonElement> = async () => {
+  const handleEditClick = () => {
+    setIsEditModalOpen(true);
+  };
+
+  const handleCancleClick = () => {
+    setIsCancleModalOpen(true);
+  };
+
+  const handelSelectClick = () => {
+    setIsSelectModalOpen(true);
+  };
+
+  const selectComment = async (): Promise<void> => {
     const data = await selectMutate();
     toast.success('채택이 완료되었습니다!', { autoClose: 1500, hideProgressBar: true });
     await revalidatePostTag(`qna-detail-${postId}`);
     setSeletedComment(qnaComment.id);
   };
 
-  const selectComment = async () => {
+  const selectCommentMutation = async () => {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/posts/qna-detail/${postId}?comment_id=${qnaComment.id}`,
       {
@@ -63,15 +83,16 @@ const QnaAnswer = ({ qnaComment, questioner, index, qnaCommentsCount, setQnaComm
     return data;
   };
   const { mutate: selectMutate } = useMutation({
-    mutationFn: selectComment,
+    mutationFn: selectCommentMutation,
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['qnaComments', postId] });
     }
   });
 
-  const handleEditComment: MouseEventHandler<HTMLButtonElement> = async () => {
+  const editComment = async (): Promise<void> => {
     if (content.length === 0) {
-      return toast.error('내용을 입력해주세요!');
+      toast.error('내용을 입력해주세요!');
+      return;
     }
     const data = await editMutate({
       commentId: qnaComment.id,
@@ -84,7 +105,7 @@ const QnaAnswer = ({ qnaComment, questioner, index, qnaCommentsCount, setQnaComm
     await revalidatePostTag(`qna-detail-${postId}`);
   };
 
-  const editComment = async ({
+  const editCommentMutation = async ({
     commentId,
     comment,
     tags,
@@ -108,7 +129,7 @@ const QnaAnswer = ({ qnaComment, questioner, index, qnaCommentsCount, setQnaComm
   };
 
   const { mutate: editMutate } = useMutation({
-    mutationFn: editComment,
+    mutationFn: editCommentMutation,
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['qnaComments', postId] });
     }
@@ -147,17 +168,16 @@ const QnaAnswer = ({ qnaComment, questioner, index, qnaCommentsCount, setQnaComm
             ) : null}
           </div>
 
-          <div>
-            {seletedComment === qnaComment.id ? (
-              <div className="flex gap-2 ">
-                <BlueCheck />
-                <div
-                  className={` text-white bg-main-400 text-subtitle2 font-medium w-[97px] h-[30px] text-center content-center rounded`}
-                >
-                  채택된 답변
+          <div className="flex flex-col">
+            <div className="flex">
+              {seletedComment === qnaComment.id ? (
+                <div className="flex gap-2 items-center">
+                  <BlueCheck />
+                  <Tag intent="primary" label="채택된 답변" />
+                  {qnaComment.user_id === me?.id ? <Tag intent="primary" label="내가 쓴 글" /> : null}
                 </div>
-              </div>
-            ) : null}
+              ) : null}
+            </div>
             <div className="flex gap-5 h-[42px] items-center">
               <span className="text-subtitle1 text-neutral-900">{qnaComment.users.nickname}</span>
               <span className="text-body1 text-neutral-500">{timeForToday(qnaComment.updated_at ?? '')}</span>
@@ -180,17 +200,35 @@ const QnaAnswer = ({ qnaComment, questioner, index, qnaCommentsCount, setQnaComm
       <div className=" max-w-[1204px]">
         {isEdit ? (
           <div className="flex flex-col">
+            <ConfirmModal
+              isOpen={isEditModalOpen}
+              onClose={() => {
+                setIsEditModalOpen(false);
+              }}
+              onConfirm={editComment}
+              message={EDIT_APPROVE_TEXT}
+            />
+
+            <ConfirmModal
+              isOpen={isCancleModalOpen}
+              onClose={() => {
+                setIsCancleModalOpen(false);
+              }}
+              onConfirm={() => {
+                setIsEdit(false);
+              }}
+              message={EDIT_CANCLE_TEXT}
+            />
+
             <CustomMDEditor content={content} setContent={setContent} />
             <div className="h-[182px] mt-12 flex flex-col gap-4">
               <h5 className="text-h5 font-bold text-neutral-900">태그</h5>
               <SelectTagInput tagList={tagList} setTagList={setTagList} />
             </div>
-            <button
-              className="w-[100px] h-[48px] ml-auto mt-4 bg-main-50 rounded-md text-main-400 text-subtitle1 font-bold"
-              onClick={handleEditComment}
-            >
-              수정하기
-            </button>
+            <div className="flex gap-4 ml-auto">
+              <Chip intent={'gray'} size={'medium'} label="취소하기" onClick={handleCancleClick} />
+              <Chip intent={'secondary'} size={'medium'} label="수정하기" onClick={handleEditClick} />
+            </div>
           </div>
         ) : (
           <MDEditor.Markdown
@@ -202,7 +240,7 @@ const QnaAnswer = ({ qnaComment, questioner, index, qnaCommentsCount, setQnaComm
               lineHeight: '150%',
               letterSpacing: '-1'
             }}
-            source={qnaComment.comment}
+            source={filterSlang(qnaComment.comment)}
           />
         )}
         <div className={`flex gap-[6px] my-6 ${isEdit ? 'hidden' : ''}`}>
@@ -235,12 +273,20 @@ const QnaAnswer = ({ qnaComment, questioner, index, qnaCommentsCount, setQnaComm
             )}
           </button>
         </div>
+        <ConfirmModal
+          isOpen={isSelectModalOpen}
+          onClose={() => {
+            setIsSelectModalOpen(false);
+          }}
+          onConfirm={selectComment}
+          message={SELECT_COMMENT_TEXT}
+        />
         {me?.id === questioner && seletedComment !== qnaComment.id ? (
           <button
             className="w-[134px] h-[48px] bg-main-50 rounded-md text-main-400 text-subtitle1 font-bold"
-            onClick={handleSelectComment}
+            onClick={handelSelectClick}
           >
-            채택하기
+            <SelectAnswer />
           </button>
         ) : null}
       </div>

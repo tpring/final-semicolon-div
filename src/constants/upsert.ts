@@ -29,25 +29,34 @@ export const IMAGE_UPLOAD_TEXT = '![Image](이미지 업로드 중!)';
 export const POST_IMAGE_URL = 'https://jtorewqfshytdtgldztv.supabase.co/storage/v1/object/public/';
 
 //작성페이지 확인 메세지
-export const POST_CONFIRM_TEXT = '게시글을 등록 할까요?';
+export const POST_APPROVE_TEXT = '게시글을 등록 할까요?';
 
 //작성페이지 취소 메세지
 export const POST_CANCLE_TEXT = '게시글 작성을 중단할까요?';
 
 //수정 페이지 확인 메세지
-export const EDIT_COMFIRM_TEXT = '게시글을 수정 할까요?';
+export const EDIT_APPROVE_TEXT = '게시글을 수정 할까요?';
 
 //작성 페이지 취소 메세지
 export const EDIT_CANCLE_TEXT = '게시글 수정을 중단할까요?';
 
+//작성 페이지 삭제 확인 메세지
+export const POST_DELETE_TEXT = '게시글을 삭제하시겠습니까?';
+
 //댓글 작성 확인 메세지
-export const POST_COMMENT_CONFIRM_TEXT = '댓글을 등록 할까요?';
+export const POST_COMMENT_APPROVE_TEXT = '댓글을 등록 할까요?';
 
 //댓글 작성 취소 메세지
 export const POST_COMMENT_CANCLE_TEXT = '댓글 작성을 중단할까요?';
 
-//댓글 수정  확인 메세지
-export const EDIT_COMMENT_COMFIRM_TEXT = '댓글을 수정 할까요?';
+//댓글 수정 확인 메세지
+export const EDIT_COMMENT_APPROVE_TEXT = '댓글을 수정 할까요?';
 
-//댓글 작성  취소 메세지
+//댓글 수정 취소 메세지
 export const EDIT_COMMENT_CANCLE_TEXT = '댓글 수정을 중단할까요?';
+
+//댓글 삭제 확인 메세지
+export const POST_COMMENT_DELETE_TEXT = '댓글을 삭제 하시겠습니까?';
+
+//채택 메세지
+export const SELECT_COMMENT_TEXT = '채택하시겠습니까?';
