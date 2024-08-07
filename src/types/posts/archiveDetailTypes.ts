@@ -10,6 +10,7 @@ export type archiveDetailType = Tables<'archive_posts'> & {
     profile_image: string;
   } | null;
   commentsCount: number;
+  tags: { id: string; tag: string }[];
 };
 
 type comments = {

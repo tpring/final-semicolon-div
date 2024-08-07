@@ -165,6 +165,7 @@ const CustomMDEditor = ({ content, setContent }: CustomMDEditorProps) => {
         onChange={handleContentChange}
         onDrop={handleDropEditor}
         onBlur={handleBlurEditor}
+        textareaProps={{ maxLength: 3000 }}
       />
     </>
   );

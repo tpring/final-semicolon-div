@@ -1,5 +1,5 @@
 'use client';
-import { FormEvent, FormEventHandler, useState } from 'react';
+import { FormEvent, FormEventHandler, useRef, useState } from 'react';
 import Link from 'next/link';
 import { TpostFormData } from '@/types/upsert';
 import FormTitleInput from './postingform/FormTitleInput';
@@ -29,6 +29,7 @@ const PostingForm = () => {
   const router = useRouter();
   const { categoryGroup, subCategory, clearCategory } = usePostingCategoryStore();
   const { me: user } = useAuth();
+  const ref = useRef<HTMLFormElement>(null);
   const [tagList, setTagList] = useState<Array<Ttag>>(TAG_LIST);
   const [content, setContent] = useState<string>('');
 
@@ -116,13 +117,13 @@ const PostingForm = () => {
         <BackArrowIcon />
       </Link>
       <UpsertTheme />
-      <form className="flex flex-col gap-y-10 h-full" onSubmit={handleSubmit}>
+      <form ref={ref} className="flex flex-col gap-y-10 h-full" onSubmit={handleSubmit}>
         <PostingCategoryBox />
         <FormTitleInput />
         <FormTagInput tagList={tagList} setTagList={setTagList} />
         <ThumbNailBox />
         <FormContentArea content={content} setContent={setContent} />
-        <FormSubmitButton />
+        <FormSubmitButton content={content} />
       </form>
     </div>
   );

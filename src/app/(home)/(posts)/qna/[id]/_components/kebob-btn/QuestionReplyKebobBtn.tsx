@@ -1,5 +1,7 @@
 import { revalidatePostTag } from '@/actions/revalidatePostTag';
 import KebabButton from '@/assets/images/common/KebabButton';
+import ConfirmModal from '@/components/modal/ConfirmModal';
+import { POST_COMMENT_DELETE_TEXT } from '@/constants/upsert';
 import { useQnaDetailStore } from '@/store/qnaDetailStore';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Dispatch, MouseEventHandler, SetStateAction, useState } from 'react';
@@ -14,9 +16,14 @@ type QuestionReplyKebobBtnProps = {
 const QuestionReplyKebobBtn = ({ replyId, setReplyCount, setIsEdit }: QuestionReplyKebobBtnProps) => {
   const { postId } = useQnaDetailStore();
   const [openKebab, setOpenKebab] = useState<boolean>(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const queryClient = useQueryClient();
 
-  const handleDeleteReply: MouseEventHandler<HTMLLIElement> = async () => {
+  const handleDeleteClick: MouseEventHandler = () => {
+    setIsDeleteModalOpen(true);
+  };
+
+  const deleteReply = async (): Promise<void> => {
     if (!replyId) return;
     const data = await deleteMutate({ replyId });
     toast.success('댓글 삭제 완료', { autoClose: 1500, hideProgressBar: true });
@@ -26,7 +33,7 @@ const QuestionReplyKebobBtn = ({ replyId, setReplyCount, setIsEdit }: QuestionRe
     return;
   };
 
-  const deleteReply = async ({ replyId }: { replyId: string }) => {
+  const deleteReplyMutation = async ({ replyId }: { replyId: string }) => {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/posts/qna-detail/qna-post-reply/${replyId}`, {
       method: 'DELETE'
     });
@@ -38,7 +45,7 @@ const QuestionReplyKebobBtn = ({ replyId, setReplyCount, setIsEdit }: QuestionRe
   };
 
   const { mutate: deleteMutate } = useMutation({
-    mutationFn: deleteReply,
+    mutationFn: deleteReplyMutation,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['qnaReply', postId] });
     }
@@ -58,6 +65,14 @@ const QuestionReplyKebobBtn = ({ replyId, setReplyCount, setIsEdit }: QuestionRe
         <ul
           className={`${openKebab ? 'border border-neutral-100 bg-white' : 'hidden'} rounded-lg flex flex-col absolute w-[105px] h-[88px] right-0 text-center hover:border-main-400 text-body2 z-10`}
         >
+          <ConfirmModal
+            isOpen={isDeleteModalOpen}
+            onClose={() => {
+              setIsDeleteModalOpen(false);
+            }}
+            onConfirm={deleteReply}
+            message={POST_COMMENT_DELETE_TEXT}
+          />
           <li
             className={`h-[44px] content-center ${openKebab ? '' : 'hidden'} hover:bg-main-100 hover:text-main-400 rounded-t-lg cursor-pointer`}
             onClick={() => {
@@ -69,7 +84,7 @@ const QuestionReplyKebobBtn = ({ replyId, setReplyCount, setIsEdit }: QuestionRe
           </li>
           <li
             className={`h-[44px]  content-center ${openKebab ? '' : 'hidden'}  hover:bg-main-100 hover:text-main-400 rounded-b-lg cursor-pointer`}
-            onClick={handleDeleteReply}
+            onClick={handleDeleteClick}
           >
             댓글 삭제
           </li>

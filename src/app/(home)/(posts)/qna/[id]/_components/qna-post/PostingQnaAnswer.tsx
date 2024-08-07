@@ -32,14 +32,15 @@ const PostingQnaAnswer = ({ content, setContent, setQnaCommentsCount }: PostingQ
           />
         </div>
         <div className="flex flex-col w-[1060px] ">
-          <h2 className=" text-h5 font-bold h-[27px]">
-            <span className="text-main-400 ">{answer?.nickname ?? ''}</span>님
-          </h2>
+          <span className="text-main-400 text-subtitle1 font-medium">
+            {answer?.nickname ?? ''}
+            <span className="text-neutral-900">님</span>
+          </span>
           <h2 className="text-h4 font-bold h-[32px]">지식을 나눠주세요!</h2>
         </div>
         {toggleAnswer ? null : (
           <button
-            className="w-[110px] h-[56px] bg-main-400 text-white text-subtitle1 rounded-lg"
+            className="w-[110px] h-[56px] bg-main-400 text-white text-subtitle1 rounded-lg hover:bg-main-500"
             onClick={handleToggleClick}
           >
             답변하기

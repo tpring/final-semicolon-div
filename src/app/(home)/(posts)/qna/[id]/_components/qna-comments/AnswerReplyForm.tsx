@@ -1,4 +1,5 @@
 import { revalidate } from '@/actions/revalidate';
+import Chip from '@/components/common/Chip';
 import { useAuth } from '@/context/auth.context';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import MDEditor, { commands } from '@uiw/react-md-editor';
@@ -53,8 +54,8 @@ const AnswerReplyForm = ({ commentId, setReplyCount }: AnswerRepliesFormProps) =
   });
 
   return (
-    <div className="py-6 px-9 w-[1152px] h-[296px] flex flex-col border-y">
-      <div className="flex items-center gap-4 mb-6">
+    <div className="py-6  w-[1156px] h-[296px] flex flex-col border-y">
+      <div className="flex items-center gap-4 mb-6 h-44">
         <div className="relative w-12 h-12">
           <Image
             src={userData?.profile_image ?? ''}
@@ -67,20 +68,25 @@ const AnswerReplyForm = ({ commentId, setReplyCount }: AnswerRepliesFormProps) =
         <MDEditor
           value={content}
           onChange={handleChangeContent}
-          height={176}
-          style={{ width: '1052px' }}
+          maxHeight={176}
+          style={{ width: '1092px' }}
           preview="edit"
           extraCommands={commands.getCommands().filter(() => false)}
           textareaProps={{ maxLength: 1000 }}
         />
       </div>
       <div className="ml-auto flex gap-4">
-        <button type="button" className="w-[71px] h-[48px] bg-neutral-50 rounded-md text-neutral-100">
-          취소
-        </button>
-        <button className="w-[71px] h-[48px] bg-main-100 rounded-md text-main-50" onClick={handlePostingReply}>
-          등록
-        </button>
+        {content.length === 0 ? (
+          <>
+            <Chip intent={'gray_disabled'} size={'medium'} label="취소" />
+            <Chip intent={'primary_disabled'} size={'medium'} label="등록" />
+          </>
+        ) : (
+          <>
+            <Chip intent={'gray'} size={'medium'} label="취소" />
+            <Chip intent={'primary'} size={'medium'} label="등록" onClick={handlePostingReply} />
+          </>
+        )}
       </div>
     </div>
   );
