@@ -3,6 +3,7 @@ import { Tables } from '../supabase';
 export type forumDetailType = Tables<'forum_posts'> & {
   user: Tables<'users'>;
   comment: { count: number }[];
+  tags: { id: string; tag: string }[];
 };
 
 type comments = {

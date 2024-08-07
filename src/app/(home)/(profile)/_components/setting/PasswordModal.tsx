@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import X from '@/assets/images/common/X';
 import ConfirmModal from '@/components/modal/ConfirmModal';
 import Modal from '@/components/modal/Modal';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import NewPassword from './NewPassword';
 import CheckCurrentPassword from './CheckCurrentPassword';
 
@@ -39,9 +39,9 @@ const PasswordModal = ({ isOpen, onClose }: PasswordModalProps) => {
 
   const handleNoPassword = () => {
     if (validationMessage !== '현재 비밀번호가 확인되었습니다.') {
-      alert('기존 비밀번호 확인해주세요.');
+      toast.error('기존 비밀번호 확인해주세요.');
     } else if (validationMessage === '현재 비밀번호가 확인되었습니다.' && newPassword !== confirmPassword) {
-      alert('새로운 비밀번호를 확인해주세요.');
+      toast.error('새로운 비밀번호를 확인해주세요.');
     }
   };
   // 모달을 닫으려고 할 때 호출되는 함수

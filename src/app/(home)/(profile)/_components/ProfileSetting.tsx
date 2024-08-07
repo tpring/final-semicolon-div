@@ -13,15 +13,16 @@ import EditIcon from '@/assets/images/common/EditIcon';
 import Right from '@/assets/images/common/Right';
 import PasswordModal from './setting/PasswordModal';
 import OAuthLoginStatus from '../../(auth)/_components/OAuthLoginStatus';
+import { filterSlang } from '@/utils/markdownCut';
 
 const ProfileSetting = () => {
   const { userData, me, updateUserData } = useAuth();
   const [profileImage, setProfileImage] = useState<string>('');
-  const [githubUrl, setGithubUrl] = useState<string>('');
+  // const [githubUrl, setGithubUrl] = useState<string>('');
   const [nickname, setNickname] = useState<string>('');
   const [info, setInfo] = useState<string>('');
   const [isPasswordModalOpen, setPasswordModalOpen] = useState<boolean>(false);
-  const [isGithubUrlModalOpen, setGithubUrlModalOpen] = useState<boolean>(false);
+  // const [isGithubUrlModalOpen, setGithubUrlModalOpen] = useState<boolean>(false);
   const [isNicknameModalOpen, setNicknameModalOpen] = useState<boolean>(false);
   const [isInfoModalOpen, setInfoModalOpen] = useState<boolean>(false);
   const newProfileRef = useRef<File | null>(null);
@@ -32,7 +33,7 @@ const ProfileSetting = () => {
       setNickname(userData.nickname || '');
       setProfileImage(userData.profile_image || '');
       setInfo(userData.info || '');
-      setGithubUrl(userData.github_url || '');
+      // setGithubUrl(userData.github_url || '');
     }
   }, [userData]);
 
@@ -68,11 +69,12 @@ const ProfileSetting = () => {
     }
   };
 
-  const handleGithubUrlUpdate = async (newGithubUrl: string) => {
-    setGithubUrl(newGithubUrl);
-    await updateProfile({ github_url: newGithubUrl });
-    updateUserData({ github_url: newGithubUrl });
-  };
+  // const handleGithubUrlUpdate = async (newGithubUrl: string) => {
+  //   setGithubUrl(newGithubUrl);
+  //   await updateProfile({ github_url: newGithubUrl });
+  //   updateUserData({ github_url: newGithubUrl });
+  // };
+
   const handleNicknameUpdate = async (newNickname: string) => {
     setNickname(newNickname);
     await updateProfile({ nickname: newNickname });
@@ -157,7 +159,7 @@ const ProfileSetting = () => {
           </div>
           <p className="border-b border-neutral-50 " />
           <OAuthLoginStatus />
-          <p className="border-b border-neutral-50 " />
+          {/* <p className="border-b border-neutral-50 " />
           <div className="flex justify-between p-[16px_0]">
             <span className="text-neutral-900 text-subtitle1 font-medium">깃허브 링크</span>
             {githubUrl ? (
@@ -175,7 +177,7 @@ const ProfileSetting = () => {
                 </div>
               </div>
             )}
-          </div>
+          </div> */}
           <p className="border-b border-neutral-50 " />
           <div className="flex justify-between p-[16px_0]">
             <span className="text-neutral-900 text-subtitle1 font-medium">닉네임</span>
@@ -203,16 +205,18 @@ const ProfileSetting = () => {
               <Right width={10} height={18} />
             </div>
           </div>
-          <p className="text-neutral-700 h-[143px] text-body1 font-regular line-clamp-5 whitespace-pre-wrap">{info}</p>
+          <p className="text-neutral-700 h-[143px] text-body1 font-regular line-clamp-5 whitespace-pre-wrap ">
+            {filterSlang(info)}
+          </p>
         </div>
       </div>
 
-      <GithubUrlModal
+      {/* <GithubUrlModal
         isOpen={isGithubUrlModalOpen}
         onClose={() => setGithubUrlModalOpen(false)}
         currentGithubUrl={githubUrl}
         onGithubUrlUpdate={handleGithubUrlUpdate}
-      />
+      /> */}
       <PasswordModal isOpen={isPasswordModalOpen} onClose={() => setPasswordModalOpen(false)} />
       <NicknameModal
         isOpen={isNicknameModalOpen}
