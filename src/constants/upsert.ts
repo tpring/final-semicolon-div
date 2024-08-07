@@ -1,3 +1,5 @@
+import { Tcategory } from '@/types/upsert';
+
 //메인 카테고리 dropdown 목록
 export const BOARD_LIST = [
   {
@@ -12,7 +14,7 @@ export const BOARD_LIST = [
 export const FORUM_SUB_CATEGORY_LIST = ['일상', '커리어', '자기개발', '토론', '코드 리뷰'] as const;
 
 //메인 카테고리 목록(영어, 한글)
-export const CATEGORY_LIST_EN = ['forum', 'qna', 'archive'];
+export const CATEGORY_LIST_EN: Tcategory[] = ['forum', 'qna', 'archive'];
 export const CATEGORY_LIST_KR = ['포럼', 'Q&A', '아카이브'];
 
 //폼 유효성 검사 시퀀스

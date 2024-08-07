@@ -1,4 +1,14 @@
-const FormTitleInput = () => {
+import { ChangeEventHandler, Dispatch, SetStateAction } from 'react';
+
+type FormTitleInputProps = {
+  setTitle: Dispatch<SetStateAction<string>>;
+};
+
+const FormTitleInput = ({ setTitle }: FormTitleInputProps) => {
+  const handleTitleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
+    setTitle(event.currentTarget.value);
+  };
+
   return (
     <div>
       <label className="block mb-2 text-neutral-900 text-h5 font-bold " htmlFor="title">
@@ -9,6 +19,7 @@ const FormTitleInput = () => {
         type="text"
         name="title"
         id="title"
+        onChange={handleTitleChange}
       />
     </div>
   );

@@ -1,11 +1,11 @@
 import { Database } from './supabase';
 
 export type TBOARD_ITEM = {
-  category: string;
+  category: Tcategory;
   content: string;
 };
 
-export type Tcategory = 'forum' | 'qna' | 'archive' | undefined;
+export type Tcategory = 'forum' | 'qna' | 'archive' | '';
 
 export type TforumPost = Database['public']['Tables']['forum_posts']['Row'];
 export type TqnaPost = Database['public']['Tables']['qna_posts']['Row'];

@@ -1,7 +1,7 @@
 'use client';
-import { FormEvent, FormEventHandler, useRef, useState } from 'react';
+import { MouseEventHandler, useState } from 'react';
 import Link from 'next/link';
-import { TpostFormData } from '@/types/upsert';
+import { Tcategory, TpostFormData } from '@/types/upsert';
 import FormTitleInput from './postingform/FormTitleInput';
 import FormTagInput from './postingform/FormTagInput';
 import FormContentArea from './postingform/FormContentArea';
@@ -29,8 +29,9 @@ const PostingForm = () => {
   const router = useRouter();
   const { categoryGroup, subCategory, clearCategory } = usePostingCategoryStore();
   const { me: user } = useAuth();
-  const ref = useRef<HTMLFormElement>(null);
+  const [title, setTitle] = useState<string>('');
   const [tagList, setTagList] = useState<Array<Ttag>>(TAG_LIST);
+  const [thumbNail, setThumbNail] = useState<File>();
   const [content, setContent] = useState<string>('');
 
   if (!user?.id) {
@@ -38,10 +39,29 @@ const PostingForm = () => {
     return;
   }
 
-  const handleSubmit: FormEventHandler = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const category = CATEGORY_LIST_EN[CATEGORY_LIST_KR.indexOf(categoryGroup.category)];
+  const submitThumbnail = async (thumbNail: File, category: Tcategory): Promise<string | null> => {
+    const thumbnailFormData = new FormData();
+    thumbnailFormData.append('category', category);
+    thumbnailFormData.append('name', uuidv4());
+    thumbnailFormData.append('thumbnail', thumbNail);
+
+    const response = await fetch('/api/upsert/thumbnail', {
+      method: 'POST',
+      body: thumbnailFormData
+    });
+
+    const { url, message: thumbnailMessage } = await response.json();
+
+    if (thumbnailMessage) {
+      toast.error(thumbnailMessage);
+      return null;
+    } else {
+      return url;
+    }
+  };
+
+  const handleSubmit = async (): Promise<void> => {
+    const category = CATEGORY_LIST_EN[CATEGORY_LIST_KR.indexOf(categoryGroup.category ?? '')];
 
     if (
       category === 'forum' &&
@@ -52,17 +72,15 @@ const PostingForm = () => {
     }
 
     const postData: TpostFormData = {
-      user_id: user?.id as string,
+      title: title,
+      user_id: user?.id,
       content: content,
       category,
       forum_category: subCategory
     };
 
-    formData.forEach((value, key) => {
-      postData[key] = value;
-    });
+    // 폼 유효성 검사 로직
 
-    //폼 유효성 검사 로직
     const invalidItems = Object.keys(postData).filter((key) => !postData[key]);
     const invalidItemIndex = VALIDATION_SEQUENCE.findIndex((sequence) => {
       return !!invalidItems.find((item) => item === sequence);
@@ -74,22 +92,9 @@ const PostingForm = () => {
       return;
     }
 
-    const thumbnailFormData = new FormData(event.currentTarget);
-    thumbnailFormData.append('category', category);
-    thumbnailFormData.append('name', uuidv4());
+    // 유효성 검사 통과시 업로드 썸네일-글-태그순서로 업로드
 
-    //유효성 검사 통과시 업로드 썸네일-글-태그순서로 업로드
-
-    const thumbnail = await fetch('/api/upsert/thumbnail', {
-      method: 'POST',
-      body: thumbnailFormData
-    });
-    const { url: thumbnailUrl, message: thumbnailMessage } = await thumbnail.json();
-
-    if (thumbnailMessage) {
-      toast.error(thumbnailMessage);
-      return;
-    }
+    const thumbnailUrl = thumbNail ? await submitThumbnail(thumbNail, category) : null;
 
     const response = await fetch('/api/upsert/posting', {
       method: 'POST',
@@ -110,20 +115,24 @@ const PostingForm = () => {
     return;
   };
 
+  const handleBackClick: MouseEventHandler<HTMLDivElement> = () => {
+    router.back();
+  };
+
   return (
     <div className="w-[1204px] mx-auto flex flex-col gap-y-5 max-h-screen">
       <ToastContainer />
-      <Link className="mb-4" href={'/'}>
+      <div className="mb-4" onClick={handleBackClick}>
         <BackArrowIcon />
-      </Link>
+      </div>
       <UpsertTheme />
-      <form ref={ref} className="flex flex-col gap-y-10 h-full" onSubmit={handleSubmit}>
+      <form className="flex flex-col gap-y-10 h-full">
         <PostingCategoryBox />
-        <FormTitleInput />
+        <FormTitleInput setTitle={setTitle} />
         <FormTagInput tagList={tagList} setTagList={setTagList} />
-        <ThumbNailBox />
+        <ThumbNailBox setThumbNail={setThumbNail} />
         <FormContentArea content={content} setContent={setContent} />
-        <FormSubmitButton content={content} />
+        <FormSubmitButton content={content} handleSubmit={handleSubmit} />
       </form>
     </div>
   );
