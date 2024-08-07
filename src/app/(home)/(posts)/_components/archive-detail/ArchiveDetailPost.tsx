@@ -15,6 +15,10 @@ import ConfirmModal from '@/components/modal/ConfirmModal';
 import { archiveDetailType } from '@/types/posts/archiveDetailTypes';
 import dayjs from 'dayjs';
 
+import { filterSlang } from '@/utils/markdownCut';
+import TagBlock from '@/components/common/TagBlock';
+
+
 const ArchiveDetailPost = () => {
   const { me } = useAuth();
   const param = useParams();
@@ -112,7 +116,11 @@ const ArchiveDetailPost = () => {
         </div>
         <div className="flex flex-col gap-6 whitespace-pre-wrap break-words" data-color-mode="light">
           <p className="text-h4 font-bold">{archiveDetail.title}</p>
-          <MDEditor.Markdown source={archiveDetail.content} className="text-body1 font-regular" />
+
+          <MDEditor.Markdown source={filterSlang(archiveDetail.content)} className="text-body1 font-regular" />
+        </div>
+        <div className="flex justify-start items-start gap-2">
+          {archiveDetail.tags?.map((tag) => <div key={tag.id}>{tag && <TagBlock tag={tag.tag} />}</div>)}
         </div>
         <div className="flex justify-between items-center mb-6">
           <p className="text-body1 font-regular text-neutral-400">
