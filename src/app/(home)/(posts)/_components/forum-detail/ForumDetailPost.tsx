@@ -31,7 +31,7 @@ const ForumDetailPost = ({ forumDetail }: { forumDetail: forumDetailType[] }) =>
     router.push('/');
     return;
   };
-  console.log(forumDetail);
+
   const handlePostRetouch = () => {
     router.push(`${process.env.NEXT_PUBLIC_BASE_URL}/edit/${param.id}?category=forum`);
   };
@@ -84,7 +84,7 @@ const ForumDetailPost = ({ forumDetail }: { forumDetail: forumDetailType[] }) =>
                       <ConfirmModal
                         isOpen={retouchPostModal}
                         onClose={() => setRetouchPostModal(false)}
-                        onConfirm={() => handlePostDelete}
+                        onConfirm={handlePostDelete}
                         message={'게시글을 삭제 하겠습니까?'}
                       />
                     )}
@@ -94,7 +94,7 @@ const ForumDetailPost = ({ forumDetail }: { forumDetail: forumDetailType[] }) =>
             )}
           </div>
           <div className="flex flex-col gap-6  whitespace-pre-wrap break-words" data-color-mode="light">
-            <p className="text-h4 font-bold">{post.title}</p>
+            <p className="text-h4 font-bold">{filterSlang(post.title)}</p>
             <MDEditor.Markdown source={filterSlang(post.content)} className="text-body1 font-regular" />
           </div>
           <div className="flex justify-start items-start gap-2">

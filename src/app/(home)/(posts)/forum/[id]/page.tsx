@@ -1,3 +1,4 @@
+import BackClick from '../../_components/archive-detail/BackClick';
 import ForumComments from '../../_components/forum-detail/ForumComments';
 import ForumDetailPost from '../../_components/forum-detail/ForumDetailPost';
 import InputComments from '../../_components/forum-detail/InputComment';
@@ -8,6 +9,7 @@ const ForumDetailPage = async ({ params }: { params: { id: string } }) => {
 
   return (
     <div className="flex flex-col justify-center w-[1200px]  ">
+      <BackClick />
       <div className=" border rounded-xl p-6 ">
         <ForumDetailPost forumDetail={data} />
         <InputComments />

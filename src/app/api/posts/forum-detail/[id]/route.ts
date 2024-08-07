@@ -8,8 +8,6 @@ export const GET = async (request: Request, { params }: { params: { id: string }
     .select('*, user: users(*), comment:forum_comments(count), tags:forum_tags(*) ')
     .eq('id', params.id);
 
-  console.log(data);
-
   return NextResponse.json(data);
 };
 

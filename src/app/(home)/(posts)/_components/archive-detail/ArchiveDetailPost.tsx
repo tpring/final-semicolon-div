@@ -14,7 +14,6 @@ import KebabButton from '@/assets/images/common/KebabButton';
 import ConfirmModal from '@/components/modal/ConfirmModal';
 import { archiveDetailType } from '@/types/posts/archiveDetailTypes';
 import dayjs from 'dayjs';
-
 import { filterSlang } from '@/utils/markdownCut';
 import TagBlock from '@/components/common/TagBlock';
 
@@ -43,7 +42,7 @@ const ArchiveDetailPost = () => {
       method: 'DELETE',
       body: JSON.stringify({ id: me?.id })
     });
-    router.push('/');
+    router.push('/archive');
     return;
   };
 
