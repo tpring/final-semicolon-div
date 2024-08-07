@@ -1,7 +1,9 @@
+import { filterSlang } from '@/utils/markdownCut';
 import Link from 'next/link';
 
 type CommentCardProps = {
   id: string;
+  post_id: string;
   title: string;
   comment: string;
   tags: string[];
@@ -19,6 +21,7 @@ type CommentCardProps = {
 
 const CommentCard = ({
   id,
+  post_id,
   title,
   comment,
   tags,
@@ -54,11 +57,13 @@ const CommentCard = ({
             className="w-[18px] h-[18px]"
           />
         </div>
-        <Link href={`/${category}/${id}`}>
+        <Link href={`/${category}/${post_id}`}>
           <div className="">
-            <p className="mb-2 text-neutral-900 text-subtitle1 font-bold line-clamp-1 max-w-[600px]"> {comment}</p>
+            <p className="mb-2 text-neutral-900 text-subtitle1 font-bold line-clamp-1 max-w-[600px]">
+              {filterSlang(comment)}
+            </p>
             <p>
-              원문 제목: {title} [{commentsCount}]
+              원문 제목: {filterSlang(title)} [{commentsCount}]
             </p>
             {forum_category && <p className="text-body2 font-regular text-neutral-400">{forum_category}</p>}
             <div className="mb-2">
