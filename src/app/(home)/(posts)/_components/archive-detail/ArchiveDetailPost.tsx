@@ -14,10 +14,8 @@ import KebabButton from '@/assets/images/common/KebabButton';
 import ConfirmModal from '@/components/modal/ConfirmModal';
 import { archiveDetailType } from '@/types/posts/archiveDetailTypes';
 import dayjs from 'dayjs';
-
 import { filterSlang } from '@/utils/markdownCut';
 import TagBlock from '@/components/common/TagBlock';
-
 
 const ArchiveDetailPost = () => {
   const { me } = useAuth();
@@ -44,7 +42,7 @@ const ArchiveDetailPost = () => {
       method: 'DELETE',
       body: JSON.stringify({ id: me?.id })
     });
-    router.push('/');
+    router.push('/archive');
     return;
   };
 
@@ -124,7 +122,7 @@ const ArchiveDetailPost = () => {
         </div>
         <div className="flex justify-between items-center mb-6">
           <p className="text-body1 font-regular text-neutral-400">
-            {dayjs(archiveDetail.created_at).format('YYYY-MM-DD HH:mm')}
+            {dayjs(archiveDetail.created_at).format('YYYY.MM.DD')}
           </p>
           <div className="flex gap-5">
             <LikeButton id={archiveDetail.id} type="archive" />
