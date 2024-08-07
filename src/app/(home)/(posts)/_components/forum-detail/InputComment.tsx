@@ -53,6 +53,7 @@ const InputComments = () => {
       });
       return;
     }
+
     toast.success('댓글이 입력되었습니다.', { autoClose: 1500 });
     handleComment.mutate(forumComment);
   };
