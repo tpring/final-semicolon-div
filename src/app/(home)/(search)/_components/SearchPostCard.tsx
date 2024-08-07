@@ -1,5 +1,6 @@
 import CommentBubble from '@/assets/images/common/CommentBubble';
 import LikeButton from '@/components/common/LikeButton';
+import { cutText, filterSlang } from '@/utils/markdownCut';
 import Link from 'next/link';
 
 type SearchPostCardProps = {
@@ -53,16 +54,16 @@ const SearchPostCard = ({ post }: SearchPostCardProps) => {
               {post.category === 'qna' ? <p> Q&A </p> : post.category === 'forum' ? <p> 포럼</p> : <p> 아카이브 </p>}
               {formCategory && <p className="ml-4 text-body2">{formCategory}</p>}
             </div>
-            <p className="text-body1 font-bold text-neutral-800 "> {post.title}</p>
+            <p className="text-body1 font-bold text-neutral-800 "> {cutText(post.title, 45)}</p>
           </div>
 
           {tags.length === 0 ? (
             <div className=" text-body1 font-regular text-neutral-500 overflow-hidden line-clamp-6 break-words whitespace-pre-wrap">
-              {post.content}
+              {filterSlang(post.content)}
             </div>
           ) : (
             <div className="text-body1 font-regular text-neutral-500 overflow-hidden line-clamp-5 break-words whitespace-pre-wrap">
-              {post.content}
+              {filterSlang(post.content)}
             </div>
           )}
         </div>
