@@ -14,6 +14,7 @@ import KebabButton from '@/assets/images/common/KebabButton';
 import ConfirmModal from '@/components/modal/ConfirmModal';
 import { archiveDetailType } from '@/types/posts/archiveDetailTypes';
 import dayjs from 'dayjs';
+
 import { filterSlang } from '@/utils/markdownCut';
 import TagBlock from '@/components/common/TagBlock';
 
@@ -114,6 +115,7 @@ const ArchiveDetailPost = () => {
         </div>
         <div className="flex flex-col gap-6 whitespace-pre-wrap break-words" data-color-mode="light">
           <p className="text-h4 font-bold">{archiveDetail.title}</p>
+
           <MDEditor.Markdown source={filterSlang(archiveDetail.content)} className="text-body1 font-regular" />
         </div>
         <div className="flex justify-start items-start gap-2">
