@@ -6,6 +6,7 @@ import { useInView } from 'react-intersection-observer';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { TqnaCommentsWithReplyCount } from '@/types/posts/qnaDetailTypes';
 import { useQnaDetailStore } from '@/store/qnaDetailStore';
+import EndOfData from '@/components/common/EndOfData';
 
 type QnaAnswersProps = {
   qnaCommentsCount: number;
@@ -32,7 +33,9 @@ const QnaAnswers = ({ qnaCommentsCount, questioner, setQnaCommentsCount }: QnaAn
     fetchNextPage,
     data: qnaCommentList,
     isPending,
-    isError
+    isError,
+    isFetchingNextPage,
+    hasNextPage
   } = useInfiniteQuery({
     queryKey: ['qnaComments', postId],
     initialPageParam: 0,
@@ -52,6 +55,9 @@ const QnaAnswers = ({ qnaCommentsCount, questioner, setQnaCommentsCount }: QnaAn
 
   if (isPending) {
     return <Loading />;
+  }
+  if (isError) {
+    return <NotFound />;
   }
 
   if (qnaCommentList && seletedComment) {
@@ -85,6 +91,7 @@ const QnaAnswers = ({ qnaCommentsCount, questioner, setQnaCommentsCount }: QnaAn
           })
         : null}
       <div className="h-[80px]" ref={ref}></div>
+      {!hasNextPage && !isFetchingNextPage && <EndOfData />}
     </div>
   );
 };

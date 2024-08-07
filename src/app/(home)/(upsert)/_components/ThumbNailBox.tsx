@@ -1,3 +1,5 @@
+import ImageIcon from '@/assets/images/upsert_image/ImageIcon';
+import Chip from '@/components/common/Chip';
 import Image from 'next/image';
 import {
   ChangeEventHandler,
@@ -119,15 +121,14 @@ const ThumbNailBox = ({ prevUrl, setisThumbnailUrlDeleted }: ThumbNailBoxProps) 
           </>
         ) : (
           <>
-            <p>썸네일로 설정할 이미지를 불러오세요.</p>
-            <p>{`(500MB 이하의 image파일)`}</p>
-            <button
-              type="button"
-              className="w-[130px] mt-10 h-[56px] bg-main-400 rounded-lg text-white"
-              onClick={handleInputClick}
-            >
-              사진 올리기
-            </button>
+            <div className=" flex justify-center text-center">
+              <ImageIcon />
+            </div>
+            <div className="text-center my-10">
+              <p>썸네일로 설정할 이미지를 불러오세요.</p>
+              <p>{`(500MB 이하의 image파일)`}</p>
+            </div>
+            <Chip type="button" intent={'primary'} size={'large'} label="사진 올리기" onClick={handleInputClick} />
           </>
         )}
       </div>

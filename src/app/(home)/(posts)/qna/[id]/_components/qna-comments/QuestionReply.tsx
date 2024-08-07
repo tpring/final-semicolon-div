@@ -8,6 +8,9 @@ import { toast } from 'react-toastify';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import QuestionReplyKebobBtn from '../kebob-btn/QuestionReplyKebobBtn';
 import { useQnaDetailStore } from '@/store/qnaDetailStore';
+import Chip from '@/components/common/Chip';
+import Tag from '@/components/common/Tag';
+import { cutText, filterSlang } from '@/utils/markdownCut';
 
 type QuestionReplyProps = {
   reply: TpostReply;
@@ -17,6 +20,7 @@ type QuestionReplyProps = {
 const QuestionReply = ({ reply, setReplyCount }: QuestionReplyProps) => {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [content, setContent] = useState<string>(reply.post_reply_content);
+  const [seeMore, setSeeMore] = useState<boolean>(false);
   const { me } = useAuth();
   const { postId } = useQnaDetailStore();
   const queryClient = useQueryClient();
@@ -62,7 +66,7 @@ const QuestionReply = ({ reply, setReplyCount }: QuestionReplyProps) => {
 
   return (
     <div key={reply.id} className={`relative left-0 border-b`}>
-      <div className="flex h-[86px] mt-6 mx-5 items-center gap-[16px] ">
+      <div className="flex h-[86px] my-6 items-center gap-4 ">
         <div className="relative w-12 h-12">
           <Image
             src={reply.users?.profile_image ?? ''}
@@ -72,9 +76,11 @@ const QuestionReply = ({ reply, setReplyCount }: QuestionReplyProps) => {
             className="rounded-full"
           />
         </div>
-        <div>
-          <div>{reply.users.nickname}</div>
-          <div>{timeForToday(reply.updated_at!)}</div>
+
+        <div className="flex flex-col gap-1">
+          {reply.user_id === me?.id ? <Tag intent="primary" label="글쓴이" /> : null}
+          <div className="text-subtitle1 text-neutral-900">{reply.users.nickname}</div>
+          <div className="text-body2 text-neutral-300">{timeForToday(reply.updated_at!)}</div>
         </div>
         {me?.id === reply.user_id ? (
           <div className="flex ml-auto ">
@@ -84,6 +90,7 @@ const QuestionReply = ({ reply, setReplyCount }: QuestionReplyProps) => {
           ''
         )}
       </div>
+
       {isEdit ? (
         <div className="flex flex-col h-[200px] mb-6 mx-5  gap-[16px]">
           <MDEditor
@@ -96,23 +103,34 @@ const QuestionReply = ({ reply, setReplyCount }: QuestionReplyProps) => {
             textareaProps={{ maxLength: 1000 }}
             extraCommands={commands.getCommands().filter(() => false)}
           />
-          <div className="flex gap-4">
-            <button
-              type="button"
-              className="ml-auto w-[71px] h-[48px] bg-neutral-50 rounded-md text-neutral-100"
-              onClick={handleCancleClick}
-            >
-              취소
-            </button>
-            <button className="w-[71px] h-[48px] bg-main-100 rounded-md text-main-50" onClick={handleEditQuestionReply}>
-              등록
-            </button>
+          <div className="ml-auto flex gap-4">
+            <Chip intent={'gray'} size="medium" label="취소" onClick={handleCancleClick} />
+            {content.length === 0 ? (
+              <Chip intent={'primary_disabled'} size="medium" label="등록" />
+            ) : (
+              <Chip intent={'primary'} size="medium" label="등록" onClick={handleEditQuestionReply} />
+            )}
           </div>
         </div>
       ) : (
-        <div className="flex flex-col h-[86px] mb-6 mx-5  gap-[16px]">
-          <MDEditor.Markdown source={reply.post_reply_content} />
-          <div>{reply.created_at.slice(0, 10)}</div>
+        <div className="flex flex-col mb-6 mx-5  gap-[16px]">
+          {seeMore ? (
+            <MDEditor.Markdown source={filterSlang(reply.post_reply_content)} />
+          ) : (
+            <>
+              <MDEditor.Markdown source={cutText(reply.post_reply_content, 344)} />
+              <button
+                className={`${content.length > 350 ? '' : 'hidden'} text-start text-subtitle2 text-neutral-700`}
+                onClick={() => {
+                  setSeeMore(true);
+                }}
+              >
+                ...더 보기
+              </button>
+            </>
+          )}
+
+          <div className="text-neutral-400">{reply.created_at.slice(0, 10)}</div>
         </div>
       )}
     </div>

@@ -186,7 +186,7 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
         <FormTagInput tagList={tagList} setTagList={setTagList} />
         <ThumbNailBox prevUrl={prevUrl} setisThumbnailUrlDeleted={setisThumbnailUrlDeleted} />
         <FormContentArea content={content} setContent={setContent} />
-        <FormSubmitButton />
+        <FormSubmitButton content={content} />
       </form>
     </div>
   );

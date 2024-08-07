@@ -1,5 +1,7 @@
 import { revalidatePostTag } from '@/actions/revalidatePostTag';
 import KebabButton from '@/assets/images/common/KebabButton';
+import ConfirmModal from '@/components/modal/ConfirmModal';
+import { POST_DELETE_TEXT } from '@/constants/upsert';
 import { useAuth } from '@/context/auth.context';
 import { useQnaDetailStore } from '@/store/qnaDetailStore';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -17,14 +19,19 @@ const AnswerKebobBtn = ({ commentId, isEdit, setIsEdit, setQnaCommentsCount }: K
   const { postId } = useQnaDetailStore();
   const { me } = useAuth();
   const [openKebab, setOpenKebab] = useState<boolean>(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const queryClient = useQueryClient();
+
+  const handleDeleteClick: MouseEventHandler = () => {
+    setIsDeleteModalOpen(true);
+  };
 
   const handleEditComment: MouseEventHandler<HTMLLIElement> = async () => {
     isEdit ? setIsEdit(false) : setIsEdit(true);
     setOpenKebab(false);
   };
 
-  const handleDeleteComment: MouseEventHandler<HTMLLIElement> = async () => {
+  const deleteComment = async (): Promise<void> => {
     if (!me?.id) return;
     const data = await deleteMutate({ commentId });
     toast.success('답변 삭제 완료', { autoClose: 1500, hideProgressBar: true });
@@ -33,7 +40,7 @@ const AnswerKebobBtn = ({ commentId, isEdit, setIsEdit, setQnaCommentsCount }: K
     return;
   };
 
-  const deleteComment = async ({ commentId }: { commentId: string }) => {
+  const deleteCommentMutation = async ({ commentId }: { commentId: string }) => {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/posts/qna-detail/comment/${commentId}`, {
       method: 'DELETE'
     });
@@ -45,7 +52,7 @@ const AnswerKebobBtn = ({ commentId, isEdit, setIsEdit, setQnaCommentsCount }: K
   };
 
   const { mutate: deleteMutate } = useMutation({
-    mutationFn: deleteComment,
+    mutationFn: deleteCommentMutation,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['qnaComments', postId] });
     }
@@ -70,9 +77,18 @@ const AnswerKebobBtn = ({ commentId, isEdit, setIsEdit, setQnaCommentsCount }: K
           >
             {isEdit ? '수정 취소' : '게시글 수정'}
           </li>
+
+          <ConfirmModal
+            isOpen={isDeleteModalOpen}
+            onClose={() => {
+              setIsDeleteModalOpen(false);
+            }}
+            onConfirm={deleteComment}
+            message={POST_DELETE_TEXT}
+          />
           <li
             className={`h-[44px]  content-center ${openKebab ? '' : 'hidden'}  hover:bg-main-100 hover:text-main-400 rounded-b-lg cursor-pointer`}
-            onClick={handleDeleteComment}
+            onClick={handleDeleteClick}
           >
             게시글 삭제
           </li>

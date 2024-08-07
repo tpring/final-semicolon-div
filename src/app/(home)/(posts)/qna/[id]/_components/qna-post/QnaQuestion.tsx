@@ -10,7 +10,7 @@ import QuestionKebobBtn from '../kebob-btn/QuestionKebobBtn';
 import { timeForToday } from '@/utils/timeForToday';
 import BookmarkButton from '@/components/common/BookmarkButton';
 import TagBlock from '@/components/common/TagBlock';
-import { TAG_LIST } from '@/constants/tags';
+import { filterSlang } from '@/utils/markdownCut';
 
 type QnaQuestionProps = {
   questionData: TqnaData;
@@ -31,7 +31,7 @@ const QnaQuestion = ({ questionData }: QnaQuestionProps) => {
         <div className="w-[1156px] mb-4 flex justify-between">
           <div>
             <span className="text-h4 mr-2 font-bold text-main-400">Q.</span>
-            <h2 className="text-h4 font-bold text-neutral-900 inline">{questionData.title}</h2>
+            <h2 className="text-h4 font-bold text-neutral-900 inline">{filterSlang(questionData.title)}</h2>
           </div>
           {me?.id === questionData.user_id ? <QuestionKebobBtn /> : null}
         </div>
@@ -53,7 +53,7 @@ const QnaQuestion = ({ questionData }: QnaQuestionProps) => {
         </div>
       </div>
       <div className=" max-w-[1204px] flex my-6">
-        <MDEditor.Markdown style={{ maxWidth: '1156px' }} source={questionData.content} />
+        <MDEditor.Markdown style={{ maxWidth: '1156px' }} source={filterSlang(questionData.content)} />
       </div>
       <div className="flex gap-2">
         {questionData.qna_tags
@@ -72,7 +72,6 @@ const QnaQuestion = ({ questionData }: QnaQuestionProps) => {
           <button>
             <Share />
           </button>
-
           <button className="flex gap-1" onClick={handleReplyClick}>
             {replyCount !== 0 && openQuestionReply ? (
               <div className="text-main-400 text-subtitle1 font-medium">댓글 모두 숨기기</div>
