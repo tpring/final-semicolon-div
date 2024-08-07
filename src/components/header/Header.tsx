@@ -1,13 +1,9 @@
 'use client';
 
 import Logo from '@/assets/images/header/Logo';
-import SearchButton from '@/assets/images/header/SearchButton';
 import { useAuth } from '@/context/auth.context';
-import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-
-import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import NavLinks from './NavLinks';
 import SearchBar from './SearchBar';
@@ -35,7 +31,6 @@ const Header = () => {
         <SearchBar />
         <UserMenu isLoggedIn={isLoggedIn} userData={userData} />
       </div>
-      <ToastContainer />
     </header>
   );
 };
