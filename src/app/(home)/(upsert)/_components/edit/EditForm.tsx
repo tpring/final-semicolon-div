@@ -174,7 +174,7 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
       <div className="mb-4" onClick={handleBackClick}>
         <BackArrowIcon />
       </div>
-      <form className="flex flex-col gap-y-10 h-full" onSubmit={handleSubmit}>
+      <form className="flex flex-col gap-y-10 h-full">
         <PostingCategory />
         <FormTitleInput title={title} setTitle={setTitle} />
         <FormTagInput tagList={tagList} setTagList={setTagList} />
