@@ -2,8 +2,6 @@
 
 import { revalidate } from '@/actions/revalidate';
 import { useAuth } from '@/context/auth.context';
-import { filterSlang } from '@/utils/markdownCut';
-import { slangs } from '@/utils/slangs';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import MDEditor, { commands } from '@uiw/react-md-editor';
 import Image from 'next/image';
@@ -18,14 +16,6 @@ const InputComments = () => {
   const [comment, setComment] = useState<string>('');
 
   const handleCommentChange = (value?: string) => {
-    if (slangs.includes(value!)) {
-      toast.error('부적절한 언어는 입니다.', {
-        autoClose: 2000
-      });
-      setComment('');
-      return;
-    }
-
     setComment(value!);
   };
 

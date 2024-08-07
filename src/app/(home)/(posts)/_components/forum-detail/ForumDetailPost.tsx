@@ -31,7 +31,7 @@ const ForumDetailPost = ({ forumDetail }: { forumDetail: forumDetailType[] }) =>
     router.push('/');
     return;
   };
-  console.log(forumDetail);
+
   const handlePostRetouch = () => {
     router.push(`${process.env.NEXT_PUBLIC_BASE_URL}/edit/${param.id}?category=forum`);
   };
@@ -84,7 +84,7 @@ const ForumDetailPost = ({ forumDetail }: { forumDetail: forumDetailType[] }) =>
                       <ConfirmModal
                         isOpen={retouchPostModal}
                         onClose={() => setRetouchPostModal(false)}
-                        onConfirm={() => handlePostDelete}
+                        onConfirm={handlePostDelete}
                         message={'게시글을 삭제 하겠습니까?'}
                       />
                     )}
