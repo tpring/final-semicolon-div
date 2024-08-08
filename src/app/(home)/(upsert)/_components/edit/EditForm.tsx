@@ -1,7 +1,7 @@
 'use client';
 import { MouseEventHandler, useEffect, useState } from 'react';
 import { TeditArchiveData, TeditForumData, TeditQnaData, TpostFormData } from '@/types/upsert';
-import Link from 'next/link';
+
 import {
   BOARD_LIST,
   CATEGORY_LIST_EN,

@@ -23,6 +23,7 @@ import UpsertTheme from '../UpsertTheme';
 import ThumbNailBox from '../ThumbNailBox';
 import { TAG_LIST } from '@/constants/tags';
 import { uploadThumbnail } from '../../_utils/thumbnail';
+import { useForm } from 'react-hook-form';
 
 const PostingForm = () => {
   const router = useRouter();
