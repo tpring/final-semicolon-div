@@ -11,7 +11,6 @@ import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import ReplyPageButton from './ReplyPageButton';
-import { revalidate } from '@/actions/revalidate';
 import ConfirmModal from '@/components/modal/ConfirmModal';
 import { cutText, filterSlang } from '@/utils/markdownCut';
 

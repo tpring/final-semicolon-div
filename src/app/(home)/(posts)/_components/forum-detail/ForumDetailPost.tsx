@@ -15,6 +15,7 @@ import ConfirmModal from '@/components/modal/ConfirmModal';
 import { filterSlang } from '@/utils/markdownCut';
 import TagBlock from '@/components/common/TagBlock';
 import { handleLinkCopy } from '@/utils/handleLinkCopy';
+import { useLoginAlertStore } from '@/store/loginAlertModal';
 
 const ForumDetailPost = ({ forumDetail }: { forumDetail: forumDetailType[] }) => {
   const { me } = useAuth();
