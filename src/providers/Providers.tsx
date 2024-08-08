@@ -4,7 +4,7 @@ import { AuthProvider } from '@/context/auth.context';
 import { BookmarkProvider } from './BookmarkProvider';
 import LikeProvider from './LikeProvider';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { ToastContainer } from 'react-toastify';
+import { Slide, ToastContainer } from 'react-toastify';
 
 const Providers = ({ children }: PropsWithChildren) => {
   return (
@@ -16,14 +16,15 @@ const Providers = ({ children }: PropsWithChildren) => {
               position="bottom-center"
               autoClose={3000}
               limit={1}
-              hideProgressBar
+              hideProgressBar={false}
               newestOnTop
               closeOnClick
               rtl={false}
-              pauseOnFocusLoss
+              pauseOnFocusLoss={false}
               draggable
               pauseOnHover={false}
               theme="dark"
+              transition={Slide}
             />
             {children}
             <ReactQueryDevtools initialIsOpen={false} />
