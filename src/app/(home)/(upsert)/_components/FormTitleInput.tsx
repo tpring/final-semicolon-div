@@ -3,20 +3,17 @@ import { ChangeEventHandler, Dispatch, SetStateAction, useEffect } from 'react';
 type FormTitleInputProps = {
   title: string;
   setTitle: Dispatch<SetStateAction<string>>;
-  isEdit: boolean;
 };
 
-const FormTitleInput = ({ title, setTitle, isEdit }: FormTitleInputProps) => {
+const FormTitleInput = ({ title, setTitle }: FormTitleInputProps) => {
   const { isValidTitle, setIsValidTitle } = useUpsertValidationStore();
   const handleTitleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     setTitle(event.currentTarget.value);
-    isValidTitle ? null : setIsValidTitle(true);
+    event.currentTarget.value.length === 0 ? setIsValidTitle(false) : setIsValidTitle(true);
   };
-  useEffect(() => {
-    isEdit && title.length === 0 ? setIsValidTitle(false) : setIsValidTitle(true);
-  }, [title]);
+
   return (
-    <div className={` `}>
+    <>
       <label
         className={`block mb-2 ${isValidTitle === false ? 'text-red' : 'text-gray-900'}  text-h5 font-bold`}
         htmlFor="title"
@@ -32,7 +29,7 @@ const FormTitleInput = ({ title, setTitle, isEdit }: FormTitleInputProps) => {
         value={title}
         onChange={handleTitleChange}
       />
-    </div>
+    </>
   );
 };
 

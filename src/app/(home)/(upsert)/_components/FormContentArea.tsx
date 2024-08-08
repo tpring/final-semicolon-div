@@ -5,14 +5,11 @@ import { useUpsertValidationStore } from '@/store/upsertValidationStore';
 type FormContentAreaProps = {
   content: string;
   setContent: Dispatch<React.SetStateAction<string>>;
-  isEdit: boolean;
 };
 
-const FormContentArea = ({ content, setContent, isEdit }: FormContentAreaProps) => {
-  const { isValidContent, setIsValidContent } = useUpsertValidationStore();
-  useEffect(() => {
-    isEdit && content.length === 0 ? setIsValidContent(false) : setIsValidContent(true);
-  }, [content]);
+const FormContentArea = ({ content, setContent }: FormContentAreaProps) => {
+  const { isValidContent } = useUpsertValidationStore();
+
   return (
     <div>
       <h5 className={`block my-2 ${isValidContent === false ? 'text-red' : 'text-gray-900'}  text-h5 font-bold `}>

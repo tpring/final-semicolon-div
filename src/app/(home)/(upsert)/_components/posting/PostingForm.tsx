@@ -45,28 +45,31 @@ const PostingForm = () => {
     const category = CATEGORY_LIST_EN[CATEGORY_LIST_KR.indexOf(categoryGroup.category ?? '')];
 
     // 폼 유효성 검사 로직
+    const isForumSubCategory = FORUM_SUB_CATEGORY_LIST.find((FORUM_SUB_CATEGORY) => subCategory === FORUM_SUB_CATEGORY);
 
-    if (!category) {
-      setIsValidCategory(false);
-    } else if (
-      category === 'forum' &&
-      !FORUM_SUB_CATEGORY_LIST.find((FORUM_SUB_CATEGORY) => subCategory === FORUM_SUB_CATEGORY)
-    ) {
-      setIsValidCategory(false);
-    }
+    const validArray = [category, title, content];
+    const invalidSequance = [
+      () => setIsValidCategory(false),
+      () => setIsValidTitle(false),
+      () => setIsValidContent(false)
+    ];
 
-    if (!title) {
-      setIsValidTitle(false);
-    }
+    const invalidCheckArray = validArray.map((valid, index) => {
+      if ((index === 0 && !valid) || (valid === 'forum' && !isForumSubCategory)) {
+        invalidSequance[index]();
+        return 'invalid';
+      } else if (valid.length === 0) {
+        invalidSequance[index]();
+        return 'invalid';
+      }
+      return 'valid';
+    });
 
-    if (!content) {
-      setIsValidContent(false);
-    }
+    invalidCheckArray.forEach((isInvalid, index) => {
+      isInvalid === 'invalid' && index !== 2 ? window.scrollTo({ top: 0, behavior: 'smooth' }) : null;
+    });
 
-    if (!isValidCategory || !isValidTitle) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    } else if (!isValidContent) {
+    if (invalidCheckArray.includes('invalid')) {
       return;
     }
 
@@ -120,10 +123,10 @@ const PostingForm = () => {
       <UpsertTheme />
       <form className="flex flex-col gap-y-10 h-full">
         <PostingCategoryBox />
-        <FormTitleInput title={title} setTitle={setTitle} isEdit={false} />
+        <FormTitleInput title={title} setTitle={setTitle} />
         <FormTagInput tagList={tagList} setTagList={setTagList} />
         <ThumbNailBox setThumbnail={setThumbnail} />
-        <FormContentArea content={content} setContent={setContent} isEdit={false} />
+        <FormContentArea content={content} setContent={setContent} />
         <FormSubmitButton handleSubmit={handleSubmit} isEdit={false} />
       </form>
     </div>

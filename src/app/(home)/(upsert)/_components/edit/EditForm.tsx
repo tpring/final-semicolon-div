@@ -16,7 +16,7 @@ import FormTitleInput from '../FormTitleInput';
 import FormTagInput from './editform/FormTagInput';
 import FormContentArea from '../FormContentArea';
 import { useRouter } from 'next/navigation';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import FormSubmitButton from '../FormSubmitButton';
 import { useAuth } from '@/context/auth.context';
 import BackArrowIcon from '@/assets/images/upsert_image/BackArrowIcon';
@@ -59,28 +59,24 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
     const category = CATEGORY_LIST_EN[CATEGORY_LIST_KR.indexOf(categoryGroup.category)];
 
     // 폼 유효성 검사 로직
+    const isForumSubCategory = FORUM_SUB_CATEGORY_LIST.find((FORUM_SUB_CATEGORY) => subCategory === FORUM_SUB_CATEGORY);
 
-    if (!category) {
-      setIsValidCategory(false);
-    } else if (
-      category === 'forum' &&
-      !FORUM_SUB_CATEGORY_LIST.find((FORUM_SUB_CATEGORY) => subCategory === FORUM_SUB_CATEGORY)
-    ) {
-      setIsValidCategory(false);
-    }
+    const validArray = [title, content];
+    const invalidSequance = [() => setIsValidTitle(false), () => setIsValidContent(false)];
 
-    if (!title) {
-      setIsValidTitle(false);
-    }
+    const invalidCheckArray = validArray.map((valid, index) => {
+      if (valid.length === 0) {
+        invalidSequance[index]();
+        return 'invalid';
+      }
+      return 'valid';
+    });
 
-    if (!content) {
-      setIsValidContent(false);
-    }
+    invalidCheckArray.forEach((isInvalid, index) => {
+      isInvalid === 'invalid' && index !== 1 ? window.scrollTo({ top: 0, behavior: 'smooth' }) : null;
+    });
 
-    if (!isValidCategory || !isValidTitle) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    } else if (!isValidContent) {
+    if (invalidCheckArray.includes('invalid')) {
       return;
     }
 
@@ -190,19 +186,20 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
 
   return (
     <div className="w-[1204px] mx-auto flex flex-col gap-y-5 max-h-screen">
+      <ToastContainer />
       <div className="mb-4" onClick={handleBackClick}>
         <BackArrowIcon />
       </div>
       <form className="flex flex-col gap-y-10 h-full">
         <PostingCategory />
-        <FormTitleInput title={title} setTitle={setTitle} isEdit={true} />
+        <FormTitleInput title={title} setTitle={setTitle} />
         <FormTagInput tagList={tagList} setTagList={setTagList} />
         <ThumbNailBox
           prevUrl={prevUrl}
           setisThumbnailUrlDeleted={setisThumbnailUrlDeleted}
           setThumbnail={setThumbnail}
         />
-        <FormContentArea content={content} setContent={setContent} isEdit={true} />
+        <FormContentArea content={content} setContent={setContent} />
         <FormSubmitButton handleSubmit={handleSubmit} isEdit={true} />
       </form>
     </div>

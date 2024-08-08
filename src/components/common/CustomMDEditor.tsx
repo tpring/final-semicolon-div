@@ -100,7 +100,7 @@ const CustomMDEditor = ({ content, setContent }: CustomMDEditorProps) => {
 
   const handleContentChange = (value?: string) => {
     setContent(value!);
-    isValidContent ? null : setIsValidContent(true);
+    value?.length !== 0 ? setIsValidContent(true) : setIsValidContent(false);
   };
 
   //커스텀 이미지 버튼
