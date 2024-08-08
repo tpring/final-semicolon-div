@@ -2,7 +2,7 @@ import SearchButton from '@/assets/images/header/SearchButton';
 import { isSearchValid } from '@/utils/validateBannedWords';
 import { useRouter } from 'next/navigation';
 import { KeyboardEvent, useEffect, useState } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { TAG_LIST } from '@/constants/tags';
 
 const SearchBar = () => {
