@@ -138,6 +138,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
     });
     setMe(null);
     setUserData(null);
+    localStorage.removeItem('oauthProvider');
     return { status: 200 };
   };
 
