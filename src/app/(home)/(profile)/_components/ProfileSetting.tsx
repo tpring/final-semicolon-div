@@ -6,7 +6,7 @@ import NicknameModal from './setting/NicknameModal';
 import InfoModal from './setting/InfoModal';
 import Image from 'next/image';
 import { upDateImage, uploadImage } from '@/utils/imageUpload';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import EditIcon from '@/assets/images/common/EditIcon';
 import Right from '@/assets/images/common/Right';
@@ -195,7 +195,6 @@ const ProfileSetting = () => {
         currentInfo={info}
         onInfoUpdate={handleInfoUpdate}
       />
-      <ToastContainer />
     </div>
   );
 };

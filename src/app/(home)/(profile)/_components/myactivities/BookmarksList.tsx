@@ -6,7 +6,7 @@ import { CombinedItem } from '@/types/profile/profileType';
 import { combineItems } from '@/utils/combineItems';
 import MyActivitiesPagination from './common/MyActivitiesPagination';
 import ConfirmModal from '@/components/modal/ConfirmModal';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import Check from '@/assets/images/common/Check';
 
 type BookmarksListProps = {
@@ -184,7 +184,6 @@ const BookmarksList = ({ selectedCategory, selectedForumCategory, selectedType }
           </button>
         )}
       </div>
-      <ToastContainer />
 
       {paginatedItems.length === 0 ? (
         <div>북마크를 추가해보세요</div>
