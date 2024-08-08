@@ -50,7 +50,7 @@ const SelectTagInput = ({ tagList, setTagList }: SelectTagInputProps) => {
     >
       <div className=" h-[51px] flex items-center gap-2 px-6 py-3">
         <p className={`${selectedCount > 0 ? 'hidden' : ''} text-neutral-400 text-body1`}>
-          태그를 선택하세요! (최대 3개까지 가능해요).
+          태그를 선택하세요! (최대 3개까지 가능해요)
         </p>
         {tagList
           .filter((tag) => tag.selected === true)
