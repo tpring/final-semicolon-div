@@ -1,9 +1,9 @@
+import TopButton from '@/components/common/TopButton';
 import BestForum from './_components/BestForum';
 import LandingPage from './_components/LandingPage';
 import MainPageTag from './_components/MainPageTag';
 import PostsLink from './_components/PostsLink';
 import TodayQna from './_components/TodayQna';
-import TopButton from '../../components/TopButton';
 
 const HomePage = async () => {
   return (

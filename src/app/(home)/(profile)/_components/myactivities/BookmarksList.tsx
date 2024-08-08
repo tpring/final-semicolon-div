@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import PostCard from './common/PostCard';
 import CommentCard from './common/CommentCard';
-import { useBookmarksComments, useBookmarksPosts } from '@/hooks/useBookmarks';
 import { CombinedItem } from '@/types/profile/profileType';
 import { combineItems } from '@/utils/combineItems';
 import MyActivitiesPagination from './common/MyActivitiesPagination';
 import ConfirmModal from '@/components/modal/ConfirmModal';
 import { toast } from 'react-toastify';
 import Check from '@/assets/images/common/Check';
+import { useBookmarksComments, useBookmarksPosts } from '@/hooks/common/useBookmarks';
 
 type BookmarksListProps = {
   selectedCategory: 'all' | 'qna' | 'forum' | 'archive';

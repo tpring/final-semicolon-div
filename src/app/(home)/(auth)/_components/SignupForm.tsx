@@ -9,7 +9,7 @@ import PasswordFields from './PasswordFields';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { useAuth } from '@/context/auth.context';
 import OAuthButtons from './OAuthButtons';
-import useOAuthLogin from '@/hooks/useOAuthLogin';
+import useOAuthLogin from '@/hooks/common/useOAuthLogin';
 import EmailCheck from './EmailCheck';
 import Logo from '@/assets/images/header/Logo';
 import NicknameCheck from './NicknameCheck ';
