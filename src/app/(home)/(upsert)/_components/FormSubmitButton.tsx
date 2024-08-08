@@ -2,13 +2,13 @@ import Chip from '@/components/common/Chip';
 import ConfirmModal from '@/components/modal/ConfirmModal';
 import { POST_CANCLE_TEXT, POST_APPROVE_TEXT, EDIT_APPROVE_TEXT, EDIT_CANCLE_TEXT } from '@/constants/upsert';
 import { useRouter } from 'next/navigation';
-import { MouseEventHandler, useRef, useState } from 'react';
+import { MouseEventHandler, useState } from 'react';
 
 type FormSubmitButtonProps = { content: string; handleSubmit: () => Promise<void>; isEdit: boolean };
 
 const FormSubmitButton = ({ content, handleSubmit, isEdit }: FormSubmitButtonProps) => {
   const router = useRouter();
-  const approveButton = useRef<HTMLButtonElement>(null);
+
   const [isCancleConfirmOpen, setIsCancleConfirmOpen] = useState<boolean>(false);
   const [isPostConfirmOpen, setIsPostConfirmOpen] = useState<boolean>(false);
   const [confirmText, setConfirmText] = useState<string>('');
@@ -56,12 +56,8 @@ const FormSubmitButton = ({ content, handleSubmit, isEdit }: FormSubmitButtonPro
         onConfirm={approvePostConfirm}
         onClose={closePostConfirmClose}
       />
-      {content.length === 0 ? (
-        <Chip type="button" intent={'primary_disabled'} size="large" label="등록" />
-      ) : (
-        <Chip type="button" intent={'primary'} size="large" label="등록" onClick={handlePostConfirmClick} />
-      )}
-      <button ref={approveButton}></button>
+
+      <Chip type="button" intent={'primary'} size="large" label="등록" onClick={handlePostConfirmClick} />
     </div>
   );
 };

@@ -23,7 +23,7 @@ import UpsertTheme from '../UpsertTheme';
 import ThumbNailBox from '../ThumbNailBox';
 import { TAG_LIST } from '@/constants/tags';
 import { uploadThumbnail } from '../../_utils/thumbnail';
-import { useForm } from 'react-hook-form';
+import { useUpsertValidationStore } from '@/store/upsertValidationStore';
 
 const PostingForm = () => {
   const router = useRouter();
@@ -33,6 +33,7 @@ const PostingForm = () => {
   const [tagList, setTagList] = useState<Array<Ttag>>(TAG_LIST);
   const [thumbnail, setThumbnail] = useState<File>();
   const [content, setContent] = useState<string>('');
+  const { setIsValidCategory, setIsValidContent, setIsValidTitle } = useUpsertValidationStore();
 
   if (!user?.id) {
     toast.error(LOGIN_ALERT, { hideProgressBar: false, autoClose: 1500, onClose: () => router.push(`/login`) });

@@ -1,5 +1,6 @@
 import { Dispatch } from 'react';
 import CustomMDEditor from '@/components/common/CustomMDEditor';
+import { useUpsertValidationStore } from '@/store/upsertValidationStore';
 
 type FormContentAreaProps = {
   content: string;
@@ -7,10 +8,15 @@ type FormContentAreaProps = {
 };
 
 const FormContentArea = ({ content, setContent }: FormContentAreaProps) => {
+  const { isValidContent } = useUpsertValidationStore();
   return (
-    <div className="">
+    <div>
       <h5 className="block my-2 text-gray-900 text-h5 font-bold">본문</h5>
-      <CustomMDEditor content={content} setContent={setContent} />
+      <div
+        className={`${isValidContent === false ? 'border-red border ' : ' border border-neutral-100'} rounded-lg z-50 `}
+      >
+        <CustomMDEditor content={content} setContent={setContent} />
+      </div>
     </div>
   );
 };

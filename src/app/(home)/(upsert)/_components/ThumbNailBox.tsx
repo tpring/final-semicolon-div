@@ -1,3 +1,4 @@
+import X from '@/assets/images/common/X';
 import ImageIcon from '@/assets/images/upsert_image/ImageIcon';
 import Chip from '@/components/common/Chip';
 import Image from 'next/image';
@@ -88,7 +89,7 @@ const ThumbNailBox = ({ prevUrl, setisThumbnailUrlDeleted, setThumbnail }: Thumb
       <input className="hidden" type="file" name="thumbnail" ref={thumbnailInput} onChange={handleThumbnailChange} />
       <h5 className="block mb-2 text-gray-900 text-h5 font-bold">썸네일</h5>
       <div
-        className={`w-[748px] h-[543px]  border-2 border-dashed flex flex-col items-center justify-center text-neutral-400 rounded-lg ]`}
+        className={`w-[748px] h-[550px] custom-dashed-border shadow-xl flex flex-col items-center justify-center text-neutral-400 rounded-lg ]`}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
       >
@@ -103,23 +104,13 @@ const ThumbNailBox = ({ prevUrl, setisThumbnailUrlDeleted, setThumbnail }: Thumb
               onClick={handleInputClick}
             />
             <div className="w-[700px] h-[56px] border flex justify-between items-center px-5 py-2 rounded">
-              <div className="h-[38px] rounded-lg text-neutral-700 text-subtitle2 text-center content-center bg-neutral-50 px-2 py-1 ">
-                {thumbnailName}
-                <button
-                  type="button"
-                  className=" w-5 h-5 rounded-full content-center bg-neutral-200"
-                  onClick={handleButtonClick}
-                >
-                  x
+              <div className="h-[38px] flex items-center gap-[6px] rounded-lg  text-center content-center bg-neutral-50 px-2 py-1 ">
+                <span className="text-neutral-700 text-subtitle2 font-medium"> {thumbnailName}</span>
+                <button type="button" className=" w-4 h-4 px-1 rounded-full bg-neutral-200" onClick={handleButtonClick}>
+                  <X width={7} height={7} stroke="white" />
                 </button>
               </div>
-              <button
-                type="button"
-                className="bg-main-400 w-[114px] h-10 text-white rounded-[4px]"
-                onClick={handleInputClick}
-              >
-                편집
-              </button>
+              <Chip type="button" intent={'primary'} size="small" label="편집" onClick={handleInputClick} />
             </div>
           </>
         ) : (
