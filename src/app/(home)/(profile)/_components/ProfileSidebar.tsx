@@ -3,27 +3,16 @@
 import { useAuth } from '@/context/auth.context';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 
 const ProfileSidebar = () => {
   const router = useRouter();
-  const pathname = usePathname();
-  const profileId = pathname?.split('/')[2];
   const { userData, me, logOut } = useAuth();
-
-  useEffect(() => {
-    if (me?.id === profileId) {
-      router.push('/profile');
-    }
-  }, [me, profileId, router]);
 
   const handleLogout = async () => {
     const result = await logOut();
     if (result.status === 200) {
-      localStorage.removeItem('oauthProvider');
       router.push('/');
     } else {
       toast.error(result.message || '로그아웃에 실패했습니다.');
@@ -32,6 +21,7 @@ const ProfileSidebar = () => {
 
   return (
     <>
+      <ToastContainer />
       <div className="flex-none w-[286px] h-[80%] border-r border-l border-neutral-50 shadow-custom bg-white p-[56px_24px]">
         <div className="center-alignment">
           <div className="mb-[26px] relative w-[120px] h-[120px] border border-neutral-50 rounded-full overflow-hidden bg-white">
