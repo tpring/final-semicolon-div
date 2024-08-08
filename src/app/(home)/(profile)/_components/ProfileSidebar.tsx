@@ -4,7 +4,7 @@ import { useAuth } from '@/context/auth.context';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 const ProfileSidebar = () => {
   const router = useRouter();
