@@ -41,7 +41,7 @@ const ForumReply = ({ comment_id, post_user_id }: { comment_id: string; post_use
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['commentReply'] });
+      queryClient.invalidateQueries({ queryKey: ['commentReply', comment_id] });
     }
   });
 
@@ -67,7 +67,7 @@ const ForumReply = ({ comment_id, post_user_id }: { comment_id: string; post_use
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['commentReply'] });
-      revalidate('/', 'page');
+      queryClient.invalidateQueries({ queryKey: ['forumComments'] });
     }
   });
 
@@ -87,7 +87,6 @@ const ForumReply = ({ comment_id, post_user_id }: { comment_id: string; post_use
     queryFn: async ({ pageParam }) => {
       const response = await fetch(`/api/posts/forum-detail/forum-reply/${comment_id}?page=${pageParam}`);
       const data = await response.json();
-      console.log(data);
       return data as Promise<forumReplyType>;
     },
     getNextPageParam: (lastPage, allPages, lastPageParam) => {

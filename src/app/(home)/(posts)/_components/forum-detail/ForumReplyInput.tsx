@@ -1,13 +1,12 @@
 'use client';
 
-import { revalidate } from '@/actions/revalidate';
 import { useAuth } from '@/context/auth.context';
 import { CommentReply } from '@/types/posts/forumDetailTypes';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import MDEditor, { commands } from '@uiw/react-md-editor';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 type commentReplyProps = {
@@ -22,6 +21,7 @@ const ForumReplyInput = ({ comment_id, toggle, count }: commentReplyProps) => {
   const queryClient = useQueryClient();
   const [reply, setReply] = useState('');
 
+  //대댓글 입력
   const handleReply = useMutation({
     mutationFn: async (userReply: CommentReply) => {
       const response = await fetch(`/api/posts/forum-detail/forum-reply/${params.id}`, {
@@ -31,8 +31,10 @@ const ForumReplyInput = ({ comment_id, toggle, count }: commentReplyProps) => {
       const data = await response.json();
       return data;
     },
+
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['commentReply'] });
+      queryClient.invalidateQueries({ queryKey: ['forumComments'] });
     }
   });
 
@@ -57,7 +59,6 @@ const ForumReplyInput = ({ comment_id, toggle, count }: commentReplyProps) => {
       return;
     }
     setReply('');
-    revalidate('/', 'page');
     handleReply.mutate(commentReply);
   };
 

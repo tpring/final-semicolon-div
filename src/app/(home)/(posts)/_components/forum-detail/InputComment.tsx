@@ -1,6 +1,5 @@
 'use client';
-
-import { revalidate } from '@/actions/revalidate';
+import { revalidatePostTag } from '@/actions/revalidatePostTag';
 import { useAuth } from '@/context/auth.context';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import MDEditor, { commands } from '@uiw/react-md-editor';
@@ -32,13 +31,14 @@ const InputComments = () => {
       queryClient.invalidateQueries({ queryKey: ['forumComments'] });
       if (comment) {
         setComment('');
-        revalidate('/', 'page');
+        revalidatePostTag(`forum-detail-${params.id}`);
       }
     }
   });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     const forumComment = { user_id: me?.id, post_id: params.id, comment };
 
     if (!me?.id) {

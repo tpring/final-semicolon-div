@@ -19,6 +19,7 @@ import { revalidate } from '@/actions/revalidate';
 import ConfirmModal from '@/components/modal/ConfirmModal';
 import EndOfData from '@/components/common/EndOfData';
 import { cutText, filterSlang } from '@/utils/markdownCut';
+import { revalidatePostTag } from '@/actions/revalidatePostTag';
 
 const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
   const { me } = useAuth();
@@ -33,7 +34,6 @@ const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
   const [deleteConfirmModal, setDeleteConfirmModal] = useState<boolean>(false);
   const [retouchConfirmModal, setRetouchConfirmModal] = useState<boolean>(false);
   const [commentLength, setCommentLength] = useState<boolean>(false);
-  const [commentReplyCount, setCommentReplyCount] = useState<number>(0);
 
   const COMMENT_PAGE = 5;
   //댓글 수정
@@ -52,13 +52,7 @@ const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
   const commentRetouchHandle = async (id: string, user_id: string) => {
     commentRetouch.mutate({ id, user_id, mdEditorChange });
     setEditingState({ Boolean: false });
-    if (!mdEditorChange) {
-      toast.error('댓글을 입력해주세요!', {
-        autoClose: 2000
-      });
-      toast.success('댓글이 수정 되었습니다.', { autoClose: 1500 });
-      return;
-    }
+    toast.success('댓글이 수정 되었습니다.', { autoClose: 1500 });
   };
 
   // 댓글 삭제
@@ -71,13 +65,13 @@ const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['forumComments'] });
+      revalidatePostTag(`forum-detail-${param.id}`);
     }
   });
   // 삭제 이벤트 버튼
   const handleDelete = async (id: string, user_id: string) => {
     toast.success('댓글이 삭제되었습니다.', { autoClose: 1500 });
     commentDelete.mutate({ id, user_id });
-    revalidate('/', 'page');
   };
 
   //수정 취소버튼
@@ -116,9 +110,9 @@ const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
     },
     select: ({ pages }) => pages.flat()
   });
+
   useEffect(() => {
     if (inView) {
-      fetchNextPage();
     }
   }, [inView]);
 
