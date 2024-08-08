@@ -4,7 +4,6 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import Link from 'next/link';
 import { timeForToday } from '@/utils/timeForToday';
-import { handleRinkCopy } from '@/utils/handleRinkCopy';
 import Image from 'next/image';
 import Share from '@/assets/images/common/Share';
 import CommentBubble from '@/assets/images/common/CommentBubble';
@@ -21,6 +20,7 @@ import LikeButton from '@/components/common/LikeButton';
 import TagBlock from '@/components/common/TagBlock';
 import { BestForumType } from '@/types/mainpage';
 import { useQuery } from '@tanstack/react-query';
+import { handleLinkCopy } from '@/utils/handleLinkCopy';
 
 const BestForum = () => {
   const [swiperInstance, setSwiperInstance] = useState<SwiperCore | null>(null);
@@ -138,7 +138,7 @@ const BestForum = () => {
                 <div className="flex justify-between items-center py-2 text-sm">
                   <div className="flex justify-start items-center gap-4">
                     <LikeButton id={forum.id} type="forum" />
-                    <button onClick={() => handleRinkCopy(`${process.env.NEXT_PUBLIC_BASE_URL}/forum/${forum.id}`)}>
+                    <button onClick={() => handleLinkCopy(`${process.env.NEXT_PUBLIC_BASE_URL}/forum/${forum.id}`)}>
                       <Share />
                     </button>
                   </div>

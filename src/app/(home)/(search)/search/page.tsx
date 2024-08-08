@@ -1,4 +1,4 @@
-import TopButton from '@/components/TopButton';
+import TopButton from '@/components/common/TopButton';
 import Search from '../_components/Search';
 
 const SearchPage = () => {

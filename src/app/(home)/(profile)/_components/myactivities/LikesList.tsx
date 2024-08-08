@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useLikesComments, useLikesPosts } from '@/hooks/useLikes';
+import { useLikesComments, useLikesPosts } from '@/hooks/common/useLikes';
 import { CombinedItem } from '@/types/profile/profileType';
 import { combineItems } from '@/utils/combineItems';
 import PostCard from './common/PostCard';
