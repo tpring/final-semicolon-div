@@ -1,13 +1,13 @@
 import { create } from 'zustand';
 
 type LoginAlertType = {
-  modal: boolean;
+  loginAlertModal: boolean;
   isOpen: () => void;
   onClose: () => void;
 };
 
 export const useLoginAlertStore = create<LoginAlertType>((set) => ({
-  modal: false,
-  isOpen: () => set({ modal: true }),
-  onClose: () => set({ modal: false })
+  loginAlertModal: false,
+  isOpen: () => set({ loginAlertModal: true }),
+  onClose: () => set({ loginAlertModal: false })
 }));
