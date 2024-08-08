@@ -33,6 +33,7 @@ const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
   const [deleteConfirmModal, setDeleteConfirmModal] = useState<boolean>(false);
   const [retouchConfirmModal, setRetouchConfirmModal] = useState<boolean>(false);
   const [commentLength, setCommentLength] = useState<boolean>(false);
+  const [commentReplyCount, setCommentReplyCount] = useState<number>(0);
 
   const COMMENT_PAGE = 5;
   //댓글 수정
@@ -115,7 +116,6 @@ const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
     },
     select: ({ pages }) => pages.flat()
   });
-
   useEffect(() => {
     if (inView) {
       fetchNextPage();

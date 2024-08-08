@@ -80,7 +80,6 @@ const ForumReply = ({ comment_id, post_user_id }: { comment_id: string; post_use
     fetchNextPage,
     data: reply,
     isPending,
-    hasNextPage,
     error
   } = useInfiniteQuery({
     queryKey: ['commentReply', comment_id],
@@ -88,6 +87,7 @@ const ForumReply = ({ comment_id, post_user_id }: { comment_id: string; post_use
     queryFn: async ({ pageParam }) => {
       const response = await fetch(`/api/posts/forum-detail/forum-reply/${comment_id}?page=${pageParam}`);
       const data = await response.json();
+      console.log(data);
       return data as Promise<forumReplyType>;
     },
     getNextPageParam: (lastPage, allPages, lastPageParam) => {
@@ -208,13 +208,13 @@ const ForumReply = ({ comment_id, post_user_id }: { comment_id: string; post_use
                   <div className="flex justify-end items-end mt-4 gap-6">
                     <button
                       onClick={() => setReplyEditor({ [reply.id]: false })}
-                      className=' className="bg-neutral-50 text-neutral-100 px-5 py-3 rounded-lg"'
+                      className={`${reply ? 'bg-neutral-50 text-neutral-500 hover:bg-neutral-100 hover:text-neutral-500' : 'bg-neutral-50 text-neutral-100'}  px-5 py-3 rounded-lg text-subtitle1 font-bold`}
                     >
                       취소
                     </button>
                     <button
                       onClick={() => replyRetouchHandle(reply.id, reply.user_id)}
-                      className="bg-main-100 text-main-50 px-5 py-3 rounded-lg"
+                      className={`${reply ? 'bg-main-400 text-white hover:bg-main-500 hover:text-white' : 'bg-main-100 text-main-50'}  px-5 py-3 rounded-lg text-subtitle1 font-bold`}
                     >
                       수정
                     </button>
