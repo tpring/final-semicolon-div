@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/context/auth.context';
 import NicknameModal from './setting/NicknameModal';
-import GithubUrlModal from './setting/GithubUrlModal';
 import InfoModal from './setting/InfoModal';
 import Image from 'next/image';
 import { upDateImage, uploadImage } from '@/utils/imageUpload';
@@ -18,11 +17,9 @@ import { filterSlang } from '@/utils/markdownCut';
 const ProfileSetting = () => {
   const { userData, me, updateUserData } = useAuth();
   const [profileImage, setProfileImage] = useState<string>('');
-  // const [githubUrl, setGithubUrl] = useState<string>('');
   const [nickname, setNickname] = useState<string>('');
   const [info, setInfo] = useState<string>('');
   const [isPasswordModalOpen, setPasswordModalOpen] = useState<boolean>(false);
-  // const [isGithubUrlModalOpen, setGithubUrlModalOpen] = useState<boolean>(false);
   const [isNicknameModalOpen, setNicknameModalOpen] = useState<boolean>(false);
   const [isInfoModalOpen, setInfoModalOpen] = useState<boolean>(false);
   const newProfileRef = useRef<File | null>(null);
@@ -33,7 +30,6 @@ const ProfileSetting = () => {
       setNickname(userData.nickname || '');
       setProfileImage(userData.profile_image || '');
       setInfo(userData.info || '');
-      // setGithubUrl(userData.github_url || '');
     }
   }, [userData]);
 
@@ -68,12 +64,6 @@ const ProfileSetting = () => {
       console.error('이미지 업로드 실패:', (error as Error).message);
     }
   };
-
-  // const handleGithubUrlUpdate = async (newGithubUrl: string) => {
-  //   setGithubUrl(newGithubUrl);
-  //   await updateProfile({ github_url: newGithubUrl });
-  //   updateUserData({ github_url: newGithubUrl });
-  // };
 
   const handleNicknameUpdate = async (newNickname: string) => {
     setNickname(newNickname);
@@ -159,25 +149,7 @@ const ProfileSetting = () => {
           </div>
           <p className="border-b border-neutral-50 " />
           <OAuthLoginStatus />
-          {/* <p className="border-b border-neutral-50 " />
-          <div className="flex justify-between p-[16px_0]">
-            <span className="text-neutral-900 text-subtitle1 font-medium">깃허브 링크</span>
-            {githubUrl ? (
-              <div className="flex">
-                <span className="text-neutral-800 text-body1 font-regular">{githubUrl}</span>
-                <div className="mt-[5px] ml-3 cursor-pointer" onClick={() => setGithubUrlModalOpen(true)}>
-                  <Right width={10} height={18} />
-                </div>
-              </div>
-            ) : (
-              <div className="flex">
-                <span className="text-neutral-800 text-body1 font-regular ">추가하기</span>
-                <div className="mt-[5px] ml-3 cursor-pointer" onClick={() => setGithubUrlModalOpen(true)}>
-                  <Right width={10} height={18} />
-                </div>
-              </div>
-            )}
-          </div> */}
+
           <p className="border-b border-neutral-50 " />
           <div className="flex justify-between p-[16px_0]">
             <span className="text-neutral-900 text-subtitle1 font-medium">닉네임</span>
@@ -205,18 +177,11 @@ const ProfileSetting = () => {
               <Right width={10} height={18} />
             </div>
           </div>
-          <p className="text-neutral-700 h-[143px] text-body1 font-regular line-clamp-5 whitespace-pre-wrap ">
+          <p className="text-body1 font-regular text-neutral-700 line-clamp-5 whitespace-pre-wrap break-words">
             {filterSlang(info)}
           </p>
         </div>
       </div>
-
-      {/* <GithubUrlModal
-        isOpen={isGithubUrlModalOpen}
-        onClose={() => setGithubUrlModalOpen(false)}
-        currentGithubUrl={githubUrl}
-        onGithubUrlUpdate={handleGithubUrlUpdate}
-      /> */}
       <PasswordModal isOpen={isPasswordModalOpen} onClose={() => setPasswordModalOpen(false)} />
       <NicknameModal
         isOpen={isNicknameModalOpen}
