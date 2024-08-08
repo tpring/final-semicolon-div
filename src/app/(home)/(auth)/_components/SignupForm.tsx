@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import SignupButton from './SignupButton';
 import CheckboxGroup from './CheckboxGroup';
@@ -132,7 +132,6 @@ const SignupForm = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen">
-      <ToastContainer />
       <div className="bg-white w-full max-w-sm">
         <div className="flex items-center justify-center mb-16">
           <Logo />

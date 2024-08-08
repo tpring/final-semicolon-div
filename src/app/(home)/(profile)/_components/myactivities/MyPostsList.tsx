@@ -6,7 +6,7 @@ import CommentCard from './common/CommentCard';
 import MyActivitiesPagination from './common/MyActivitiesPagination';
 import { useMyComments, useMyPosts } from '@/hooks/myactivities/useMyPosts';
 import { useAuth } from '@/context/auth.context';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import ConfirmModal from '@/components/modal/ConfirmModal';
 import Check from '@/assets/images/common/Check';
 
@@ -197,7 +197,7 @@ const MyPostsList = ({ onTotalsChange, selectedCategory, selectedForumCategory, 
           </button>
         )}
       </div>
-      <ToastContainer />
+
       {paginatedItems.length === 0 ? (
         <div>내가 쓴 글을 추가해보세요</div>
       ) : (

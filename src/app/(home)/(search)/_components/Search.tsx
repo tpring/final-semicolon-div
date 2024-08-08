@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import SearchPostCard from './SearchPostCard';
 import SearchFilter from './SearchFilter';
 import { useSearchParams } from 'next/navigation';
+import { ToastContainer } from 'react-toastify';
 
 type Post = {
   id: string;
@@ -145,6 +146,7 @@ const Search = () => {
           </div>
         )}
       </div>
+      <ToastContainer />
     </div>
   );
 };

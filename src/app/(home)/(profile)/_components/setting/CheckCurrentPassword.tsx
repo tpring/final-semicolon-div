@@ -55,7 +55,7 @@ const CheckCurrentPassword = ({ onValidationChange }: CheckCurrentPasswordProps)
       setValidationMessage('');
     }
     onValidationChange(validationMessage);
-  }, [currentPassword, validationMessage]);
+  }, [currentPassword, handleValidatePassword, onValidationChange, validationMessage]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
