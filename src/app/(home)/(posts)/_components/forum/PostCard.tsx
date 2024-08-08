@@ -5,13 +5,13 @@ import BookmarkButton from '@/components/common/BookmarkButton';
 import LikeButton from '@/components/common/LikeButton';
 import { cutText, filterSlang, markdownCutText, markdownFilterSlang } from '@/utils/markdownCut';
 import TagBlock from '@/components/common/TagBlock';
-import { handleLinkCopy } from '@/components/handleLinkCopy';
 import { PostCardProps } from '@/types/posts/forumTypes';
 import { timeForToday } from '@/utils/timeForToday';
 import MDEditor from '@uiw/react-md-editor';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 import Link from 'next/link';
+import { handleLinkCopy } from '@/utils/handleLinkCopy';
 
 const removeImageLinks = (markdown: string) => {
   return markdown.replace(/!\[.*?\]\(.*?\)/g, '');
