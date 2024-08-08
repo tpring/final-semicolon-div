@@ -78,7 +78,10 @@ const InputComments = () => {
               commands={commands.getCommands().filter((command) => {
                 return command.name !== 'image';
               })}
-              textareaProps={{ maxLength: 1000 }}
+              textareaProps={{
+                placeholder: '자유롭게 소통해 보세요!',
+                maxLength: 1000
+              }}
               className="w-full "
             />
           </div>

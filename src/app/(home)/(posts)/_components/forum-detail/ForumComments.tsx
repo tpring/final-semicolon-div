@@ -15,11 +15,11 @@ import { commentRetouch, forumCommentsType } from '@/types/posts/forumDetailType
 import LikeButton from '@/components/common/LikeButton';
 import BookmarkButton from '@/components/common/BookmarkButton';
 import KebabButton from '@/assets/images/common/KebabButton';
-import { revalidate } from '@/actions/revalidate';
 import ConfirmModal from '@/components/modal/ConfirmModal';
 import EndOfData from '@/components/common/EndOfData';
 import { cutText, filterSlang } from '@/utils/markdownCut';
 import { revalidatePostTag } from '@/actions/revalidatePostTag';
+import { useLoginAlertStore } from '@/store/loginAlertModal';
 
 const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
   const { me } = useAuth();
@@ -113,6 +113,7 @@ const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
 
   useEffect(() => {
     if (inView) {
+      fetchNextPage();
     }
   }, [inView]);
 
@@ -309,7 +310,6 @@ const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
           ))}
         </div>
       ))}
-
       <div ref={ref}></div>
       {!hasNextPage && !isPending && <EndOfData />}
     </>
