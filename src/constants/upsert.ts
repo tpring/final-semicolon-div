@@ -2,7 +2,7 @@ import { TcategoryEN, TcategoryKR } from '@/types/upsert';
 
 //카테고리 선택 문구
 export const CATEGORY_ALERT_TEXT = '게시판을 선택해 주세요';
-
+export const SUB_CATEGORY_TEXT = '포럼 카테고리를 선택해주세요';
 //메인 카테고리 dropdown 목록
 export const BOARD_LIST = [
   {

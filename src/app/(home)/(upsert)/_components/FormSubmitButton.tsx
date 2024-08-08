@@ -1,17 +1,19 @@
 import Chip from '@/components/common/Chip';
 import ConfirmModal from '@/components/modal/ConfirmModal';
 import { POST_CANCLE_TEXT, POST_APPROVE_TEXT, EDIT_APPROVE_TEXT, EDIT_CANCLE_TEXT } from '@/constants/upsert';
+import { useUpsertValidationStore } from '@/store/upsertValidationStore';
 import { useRouter } from 'next/navigation';
 import { MouseEventHandler, useState } from 'react';
 
-type FormSubmitButtonProps = { content: string; handleSubmit: () => Promise<void>; isEdit: boolean };
+type FormSubmitButtonProps = { handleSubmit: () => Promise<void>; isEdit: boolean };
 
-const FormSubmitButton = ({ content, handleSubmit, isEdit }: FormSubmitButtonProps) => {
+const FormSubmitButton = ({ handleSubmit, isEdit }: FormSubmitButtonProps) => {
   const router = useRouter();
 
   const [isCancleConfirmOpen, setIsCancleConfirmOpen] = useState<boolean>(false);
   const [isPostConfirmOpen, setIsPostConfirmOpen] = useState<boolean>(false);
   const [confirmText, setConfirmText] = useState<string>('');
+  const { clearAllValid } = useUpsertValidationStore();
 
   const handleCancleConfirmClick: MouseEventHandler = () => {
     setConfirmText(isEdit ? EDIT_CANCLE_TEXT : POST_CANCLE_TEXT);
@@ -25,6 +27,7 @@ const FormSubmitButton = ({ content, handleSubmit, isEdit }: FormSubmitButtonPro
   };
 
   const approveCancleConfirm = (): void => {
+    clearAllValid();
     router.back();
   };
 
@@ -56,7 +59,6 @@ const FormSubmitButton = ({ content, handleSubmit, isEdit }: FormSubmitButtonPro
         onConfirm={approvePostConfirm}
         onClose={closePostConfirmClose}
       />
-
       <Chip type="button" intent={'primary'} size="large" label="등록" onClick={handlePostConfirmClick} />
     </div>
   );

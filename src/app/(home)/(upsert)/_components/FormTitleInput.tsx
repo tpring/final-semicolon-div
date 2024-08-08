@@ -1,16 +1,20 @@
 import { useUpsertValidationStore } from '@/store/upsertValidationStore';
-import { ChangeEventHandler, Dispatch, SetStateAction } from 'react';
+import { ChangeEventHandler, Dispatch, SetStateAction, useEffect } from 'react';
 type FormTitleInputProps = {
   title: string;
   setTitle: Dispatch<SetStateAction<string>>;
+  isEdit: boolean;
 };
 
-const FormTitleInput = ({ title, setTitle }: FormTitleInputProps) => {
-  const { isValidTitle } = useUpsertValidationStore();
+const FormTitleInput = ({ title, setTitle, isEdit }: FormTitleInputProps) => {
+  const { isValidTitle, setIsValidTitle } = useUpsertValidationStore();
   const handleTitleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     setTitle(event.currentTarget.value);
+    isValidTitle ? null : setIsValidTitle(true);
   };
-
+  useEffect(() => {
+    isEdit && title.length === 0 ? setIsValidTitle(false) : setIsValidTitle(true);
+  }, [title]);
   return (
     <div className={` `}>
       <label

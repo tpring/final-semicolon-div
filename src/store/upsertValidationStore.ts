@@ -7,6 +7,7 @@ type TuseUpsertValidationStore = {
   setIsValidCategory: (status: boolean) => void;
   setIsValidTitle: (status: boolean) => void;
   setIsValidContent: (status: boolean) => void;
+  clearAllValid: () => void;
 };
 
 export const useUpsertValidationStore = create<TuseUpsertValidationStore>((set) => ({
@@ -15,5 +16,6 @@ export const useUpsertValidationStore = create<TuseUpsertValidationStore>((set) 
   isValidContent: null,
   setIsValidCategory: (status) => set({ isValidCategory: status }),
   setIsValidTitle: (status) => set({ isValidTitle: status }),
-  setIsValidContent: (status) => set({ isValidContent: status })
+  setIsValidContent: (status) => set({ isValidContent: status }),
+  clearAllValid: () => set({ isValidCategory: null, isValidTitle: null, isValidContent: null })
 }));

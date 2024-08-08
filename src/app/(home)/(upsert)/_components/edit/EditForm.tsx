@@ -26,6 +26,7 @@ import PostingCategory from './editform/categorybox/PostingCategory';
 import { TAG_LIST } from '@/constants/tags';
 import { revalidatePostTag } from '@/actions/revalidatePostTag';
 import { deleteThumbnail, patchThumbnail, uploadThumbnail } from '../../_utils/thumbnail';
+import { useUpsertValidationStore } from '@/store/upsertValidationStore';
 
 type UpsertFormProps = {
   data: TeditForumData | TeditQnaData | TeditArchiveData;
@@ -35,7 +36,7 @@ type UpsertFormProps = {
 const EditForm = ({ data, path }: UpsertFormProps) => {
   const router = useRouter();
   const { me: user } = useAuth();
-  const { categoryGroup, subCategory, setCategoryGroup, setSubCategory } = usePostingCategoryStore();
+  const { categoryGroup, subCategory, setCategoryGroup, setSubCategory, clearCategory } = usePostingCategoryStore();
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
   const [prevUrl, setPrevUrl] = useState<string>('');
@@ -44,14 +45,42 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
   const [isThumbnailUrlDeleted, setisThumbnailUrlDeleted] = useState<boolean>(false);
   const [thumbnail, setThumbnail] = useState<File>();
   const [FORUM, QNA, ARCHIVE] = BOARD_LIST;
+  const {
+    isValidCategory,
+    isValidTitle,
+    isValidContent,
+    setIsValidCategory,
+    setIsValidTitle,
+    setIsValidContent,
+    clearAllValid
+  } = useUpsertValidationStore();
 
   const handleSubmit = async (): Promise<void> => {
     const category = CATEGORY_LIST_EN[CATEGORY_LIST_KR.indexOf(categoryGroup.category)];
-    if (
+
+    // 폼 유효성 검사 로직
+
+    if (!category) {
+      setIsValidCategory(false);
+    } else if (
       category === 'forum' &&
       !FORUM_SUB_CATEGORY_LIST.find((FORUM_SUB_CATEGORY) => subCategory === FORUM_SUB_CATEGORY)
     ) {
-      toast.error('포럼 서브 카테고리를 선택해 주세요!', { autoClose: 1500, hideProgressBar: true });
+      setIsValidCategory(false);
+    }
+
+    if (!title) {
+      setIsValidTitle(false);
+    }
+
+    if (!content) {
+      setIsValidContent(false);
+    }
+
+    if (!isValidCategory || !isValidTitle) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    } else if (!isValidContent) {
       return;
     }
 
@@ -62,19 +91,6 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
       category,
       forum_category: subCategory
     };
-
-    //폼 유효성 검사 로직
-    const invalidItems = Object.keys(postData).filter((key) => !postData[key]);
-
-    const invalidItemIndex = VALIDATION_SEQUENCE.findIndex((sequence) => {
-      return !!invalidItems.find((item) => item === sequence);
-    });
-
-    const invalidItem = VALIDATION_SEQUENCE_KR[invalidItemIndex];
-    if (invalidItem) {
-      toast.error(invalidItem + ' 입력이 필요합니다!', { autoClose: 1500, hideProgressBar: true });
-      return;
-    }
 
     //썸네일 상태 검사 로직
     const thumbnailUrl =
@@ -111,6 +127,7 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
       hideProgressBar: true,
       onClose: () => router.push(`/${category}`)
     });
+    clearAllValid();
     return;
   };
 
@@ -158,6 +175,9 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
         setPrevUrl(data.thumbnail ?? '');
         break;
     }
+    return () => {
+      clearCategory();
+    };
   }, [data, user]);
 
   useEffect(() => {
@@ -176,15 +196,15 @@ const EditForm = ({ data, path }: UpsertFormProps) => {
       </div>
       <form className="flex flex-col gap-y-10 h-full">
         <PostingCategory />
-        <FormTitleInput title={title} setTitle={setTitle} />
+        <FormTitleInput title={title} setTitle={setTitle} isEdit={true} />
         <FormTagInput tagList={tagList} setTagList={setTagList} />
         <ThumbNailBox
           prevUrl={prevUrl}
           setisThumbnailUrlDeleted={setisThumbnailUrlDeleted}
           setThumbnail={setThumbnail}
         />
-        <FormContentArea content={content} setContent={setContent} />
-        <FormSubmitButton content={content} handleSubmit={handleSubmit} isEdit={true} />
+        <FormContentArea content={content} setContent={setContent} isEdit={true} />
+        <FormSubmitButton handleSubmit={handleSubmit} isEdit={true} />
       </form>
     </div>
   );

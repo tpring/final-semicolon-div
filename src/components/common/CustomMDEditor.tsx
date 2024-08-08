@@ -1,5 +1,6 @@
 import ImageIcon from '@/assets/images/upsert_image/markdown/ImageIcon';
 import { IMAGE_UPLOAD_TEXT, POST_IMAGE_URL } from '@/constants/upsert';
+import { useUpsertValidationStore } from '@/store/upsertValidationStore';
 import { TimageInfo } from '@/types/upsert';
 import MDEditor, { commands, ICommand, RefMDEditor } from '@uiw/react-md-editor';
 import {
@@ -21,6 +22,7 @@ type CustomMDEditorProps = {
 };
 
 const CustomMDEditor = ({ content, setContent }: CustomMDEditorProps) => {
+  const { isValidContent, setIsValidContent } = useUpsertValidationStore();
   const imageInput = useRef<HTMLInputElement>(null);
   const mdEditor = useRef<RefMDEditor>(null);
   const customExtraCommandsWithOutQnA = commands.getCommands().filter(() => false);
@@ -98,6 +100,7 @@ const CustomMDEditor = ({ content, setContent }: CustomMDEditorProps) => {
 
   const handleContentChange = (value?: string) => {
     setContent(value!);
+    isValidContent ? null : setIsValidContent(true);
   };
 
   //커스텀 이미지 버튼

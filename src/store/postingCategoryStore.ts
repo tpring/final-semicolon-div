@@ -32,7 +32,7 @@ export const usePostingCategoryStore = create<TusePostingCategoryStore>((set) =>
   clearCategory: () =>
     set({
       categoryGroup: { category: '', content: '' },
-      subCategory: '카테고리를 선택해주세요!',
+      subCategory: CATEGORY_ALERT_TEXT,
       categoryOpen: false,
       subCategoryOpen: false
     })
