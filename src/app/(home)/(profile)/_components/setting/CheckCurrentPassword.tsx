@@ -53,7 +53,7 @@ const CheckCurrentPassword = ({ onValidationChange }: CheckCurrentPasswordProps)
       setValidationMessage('');
     }
     onValidationChange(validationMessage);
-  }, [currentPassword, validationMessage]);
+  }, [currentPassword, handleValidatePassword, onValidationChange, validationMessage]);
 
   return (
     <div className="h-[150px]">

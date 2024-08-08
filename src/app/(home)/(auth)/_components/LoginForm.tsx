@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAuth } from '@/context/auth.context';
 import OAuthButtons from './OAuthButtons';
@@ -94,7 +94,6 @@ function LoginForm() {
 
   return (
     <div className="flex items-center justify-center min-h-screen ">
-      <ToastContainer />
       <div className="bg-white w-full max-w-sm">
         <div className="flex items-center justify-center mb-16">
           <Logo />

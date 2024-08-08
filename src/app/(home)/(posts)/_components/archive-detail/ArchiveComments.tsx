@@ -16,6 +16,9 @@ import ConfirmModal from '@/components/modal/ConfirmModal';
 import ArchiveReplyInput from './ArchiveReplyInput';
 import ArchiveReply from './ArchiveReply';
 import { archiveCommentsType, commentRetouch } from '@/types/posts/archiveDetailTypes';
+import EndOfData from '@/components/common/EndOfData';
+import { cutText, filterSlang } from '@/utils/markdownCut';
+
 
 const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
   const { me } = useAuth();
@@ -28,6 +31,7 @@ const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
   const [inputReplyToggle, setInputReplyToggle] = useState<{ [key: string]: boolean }>({});
   const [replyToggle, setReplyToggle] = useState<{ [key: string]: boolean }>({});
   const [confirmModal, setConfirmModal] = useState<{ [key: string]: boolean }>({});
+  const [commentLength, setCommentLength] = useState<boolean>(false);
 
   const COMMENT_PAGE = 5;
 
@@ -119,7 +123,8 @@ const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
     fetchNextPage,
     data: comments,
     isPending,
-    isError
+    isError,
+    hasNextPage
   } = useInfiniteQuery({
     queryKey: ['archiveComments', param.id],
     initialPageParam: 0,
@@ -263,8 +268,24 @@ const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
                       )}
                     </div>
                   </div>
+                ) : commentLength ? (
+                  <p className="text-body1 font-regular whitespace-pre-wrap break-words">
+                    {filterSlang(comment.comment)}
+                  </p>
                 ) : (
-                  <p className="text-body1 font-regular whitespace-pre-wrap break-words">{comment.comment}</p>
+                  <div>
+                    <p className="text-body1 font-regular whitespace-pre-wrap break-words">
+                      {cutText(filterSlang(comment.comment), 370)}
+                    </p>
+                    {comment.comment.length >= 370 && (
+                      <button
+                        className="text-subtitle2 font-bold text-neutral-700"
+                        onClick={() => setCommentLength(true)}
+                      >
+                        ...더보기
+                      </button>
+                    )}
+                  </div>
                 )}
                 <div className=" flex justify-between gap-4">
                   <p className="text-body1 font-regular text-neutral-400">
@@ -319,6 +340,7 @@ const ArchiveComments = ({ post_user_id }: { post_user_id: string }) => {
         </div>
       ))}
       <div ref={ref}></div>
+      {!hasNextPage && !isPending && <EndOfData />}
     </div>
   );
 };

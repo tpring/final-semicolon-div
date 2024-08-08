@@ -6,6 +6,7 @@ import { AuthProvider } from '@/context/auth.context';
 import TanstackQueryProvider from '@/providers/TanstackQueryProvider';
 import { BookmarkProvider } from '@/providers/BookmarkProvider';
 import LikeProvider from '@/providers/LikeProvider';
+import Providers from '@/providers/Providers';
 
 export const metadata: Metadata = {
   title: '<div>',
@@ -20,16 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <TanstackQueryProvider>
-          <AuthProvider>
-            <BookmarkProvider>
-              <LikeProvider>
-                {children}
-                <ReactQueryDevtools initialIsOpen={false} />
-              </LikeProvider>
-            </BookmarkProvider>
-          </AuthProvider>
-        </TanstackQueryProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

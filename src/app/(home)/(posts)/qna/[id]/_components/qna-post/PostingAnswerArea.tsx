@@ -1,4 +1,4 @@
-import CustomMDEditor from '@/app/(home)/(upsert)/_components/CustomMDEditor';
+import CustomMDEditor from '@/components/common/CustomMDEditor';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { useAuth } from '@/context/auth.context';
 import { toast } from 'react-toastify';

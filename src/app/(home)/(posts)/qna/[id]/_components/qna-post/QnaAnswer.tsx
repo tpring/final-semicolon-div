@@ -9,7 +9,7 @@ import { useAuth } from '@/context/auth.context';
 import AnswerKebobBtn from '../kebob-btn/AnswerKebobBtn';
 import { timeForToday } from '@/utils/timeForToday';
 import BookmarkButton from '@/components/common/BookmarkButton';
-import CustomMDEditor from '@/app/(home)/(upsert)/_components/CustomMDEditor';
+import CustomMDEditor from '@/components/common/CustomMDEditor';
 import { useQnaDetailStore } from '@/store/qnaDetailStore';
 import BlueCheck from '@/assets/images/common/BlueCheck';
 import { toast } from 'react-toastify';
