@@ -159,18 +159,10 @@ const ForumReply = ({ comment_id, post_user_id }: { comment_id: string; post_use
                         <div className="w-[105px] right-0 absolute flex flex-col justify-center items-center border-main-400 bg-white shadow-lg border rounded-lg">
                           <button
                             className="h-[44px] w-full rounded-t-lg hover:bg-main-50 hover:text-main-400"
-                            onClick={() => setReplyRetouchModal(true)}
+                            onClick={() => toggleReplyEditing(reply.id, reply.reply)}
                           >
                             댓글 수정
                           </button>
-                          {replyRetouchModal && (
-                            <ConfirmModal
-                              isOpen={replyRetouchModal}
-                              onClose={() => setReplyRetouchModal(false)}
-                              onConfirm={() => toggleReplyEditing(reply.id, reply.reply)}
-                              message={'댓글을 수정 하시겠습니까?'}
-                            />
-                          )}
                           <button
                             className="h-[44px] w-full rounded-b-lg hover:bg-main-50 hover:text-main-400"
                             onClick={() => setConfirmModal(true)}
@@ -204,6 +196,7 @@ const ForumReply = ({ comment_id, post_user_id }: { comment_id: string; post_use
                     textareaProps={{ maxLength: 1000 }}
                     height={'auto'}
                   />
+
                   <div className="flex justify-end items-end mt-4 gap-6">
                     <button
                       onClick={() => setReplyEditor({ [reply.id]: false })}
@@ -212,11 +205,19 @@ const ForumReply = ({ comment_id, post_user_id }: { comment_id: string; post_use
                       취소
                     </button>
                     <button
-                      onClick={() => replyRetouchHandle(reply.id, reply.user_id)}
+                      onClick={() => setReplyRetouchModal(true)}
                       className={`${reply ? 'bg-main-400 text-white hover:bg-main-500 hover:text-white' : 'bg-main-100 text-main-50'}  px-5 py-3 rounded-lg text-subtitle1 font-bold`}
                     >
                       수정
                     </button>
+                    {replyRetouchModal && (
+                      <ConfirmModal
+                        isOpen={replyRetouchModal}
+                        onClose={() => setReplyRetouchModal(false)}
+                        onConfirm={() => replyRetouchHandle(reply.id, reply.user_id)}
+                        message={'댓글을 수정 하시겠습니까?'}
+                      />
+                    )}
                   </div>
                 </div>
               ) : (
