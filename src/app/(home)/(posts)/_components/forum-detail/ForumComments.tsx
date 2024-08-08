@@ -15,10 +15,11 @@ import { commentRetouch, forumCommentsType } from '@/types/posts/forumDetailType
 import LikeButton from '@/components/common/LikeButton';
 import BookmarkButton from '@/components/common/BookmarkButton';
 import KebabButton from '@/assets/images/common/KebabButton';
-import { revalidate } from '@/actions/revalidate';
 import ConfirmModal from '@/components/modal/ConfirmModal';
 import EndOfData from '@/components/common/EndOfData';
 import { cutText, filterSlang } from '@/utils/markdownCut';
+import { revalidatePostTag } from '@/actions/revalidatePostTag';
+import { useLoginAlertStore } from '@/store/loginAlertModal';
 
 const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
   const { me } = useAuth();
@@ -51,13 +52,7 @@ const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
   const commentRetouchHandle = async (id: string, user_id: string) => {
     commentRetouch.mutate({ id, user_id, mdEditorChange });
     setEditingState({ Boolean: false });
-    if (!mdEditorChange) {
-      toast.error('댓글을 입력해주세요!', {
-        autoClose: 2000
-      });
-      toast.success('댓글이 수정 되었습니다.', { autoClose: 1500 });
-      return;
-    }
+    toast.success('댓글이 수정 되었습니다.', { autoClose: 1500 });
   };
 
   // 댓글 삭제
@@ -70,13 +65,13 @@ const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['forumComments'] });
+      revalidatePostTag(`forum-detail-${param.id}`);
     }
   });
   // 삭제 이벤트 버튼
   const handleDelete = async (id: string, user_id: string) => {
     toast.success('댓글이 삭제되었습니다.', { autoClose: 1500 });
     commentDelete.mutate({ id, user_id });
-    revalidate('/', 'page');
   };
 
   //수정 취소버튼
@@ -315,7 +310,6 @@ const ForumComments = ({ post_user_id }: { post_user_id: string }) => {
           ))}
         </div>
       ))}
-
       <div ref={ref}></div>
       {!hasNextPage && !isPending && <EndOfData />}
     </>

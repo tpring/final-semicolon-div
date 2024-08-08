@@ -5,7 +5,7 @@ import FormTitleInput from '../FormTitleInput';
 import FormTagInput from './postingform/FormTagInput';
 import FormContentArea from '../FormContentArea';
 import { CATEGORY_LIST_EN, CATEGORY_LIST_KR, FORUM_SUB_CATEGORY_LIST, LOGIN_ALERT } from '@/constants/upsert';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import FormSubmitButton from '../FormSubmitButton';
 import { useAuth } from '@/context/auth.context';
 import { useRouter } from 'next/navigation';
@@ -114,7 +114,6 @@ const PostingForm = () => {
 
   return (
     <div className="w-[1204px] mx-auto flex flex-col gap-y-5 max-h-screen">
-      <ToastContainer />
       <div className="mb-4" onClick={handleBackClick}>
         <BackArrowIcon />
       </div>

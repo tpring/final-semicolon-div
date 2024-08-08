@@ -42,7 +42,7 @@ const SearchPostCard = ({ post }: SearchPostCardProps) => {
   const cleanDate = formattedDate.endsWith('.') ? formattedDate.slice(0, -1) : formattedDate;
 
   const handleLikeButtonClick = (e: React.MouseEvent) => {
-    e.stopPropagation;
+    e.stopPropagation();
   };
 
   return (

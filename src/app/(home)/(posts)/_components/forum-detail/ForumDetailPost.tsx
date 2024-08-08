@@ -6,7 +6,6 @@ import MDEditor from '@uiw/react-md-editor';
 import Image from 'next/image';
 import LikeButton from '@/components/common/LikeButton';
 import BookmarkButton from '@/components/common/BookmarkButton';
-import { handleRinkCopy } from '@/utils/handleRinkCopy';
 import Share from '@/assets/images/common/Share';
 import { useAuth } from '@/context/auth.context';
 import { useParams, useRouter } from 'next/navigation';
@@ -15,6 +14,8 @@ import KebabButton from '@/assets/images/common/KebabButton';
 import ConfirmModal from '@/components/modal/ConfirmModal';
 import { filterSlang } from '@/utils/markdownCut';
 import TagBlock from '@/components/common/TagBlock';
+import { handleLinkCopy } from '@/utils/handleLinkCopy';
+import { useLoginAlertStore } from '@/store/loginAlertModal';
 
 const ForumDetailPost = ({ forumDetail }: { forumDetail: forumDetailType[] }) => {
   const { me } = useAuth();
@@ -109,7 +110,7 @@ const ForumDetailPost = ({ forumDetail }: { forumDetail: forumDetailType[] }) =>
               <BookmarkButton id={post.id} type="forum" />
               <button
                 type="button"
-                onClick={() => handleRinkCopy(`${process.env.NEXT_PUBLIC_BASE_URL}/forum/${post.id}`)}
+                onClick={() => handleLinkCopy(`${process.env.NEXT_PUBLIC_BASE_URL}/forum/${post.id}`)}
               >
                 <Share />
               </button>

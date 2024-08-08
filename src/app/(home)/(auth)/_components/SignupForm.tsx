@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import SignupButton from './SignupButton';
 import CheckboxGroup from './CheckboxGroup';
@@ -9,7 +9,7 @@ import PasswordFields from './PasswordFields';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { useAuth } from '@/context/auth.context';
 import OAuthButtons from './OAuthButtons';
-import useOAuthLogin from '@/hooks/useOAuthLogin';
+import useOAuthLogin from '@/hooks/common/useOAuthLogin';
 import EmailCheck from './EmailCheck';
 import Logo from '@/assets/images/header/Logo';
 import NicknameCheck from './NicknameCheck ';
@@ -132,7 +132,6 @@ const SignupForm = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen">
-      <ToastContainer />
       <div className="bg-white w-full max-w-sm">
         <div className="flex items-center justify-center mb-16">
           <Logo />
