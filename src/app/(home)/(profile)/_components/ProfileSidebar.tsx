@@ -4,7 +4,7 @@ import { useAuth } from '@/context/auth.context';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 const ProfileSidebar = () => {
   const router = useRouter();
@@ -21,7 +21,6 @@ const ProfileSidebar = () => {
 
   return (
     <>
-      <ToastContainer />
       <div className="flex-none w-[286px] h-[80%] border-r border-l border-neutral-50 shadow-custom bg-white p-[56px_24px]">
         <div className="center-alignment">
           <div className="mb-[26px] relative w-[120px] h-[120px] border border-neutral-50 rounded-full overflow-hidden bg-white">
