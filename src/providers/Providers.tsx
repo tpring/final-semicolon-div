@@ -12,8 +12,6 @@ const Providers = ({ children }: PropsWithChildren) => {
       <AuthProvider>
         <BookmarkProvider>
           <LikeProvider>
-            {children}
-            <ReactQueryDevtools initialIsOpen={false} />
             <ToastContainer
               position="bottom-center"
               autoClose={3000}
@@ -27,6 +25,8 @@ const Providers = ({ children }: PropsWithChildren) => {
               pauseOnHover={false}
               theme="dark"
             />
+            {children}
+            <ReactQueryDevtools initialIsOpen={false} />
           </LikeProvider>
         </BookmarkProvider>
       </AuthProvider>
