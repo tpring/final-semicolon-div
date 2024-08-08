@@ -1,5 +1,5 @@
 import { Dispatch } from 'react';
-import CustomMDEditor from '../../CustomMDEditor';
+import CustomMDEditor from '@/components/common/CustomMDEditor';
 
 type FormContentAreaProps = {
   content: string;

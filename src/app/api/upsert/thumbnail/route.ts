@@ -1,13 +1,15 @@
 import { POST_IMAGE_URL } from '@/constants/upsert';
 import { createClient } from '@/supabase/server';
+import { TcategoryEN } from '@/types/upsert';
 
 export const POST = async (request: Request) => {
   const supabase = createClient();
-  const formData = await request.formData();
+  const thumbnailFormData = await request.formData();
 
-  const name = formData.get('name') as string;
-  const thumbnail = formData.get('thumbnail') as File;
-  const category = formData.get('category');
+  const name = thumbnailFormData.get('name') as string;
+  const thumbnail = thumbnailFormData.get('thumbnail') as File;
+  const category = thumbnailFormData.get('category') as TcategoryEN;
+
   if (thumbnail.size === 0) {
     return Response.json({ url: null });
   }
