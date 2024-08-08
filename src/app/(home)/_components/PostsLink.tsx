@@ -52,7 +52,7 @@ const PostsLink = () => {
         slidesPerView={1}
         modules={[Navigation, Autoplay]}
         autoplay={{
-          delay: 5000,
+          delay: 7000,
           disableOnInteraction: false
         }}
         loop={true}
