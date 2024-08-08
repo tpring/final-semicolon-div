@@ -3,12 +3,14 @@
 import { useAuth } from '@/context/auth.context';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 
 const ProfileSidebar = () => {
   const router = useRouter();
-  const { userData, me, logOut } = useAuth();
+  const pathname = usePathname();
+  const currentPage = pathname?.split('/')[2] || 'profile';
+  const { userData, logOut } = useAuth();
 
   const handleLogout = async () => {
     const result = await logOut();
@@ -46,7 +48,9 @@ const ProfileSidebar = () => {
             <li className="mb-[40px]">
               <Link
                 href="/profile"
-                className={me?.id === '/profile' ? 'text-h5 font-bold text-main-400' : 'text-h5 font-bold text-sub-100'}
+                className={
+                  currentPage === 'profile' ? 'text-h5 font-bold text-main-400' : 'text-h5 font-bold text-sub-100'
+                }
               >
                 프로필
               </Link>
@@ -55,9 +59,7 @@ const ProfileSidebar = () => {
               <Link
                 href="/profile/activities"
                 className={
-                  me?.id === '/profile/activities'
-                    ? 'text-h5 font-bold text-main-400'
-                    : 'text-h5 font-bold text-sub-100'
+                  currentPage === 'activities' ? 'text-h5 font-bold text-main-400' : 'text-h5 font-bold text-sub-100'
                 }
               >
                 내 활동
