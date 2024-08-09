@@ -13,7 +13,7 @@ const FormTitleInput = ({ title, setTitle }: FormTitleInputProps) => {
   };
 
   return (
-    <>
+    <div>
       <label
         className={`block mb-2 ${isValidTitle === false ? 'text-red' : 'text-gray-900'}  text-h5 font-bold`}
         htmlFor="title"
@@ -21,7 +21,7 @@ const FormTitleInput = ({ title, setTitle }: FormTitleInputProps) => {
         제목
       </label>
       <input
-        className={`px-6 py-3 w-full text-neutral-900 border h-[51px] rounded-xl   focus:border-main-400 outline-none ${isValidTitle === false ? 'placeholder:text-red border-red ' : 'text-gray-900 border-neutral-100 placeholder:text-neutral-400 placeholder:text-body1'} `}
+        className={`px-6 py-3 w-full text-neutral-900 border h-[51px] rounded-xl text-body1  focus:border-main-400 outline-none ${isValidTitle === false ? 'placeholder:text-red border-red ' : 'text-gray-900 border-neutral-100 placeholder:text-neutral-400 placeholder:text-body1'} `}
         type="text"
         name="title"
         id="title"
@@ -29,7 +29,7 @@ const FormTitleInput = ({ title, setTitle }: FormTitleInputProps) => {
         value={title}
         onChange={handleTitleChange}
       />
-    </>
+    </div>
   );
 };
 

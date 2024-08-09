@@ -54,15 +54,28 @@
   background-color: transparent !important;
 }
 
-.w-md-editor-text-input {
+body .w-md-editor-text-pre > code,
+body .w-md-editor-text-input {
   min-height: 512px !important;
   -ms-overflow-style: none;
+  line-height: 150% !important;
+  letter-spacing: -0.5px !important;
+  font-family: 'Pretendard' !important ;
+  font-size: 18px !important;
+  font-weight: 400 !important;
 }
 .w-md-editor-input {
   -ms-overflow-style: none;
 }
 .w-md-editor-input::-webkit-scrollbar {
   display: none;
+}
+
+.wmde-markdown {
+  font-family: 'Pretendard' !important ;
+  font-size: 18px !important;
+  font-weight: 400 !important;
+  background-color: transparent !important;
 }
 
 #select-tag-list::-webkit-scrollbar {
@@ -83,7 +96,3 @@
   border-radius: 8px;
   box-shadow: 2px 2px 8px 0px rgba(163, 163, 163, 0.25);
 }
-
-/* .custom-markdown {
-  font-family: font-regular;
-} */
