@@ -6,6 +6,7 @@ import Tooltip from '@/assets/images/forum/Tooltip';
 
 import useFetchTopLikedPosts from '@/hooks/forum/useFetchTopLikedPosts';
 import { Post } from '@/types/posts/forumTypes';
+import { cutText } from '@/utils/markdownCut';
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -50,16 +51,14 @@ const BestForumPosts = () => {
             <button onClick={handleTooltipToggle}>
               <Info />
             </button>
-            <div className="">
-              {showTooltip && (
-                <div
-                  className="absolute top-10 left-[96%] transform -translate-x-1/2 mt-2 z-50
+            {showTooltip && (
+              <div
+                className="absolute top-10 left-[96%] transform -translate-x-1/2 mt-2 z-50
                 "
-                >
-                  <Tooltip />
-                </div>
-              )}
-            </div>
+              >
+                <Tooltip />
+              </div>
+            )}
           </div>
         </div>
         <div></div>
@@ -67,7 +66,7 @@ const BestForumPosts = () => {
           {topPosts.map((post) => (
             <div className="mt-5 min-h-12" key={post.id}>
               <Link href={`/forum/${post.id}`}>
-                <p className="text-neutral-700 font-medium text-body2 mb-5">{post.title}</p>
+                <p className="text-neutral-700 font-medium text-body2 mb-5">{cutText(post.title, 45)}</p>
               </Link>
             </div>
           ))}
