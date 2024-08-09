@@ -49,7 +49,9 @@ const SelectTagInput = ({ tagList, setTagList }: SelectTagInputProps) => {
       onClick={handleOpenTag}
     >
       <div className=" h-[51px] flex items-center gap-2 px-6 py-3">
-        <p className={`${selectedCount > 0 ? 'hidden' : ''} text-neutral-500`}> 태그를 선택하세요!(최대3개)</p>
+        <p className={`${selectedCount > 0 ? 'hidden' : ''} text-neutral-400 text-body1`}>
+          태그를 선택하세요! (최대 3개까지 가능해요)
+        </p>
         {tagList
           .filter((tag) => tag.selected === true)
           .map((tag) => {
@@ -61,7 +63,7 @@ const SelectTagInput = ({ tagList, setTagList }: SelectTagInputProps) => {
                 <span>#{tag.name}</span>
                 <button
                   type="button"
-                  className="w-4 h-4 p-1 active:bg-neutral-500"
+                  className="w-4 h-4 p-1 "
                   onClick={(event) => {
                     event.stopPropagation();
                     handleRemoveTag(tag);
@@ -72,25 +74,28 @@ const SelectTagInput = ({ tagList, setTagList }: SelectTagInputProps) => {
               </div>
             );
           })}
-        <div className="ml-auto">{openTag ? <Up /> : <Down />}</div>
+        <div className="ml-auto">
+          <Down />
+        </div>
       </div>
 
       <div className="relative z-10">
         <ul
-          className={`${openTag ? '' : 'hidden '} w-full h-[271px] mt-2 flex flex-col gap-2 absolute overflow-y-auto bg-white py-3 border rounded-xl `}
+          className={`${openTag ? '' : 'hidden '} w-full h-[271px] mt-2 flex flex-col gap-2 absolute overflow-auto bg-white py-3 border rounded-xl `}
+          id="select-tag-list"
         >
           {tagList
             .filter((tag) => tag.selected === false)
             .map((tag) => {
               return (
                 <li
-                  className="px-6 py-2"
+                  className="px-6 py-2 hover:bg-main-100 text-neutral-900 hover:text-neutral-700"
                   key={tag.name}
                   onClick={() => {
                     handleSelect(tag);
                   }}
                 >
-                  <span className="h-[27px] text-body1 text-neutral-900">{tag.name}</span>
+                  <span className="h-[27px] text-body1 ">{tag.name}</span>
                 </li>
               );
             })}

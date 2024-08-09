@@ -1,13 +1,16 @@
 import { TcategoryEN, TcategoryKR } from '@/types/upsert';
 
+//카테고리 선택 문구
+export const CATEGORY_ALERT_TEXT = '게시판을 선택해 주세요';
+export const SUB_CATEGORY_TEXT = '포럼 카테고리를 선택해주세요';
 //메인 카테고리 dropdown 목록
 export const BOARD_LIST = [
   {
     category: '포럼',
     content: '디브 유어 포럼'
   },
-  { category: 'QnA', content: 'QnA질문 게시판이에요' },
-  { category: '라이브러리', content: '다채로운 코드의 매력!' }
+  { category: 'QnA', content: 'QnA 질문 게시판이에요' },
+  { category: '라이브러리', content: '내 코드를 소개합니다!' }
 ] as const;
 
 //카테고리 서브타이틀 포럼-qna-라이브러리 순

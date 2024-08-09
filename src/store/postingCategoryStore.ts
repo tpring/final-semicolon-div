@@ -1,3 +1,4 @@
+import { CATEGORY_ALERT_TEXT } from '@/constants/upsert';
 import { TBOARD_ITEM } from '@/types/upsert';
 import { create } from 'zustand';
 
@@ -15,7 +16,7 @@ type TusePostingCategoryStore = {
 
 export const usePostingCategoryStore = create<TusePostingCategoryStore>((set) => ({
   categoryGroup: { category: '', content: '' },
-  subCategory: '카테고리를 선택해주세요!',
+  subCategory: CATEGORY_ALERT_TEXT,
   categoryOpen: false,
   subCategoryOpen: false,
   setCategoryGroup: ({ category, content }) =>
@@ -31,7 +32,7 @@ export const usePostingCategoryStore = create<TusePostingCategoryStore>((set) =>
   clearCategory: () =>
     set({
       categoryGroup: { category: '', content: '' },
-      subCategory: '카테고리를 선택해주세요!',
+      subCategory: CATEGORY_ALERT_TEXT,
       categoryOpen: false,
       subCategoryOpen: false
     })

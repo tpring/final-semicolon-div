@@ -1,17 +1,19 @@
 import Chip from '@/components/common/Chip';
 import ConfirmModal from '@/components/modal/ConfirmModal';
 import { POST_CANCLE_TEXT, POST_APPROVE_TEXT, EDIT_APPROVE_TEXT, EDIT_CANCLE_TEXT } from '@/constants/upsert';
+import { useUpsertValidationStore } from '@/store/upsertValidationStore';
 import { useRouter } from 'next/navigation';
-import { MouseEventHandler, useRef, useState } from 'react';
+import { MouseEventHandler, useState } from 'react';
 
-type FormSubmitButtonProps = { content: string; handleSubmit: () => Promise<void>; isEdit: boolean };
+type FormSubmitButtonProps = { handleSubmit: () => Promise<void>; isEdit: boolean };
 
-const FormSubmitButton = ({ content, handleSubmit, isEdit }: FormSubmitButtonProps) => {
+const FormSubmitButton = ({ handleSubmit, isEdit }: FormSubmitButtonProps) => {
   const router = useRouter();
-  const approveButton = useRef<HTMLButtonElement>(null);
+
   const [isCancleConfirmOpen, setIsCancleConfirmOpen] = useState<boolean>(false);
   const [isPostConfirmOpen, setIsPostConfirmOpen] = useState<boolean>(false);
   const [confirmText, setConfirmText] = useState<string>('');
+  const { clearAllValid } = useUpsertValidationStore();
 
   const handleCancleConfirmClick: MouseEventHandler = () => {
     setConfirmText(isEdit ? EDIT_CANCLE_TEXT : POST_CANCLE_TEXT);
@@ -25,6 +27,7 @@ const FormSubmitButton = ({ content, handleSubmit, isEdit }: FormSubmitButtonPro
   };
 
   const approveCancleConfirm = (): void => {
+    clearAllValid();
     router.back();
   };
 
@@ -42,7 +45,7 @@ const FormSubmitButton = ({ content, handleSubmit, isEdit }: FormSubmitButtonPro
   };
 
   return (
-    <div className="flex gap-5 justify-end">
+    <div className="mb-[76px] flex gap-5 justify-end ">
       <ConfirmModal
         isOpen={isCancleConfirmOpen}
         message={confirmText}
@@ -56,12 +59,7 @@ const FormSubmitButton = ({ content, handleSubmit, isEdit }: FormSubmitButtonPro
         onConfirm={approvePostConfirm}
         onClose={closePostConfirmClose}
       />
-      {content.length === 0 ? (
-        <Chip type="button" intent={'primary_disabled'} size="large" label="등록" />
-      ) : (
-        <Chip type="button" intent={'primary'} size="large" label="등록" onClick={handlePostConfirmClick} />
-      )}
-      <button ref={approveButton}></button>
+      <Chip type="button" intent={'primary'} size="large" label="등록" onClick={handlePostConfirmClick} />
     </div>
   );
 };

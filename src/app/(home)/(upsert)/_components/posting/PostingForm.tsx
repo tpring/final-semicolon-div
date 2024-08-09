@@ -1,17 +1,10 @@
 'use client';
-import { MouseEventHandler, useState } from 'react';
+import { MouseEventHandler, useEffect, useState } from 'react';
 import { TpostFormData } from '@/types/upsert';
 import FormTitleInput from '../FormTitleInput';
 import FormTagInput from './postingform/FormTagInput';
 import FormContentArea from '../FormContentArea';
-import {
-  CATEGORY_LIST_EN,
-  CATEGORY_LIST_KR,
-  FORUM_SUB_CATEGORY_LIST,
-  LOGIN_ALERT,
-  VALIDATION_SEQUENCE,
-  VALIDATION_SEQUENCE_KR
-} from '@/constants/upsert';
+import { CATEGORY_LIST_EN, CATEGORY_LIST_KR, FORUM_SUB_CATEGORY_LIST, LOGIN_ALERT } from '@/constants/upsert';
 import { toast } from 'react-toastify';
 import FormSubmitButton from '../FormSubmitButton';
 import { useAuth } from '@/context/auth.context';
@@ -23,6 +16,7 @@ import UpsertTheme from '../UpsertTheme';
 import ThumbNailBox from '../ThumbNailBox';
 import { TAG_LIST } from '@/constants/tags';
 import { uploadThumbnail } from '../../_utils/thumbnail';
+import { useUpsertValidationStore } from '@/store/upsertValidationStore';
 
 const PostingForm = () => {
   const router = useRouter();
@@ -32,6 +26,7 @@ const PostingForm = () => {
   const [tagList, setTagList] = useState<Array<Ttag>>(TAG_LIST);
   const [thumbnail, setThumbnail] = useState<File>();
   const [content, setContent] = useState<string>('');
+  const { setIsValidCategory, setIsValidContent, setIsValidTitle, clearAllValid } = useUpsertValidationStore();
 
   if (!user?.id) {
     toast.error(LOGIN_ALERT, { hideProgressBar: false, autoClose: 1500, onClose: () => router.push(`/login`) });
@@ -41,11 +36,32 @@ const PostingForm = () => {
   const handleSubmit = async (): Promise<void> => {
     const category = CATEGORY_LIST_EN[CATEGORY_LIST_KR.indexOf(categoryGroup.category ?? '')];
 
-    if (
-      category === 'forum' &&
-      !FORUM_SUB_CATEGORY_LIST.find((FORUM_SUB_CATEGORY) => subCategory === FORUM_SUB_CATEGORY)
-    ) {
-      toast.error('포럼 서브 카테고리를 선택해 주세요!', { autoClose: 1500, hideProgressBar: true });
+    // 폼 유효성 검사 로직
+    const isForumSubCategory = FORUM_SUB_CATEGORY_LIST.find((FORUM_SUB_CATEGORY) => subCategory === FORUM_SUB_CATEGORY);
+
+    const validArray = [category, title, content];
+    const invalidSequance = [
+      () => setIsValidCategory(false),
+      () => setIsValidTitle(false),
+      () => setIsValidContent(false)
+    ];
+
+    const invalidCheckArray = validArray.map((valid, index) => {
+      if ((index === 0 && !valid) || (valid === 'forum' && !isForumSubCategory)) {
+        invalidSequance[index]();
+        return 'invalid';
+      } else if (valid.length === 0) {
+        invalidSequance[index]();
+        return 'invalid';
+      }
+      return 'valid';
+    });
+
+    invalidCheckArray.forEach((isInvalid, index) => {
+      isInvalid === 'invalid' && index !== 2 ? window.scrollTo({ top: 0, behavior: 'smooth' }) : null;
+    });
+
+    if (invalidCheckArray.includes('invalid')) {
       return;
     }
 
@@ -56,19 +72,6 @@ const PostingForm = () => {
       category,
       forum_category: subCategory
     };
-
-    // 폼 유효성 검사 로직
-
-    const invalidItems = Object.keys(postData).filter((key) => !postData[key]);
-    const invalidItemIndex = VALIDATION_SEQUENCE.findIndex((sequence) => {
-      return !!invalidItems.find((item) => item === sequence);
-    });
-    const invalidItem = VALIDATION_SEQUENCE_KR[invalidItemIndex];
-
-    if (invalidItem) {
-      toast.error(invalidItem + ' 입력이 필요합니다!', { hideProgressBar: true });
-      return;
-    }
 
     // 유효성 검사 통과시 업로드 썸네일-글-태그순서로 업로드
 
@@ -90,6 +93,7 @@ const PostingForm = () => {
 
     toast.success(message, { autoClose: 1500, onClose: () => router.push(`/${category}/${data[0].id}`) });
     clearCategory();
+    clearAllValid();
     return;
   };
 
@@ -109,7 +113,7 @@ const PostingForm = () => {
         <FormTagInput tagList={tagList} setTagList={setTagList} />
         <ThumbNailBox setThumbnail={setThumbnail} />
         <FormContentArea content={content} setContent={setContent} />
-        <FormSubmitButton content={content} handleSubmit={handleSubmit} isEdit={false} />
+        <FormSubmitButton handleSubmit={handleSubmit} isEdit={false} />
       </form>
     </div>
   );
