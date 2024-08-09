@@ -58,7 +58,7 @@ const ForumPostsWithCategoryAndSort = () => {
   const filteredAndSortedPost = filterAndSortPosts(allPosts, activeCategory, sortBy);
 
   return (
-    <div>
+    <div className="pl-6">
       <div className="category-and-sort flex items-center justify-between max-w-[844px] mx-auto">
         <CategoryTabs
           categories={categories}

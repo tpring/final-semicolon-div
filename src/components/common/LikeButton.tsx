@@ -75,7 +75,8 @@ const LikeButton = ({ id, type }: LikeButtonProps) => {
   };
   return (
     <button onClick={handleLike} className="flex items-center">
-      {isLiked ? <FilledLike /> : <UnfilledLike />} <span className="ml-1">{likeCount}</span>
+      {isLiked ? <FilledLike /> : <UnfilledLike />}{' '}
+      <span className="ml-1 text-subtitle1 font-medium text-neutral-400">{likeCount}</span>
     </button>
   );
 };
