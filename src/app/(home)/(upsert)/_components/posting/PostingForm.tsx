@@ -26,15 +26,7 @@ const PostingForm = () => {
   const [tagList, setTagList] = useState<Array<Ttag>>(TAG_LIST);
   const [thumbnail, setThumbnail] = useState<File>();
   const [content, setContent] = useState<string>('');
-  const {
-    isValidCategory,
-    isValidTitle,
-    isValidContent,
-    setIsValidCategory,
-    setIsValidContent,
-    setIsValidTitle,
-    clearAllValid
-  } = useUpsertValidationStore();
+  const { setIsValidCategory, setIsValidContent, setIsValidTitle, clearAllValid } = useUpsertValidationStore();
 
   if (!user?.id) {
     toast.error(LOGIN_ALERT, { hideProgressBar: false, autoClose: 1500, onClose: () => router.push(`/login`) });
@@ -108,12 +100,6 @@ const PostingForm = () => {
   const handleBackClick: MouseEventHandler<HTMLDivElement> = () => {
     router.back();
   };
-
-  useEffect(() => {
-    return () => {
-      clearCategory();
-    };
-  }, []);
 
   return (
     <div className="w-[1204px] mx-auto flex flex-col gap-y-5 max-h-screen">
