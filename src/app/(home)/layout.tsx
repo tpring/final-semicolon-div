@@ -12,7 +12,7 @@ const HomeLayout = ({ children }: HomeLayoutProps) => {
     <div className="min-h-screen flex flex-col justify-center">
       <HeaderWrapper />
       <div className="flex justify-center flex-1 w-full">
-        <main className="w-[1200px] p-10">{children}</main>
+        <main className="w-[1204px] pt-14">{children}</main>
       </div>
       <OAuthNicknameModalWrapper />
     </div>

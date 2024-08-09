@@ -25,7 +25,7 @@ const SortDropdown = ({ sortBy, handleSortChange, sortOptions }: SortDropdownPro
         <span className="flex-grow w-[71px] text-body1 font-medium text-center text-neutral-700">
           {selectedOptionLabel}
         </span>
-        {isOpen ? <Up /> : <Down />}
+        <Down />
       </div>
       {isOpen && (
         <div
