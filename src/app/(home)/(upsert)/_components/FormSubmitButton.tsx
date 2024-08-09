@@ -45,7 +45,7 @@ const FormSubmitButton = ({ handleSubmit, isEdit }: FormSubmitButtonProps) => {
   };
 
   return (
-    <div className="flex gap-5 justify-end">
+    <div className="mb-[76px] flex gap-5 justify-end ">
       <ConfirmModal
         isOpen={isCancleConfirmOpen}
         message={confirmText}
