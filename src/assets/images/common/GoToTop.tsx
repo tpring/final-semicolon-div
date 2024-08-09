@@ -1,13 +1,13 @@
 const GoToTop = () => {
   return (
-    <svg width="112" height="112" viewBox="0 0 112 112" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="84" height="84" viewBox="0 0 84 84" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g filter="url(#filter0_d_2457_11880)">
-        <rect x="8" y="6" width="96" height="96" rx="28" fill="#F5F5F5" shapeRendering="crispEdges" />
+        <rect x="8" y="6" width="68" height="68" rx="34" fill="#F5F5F5" shape-rendering="crispEdges" />
         <path
-          d="M44 60L55.8586 48.1414C55.9367 48.0633 56.0633 48.0633 56.1414 48.1414L68 60"
-          stroke="#5C5C5C"
-          strokeWidth="3"
-          strokeLinecap="round"
+          d="M30 46L41.8586 34.1414C41.9367 34.0633 42.0633 34.0633 42.1414 34.1414L54 46"
+          stroke="#A8A8A8"
+          stroke-width="3"
+          stroke-linecap="round"
         />
       </g>
       <defs>
@@ -15,12 +15,12 @@ const GoToTop = () => {
           id="filter0_d_2457_11880"
           x="0"
           y="0"
-          width="112"
-          height="112"
+          width="84"
+          height="84"
           filterUnits="userSpaceOnUse"
-          colorInterpolationFilters="sRGB"
+          color-interpolation-filters="sRGB"
         >
-          <feFlood floodOpacity="0" result="BackgroundImageFix" />
+          <feFlood flood-opacity="0" result="BackgroundImageFix" />
           <feColorMatrix
             in="SourceAlpha"
             type="matrix"

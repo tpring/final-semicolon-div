@@ -2,7 +2,7 @@ type CommentBubbleProps = {
   stroke?: string;
 };
 
-const CommentBubble = ({ stroke = '#0F0F0F' }: CommentBubbleProps) => {
+const CommentBubble = ({ stroke = '#8f8f8f' }: CommentBubbleProps) => {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
